@@ -511,11 +511,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 1951928310336527954, guid: c3a0b48fd7e6b1d40b2c6693dd7a043c,
-        type: 3}
-      propertyPath: delayDezoom
-      value: 3
-      objectReference: {fileID: 0}
     - target: {fileID: 1951928310336527956, guid: c3a0b48fd7e6b1d40b2c6693dd7a043c,
         type: 3}
       propertyPath: m_RootOrder
