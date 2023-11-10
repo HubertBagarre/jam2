@@ -1,19 +1,20 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class CharacterController : MonoBehaviour
 {
+    [Header("Components")]
+    [SerializeField] private Rigidbody rb;
     
-    // Start is called before the first frame update
-    void Start()
+    [Header("Settings")]
+    [SerializeField] private float speed = 5f;
+    
+    public void Move(InputAction.CallbackContext context)
     {
-        
-    }
+        var input = context.ReadValue<Vector2>();
+        rb.velocity = input * speed;
 
-    // Update is called once per frame
-    void Update()
-    {
-        
     }
 }
