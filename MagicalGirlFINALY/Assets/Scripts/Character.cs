@@ -35,7 +35,7 @@ public class Character : MonoBehaviour
         public bool startup;
         public bool attacking;
         public bool recovering;
-        public bool CanInput => !stunned && !startup && !attacking && !recovering;
+        public bool CanInput => !stunned && !startup && !attacking && !recovering && !dead;
         
         public bool dead;
     }
