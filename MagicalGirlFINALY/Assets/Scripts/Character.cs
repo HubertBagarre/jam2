@@ -7,6 +7,7 @@ public class Character : MonoBehaviour
 {
     [Header("Components")]
     [SerializeField] private Rigidbody rb;
+    [SerializeField] private Animator animator;
     
     [Header("Settings")]
     [SerializeField] private float speed = 5f;
@@ -24,6 +25,11 @@ public class Character : MonoBehaviour
     public void Jump()
     {
         rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
+    }
+
+    public void Attack()
+    {
+        animator.Play("Attack");
     }
 
     private void Update()
