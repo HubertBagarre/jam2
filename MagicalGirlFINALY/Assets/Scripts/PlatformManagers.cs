@@ -16,4 +16,6 @@ public class PlatformManagers : MonoBehaviour
         foreach (var platform in _platforms)
             platform.MoveTo(speed);
     }
+    
+    
 }
