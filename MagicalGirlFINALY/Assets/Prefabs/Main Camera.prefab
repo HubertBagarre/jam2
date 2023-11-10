@@ -132,7 +132,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _camera: {fileID: 1951928310336527957}
-  maxSizeCam: 110
-  maxPosCam: 15
+  maxPosCam: -14
   speedDezoom: 0.1
   delayDezoom: 0.001
