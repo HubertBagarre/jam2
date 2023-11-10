@@ -6,15 +6,19 @@ public class CameraController : MonoBehaviour
 {
 [SerializeField] private Camera _camera;
 [SerializeField] private float maxSizeCam = 12f;
+[SerializeField] private float maxPosCam = 12f;
 [SerializeField] private float speedDezoom = 0.1f;
 [SerializeField] private float delayDezoom = 0.01f;
 
 IEnumerator OnDezoom()
 {
-    while (_camera.orthographicSize < maxSizeCam)
+    float ratio  = maxPosCam - transform.position.y;
+    ratio /= (maxSizeCam - _camera.orthographicSize) / speedDezoom;
+    
+    while (_camera.fieldOfView < maxSizeCam)
     {
-        _camera.orthographicSize += speedDezoom;
-        transform.position = new Vector3(transform.position.x, transform.position.y + speedDezoom, transform.position.z);
+        _camera.fieldOfView += speedDezoom;
+        transform.position = new Vector3(transform.position.x, transform.position.y + ratio, transform.position.z);
         yield return new WaitForSeconds(delayDezoom);
     }
 }
