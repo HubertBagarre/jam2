@@ -2,10 +2,15 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Serialization;
 
-public class CharacterController : MonoBehaviour
+public class MagicalGirlController : MonoBehaviour
 {
-    
+    [Header("Components")]
     [SerializeField] private Character characterPrefab;
+
+    [Header("Settings")]
+    [SerializeField] private Quaternion spawnRotation;
+    
+    [field: Header("Debug")]
     [field:SerializeField] public Vector2 StickInput { get; private set; }
     
     private Character character;
@@ -18,7 +23,12 @@ public class CharacterController : MonoBehaviour
 
     private void Start()
     {
-        character = Instantiate(characterPrefab);
+        SpawnCharacter();
+    }
+
+    private void SpawnCharacter()
+    {
+        character = Instantiate(characterPrefab,Vector3.zero, spawnRotation);
         hasCharacter = true;
     }
 
@@ -45,8 +55,12 @@ public class CharacterController : MonoBehaviour
     public void LightAttack(InputAction.CallbackContext context)
     {
         if(!hasCharacter) return;
-        
-        if(context.started) LightAttackPressed = true;
+
+        if (context.started)
+        {
+            LightAttackPressed = true;
+            character.Attack();
+        }
         if(context.canceled) LightAttackPressed = false;
     }
 
