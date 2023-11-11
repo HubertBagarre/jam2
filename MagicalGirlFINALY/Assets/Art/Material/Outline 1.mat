@@ -7,7 +7,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Outline
+  m_Name: Outline 1
   m_Shader: {fileID: 4800000, guid: e88aeddd2ef1f934d805981244872e27, type: 3}
   m_ValidKeywords:
   - _HALFTONESHAPE_DOT
@@ -29,7 +29,7 @@ Material:
     serializedVersion: 3
     m_TexEnvs:
     - _BaseMap:
-        m_Texture: {fileID: 2800000, guid: e689b914be9762d4592b85daa6dbb676, type: 3}
+        m_Texture: {fileID: 2800000, guid: 5bff88edc6faa7f4bbff987ff7b12688, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _BumpMap:
@@ -69,7 +69,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
-        m_Texture: {fileID: 2800000, guid: e689b914be9762d4592b85daa6dbb676, type: 3}
+        m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _RampTex:
@@ -134,10 +134,10 @@ Material:
     - _HairSpecularSize: 0.8
     - _HairSpecularSmoothness: 0.1
     - _HalfToneDiffuseStep: 0
-    - _HalfToneEnabled: 1
+    - _HalfToneEnabled: 0
     - _HalfToneIncludeReceivedShadow: 0
     - _HalfToneShape: 0
-    - _HalfToneUvMode: 1
+    - _HalfToneUvMode: 0
     - _HalftoneDiffuseOffest: 0
     - _HalftoneFadeDistance: 10
     - _HalftoneFadeToColor: 0
@@ -157,17 +157,17 @@ Material:
     - _NoiseStrength: 0.1
     - _OutlineEnabled: 1
     - _OutlineMode: 0
-    - _OutlineWidth: 15
+    - _OutlineWidth: 11.63
     - _OverrideShadowColor: 0
     - _QueueControl: 0
     - _QueueOffset: 50
     - _RIMLIGHTING: 0
     - _ReceiveShadows: 0
     - _RimEnabled: 1
-    - _RimLightAlign: 0.93
+    - _RimLightAlign: -1
     - _RimLightSmoothness: 0
     - _RimLightSmootness: 0
-    - _RimPower: 0.347
+    - _RimPower: 0.282
     - _SPECULARHIGHLIGHTS: 0
     - _ShadowPatternSize: 0.3
     - _Shininess: 0
@@ -197,7 +197,7 @@ Material:
     - _ZWrite: 1
     m_Colors:
     - Color_e33122dd1341407eb6ef24a34b660f09: {r: 0, g: 0, b: 0, a: 0}
-    - _BaseColor: {r: 0.95686275, g: 0.85490197, b: 0.7921569, a: 1}
+    - _BaseColor: {r: 1, g: 0.5518868, b: 0.9522244, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 119.42823, g: 119.42823, b: 119.42823, a: 1}
     - _FaceFrontDirection: {r: 0, g: 0, b: 1, a: 0}
@@ -207,10 +207,10 @@ Material:
     - _HalftoneColor: {r: 0.517647, g: 0.517647, b: 0.517647, a: 1}
     - _HatchingColor: {r: 0, g: 0, b: 0, a: 1}
     - _HatchingScale: {r: 15, g: 1, b: 0, a: 0}
-    - _OutlineColor: {r: 0.9150943, g: 0.9150943, b: 0.9150943, a: 1}
-    - _OutlineDistancFade: {r: -31.707283, g: 0, b: 0, a: 0}
-    - _RimColor: {r: 1, g: 1, b: 1, a: 0.207}
-    - _ShadowColor: {r: 0, g: 0.19233908, b: 0.5188679, a: 0.72156864}
+    - _OutlineColor: {r: 0, g: 0.69216186, b: 0.8773585, a: 1}
+    - _OutlineDistancFade: {r: -90.243904, g: 200, b: 0, a: 0}
+    - _RimColor: {r: 1, g: 1, b: 1, a: 1}
+    - _ShadowColor: {r: 0.5099903, g: 0, b: 0.7830189, a: 1}
     - _SpecColor: {r: 0.5, g: 0.5, b: 0.5, a: 0.5}
     - _SpherizeNormalOrigin: {r: 0, g: 0, b: 0, a: 0}
   m_BuildTextureStacks: []
