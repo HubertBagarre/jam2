@@ -2,8 +2,11 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 using Random = UnityEngine.Random;
 
 public class GameManager : MonoBehaviour
@@ -30,6 +33,9 @@ public class GameManager : MonoBehaviour
     [SerializeField] private UIPlayerSelection playerSelectionPrefab;
     [SerializeField] private Transform playerPercentLayout;
     [SerializeField] private UIPlayerPercent playerPercentPrefab;
+    [SerializeField] private GameObject endGamePanel;
+    [SerializeField] private TextMeshProUGUI endGameText;
+    [SerializeField] private Button endGameButton;
     
     
     private List<MagicalGirlController> controllers = new ();
@@ -41,6 +47,8 @@ public class GameManager : MonoBehaviour
     {
         Application.targetFrameRate = 60;
         
+        endGamePanel.SetActive(false);
+        
         availableSpawnPoints.AddRange(spawnPoints);
         
         stocks = new Dictionary<Character, int>();
@@ -49,6 +57,15 @@ public class GameManager : MonoBehaviour
         Character.OnDeath += RespawnCharacter;
         
         MagicalGirlController.OnJoinedGame += AddController;
+        
+        endGameButton.onClick.AddListener(ReturnToMenu);
+
+        return;
+        
+        void ReturnToMenu()
+        {
+            SceneManager.LoadScene(0);
+        }
     }
     
     private void AddController(MagicalGirlController controller)
@@ -207,10 +224,17 @@ public class GameManager : MonoBehaviour
     private void RespawnCharacter(Character character)
     {
         character.transform.position = respawnPoint.position;
-        character.Respawn();
-        
         if(!stocks.ContainsKey(character)) SpawnCharacter(character);
         stocks[character]--;
-        Debug.Log("Stocks left: " + stocks[character]);
+        
+        if(stocks[character] > 0) character.Respawn();
+        
+        if(stocks.Count(stock => stock.Value > 0) > 1) return;
+        
+        var winner = stocks.FirstOrDefault(stock => stock.Value > 0).Key;
+
+        endGameText.text = $"Winner : {winner}";
+        
+        endGamePanel.SetActive(true);
     }
 }
