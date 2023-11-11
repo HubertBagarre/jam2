@@ -76,7 +76,6 @@ public class Character : MonoBehaviour
     [SerializeField] private float chargeUltimateLight = 0.1f;
     [SerializeField] private float chargeUltimateHeavy = 0.2f;
 
-    [SerializeField] private bool checkedHitsAfterAttack = false;
     [SerializeField] private int useVelocityFrames = 0;
     [SerializeField] private bool hasMoved = false;
 
@@ -162,6 +161,7 @@ public class Character : MonoBehaviour
     {
         if (CurrentFrameData) frameDataDict = CurrentFrameData.MakeDictionary();
 
+        
         normalModel.ResetHitboxes();
         transformedModel.ResetHitboxes();
 
@@ -174,8 +174,8 @@ public class Character : MonoBehaviour
         state.ResetStates();
         CumulDamage = 0;
         OnPercentChanged?.Invoke(0, 0);
+        OnGainUltimate?.Invoke(this, 0f);
 
-        checkedHitsAfterAttack = true;
         useVelocityFrames = 0;
         hasMoved = false;
     }
@@ -201,6 +201,10 @@ public class Character : MonoBehaviour
         transformedModel.Show(transformed);
 
         if (CurrentFrameData) frameDataDict = CurrentFrameData.MakeDictionary();
+        
+        frameDataDict.TryGetValue("Transformation", out var frameData);
+        
+        PlayAnimation(frameData);
     }
 
     public void Respawn()
@@ -217,11 +221,8 @@ public class Character : MonoBehaviour
         state.shieldFrames = ShieldFrames;
         frameDataDict.TryGetValue("Shield", out var frameData);
         cooldownShield = cooldownFrameReloadShield + ShieldFrames;
-        if (frameData == null) return;
-        CurrentAnimator.Play(frameData.AnimationName);
-        state.startup = frameData.Startup;
-        state.active = frameData.Active;
-        state.recovering = frameData.Recovery;
+        
+        PlayAnimation(frameData,0.05f);
 
         cooldownShield += state.startup + state.active + state.recovering;
     }
@@ -237,12 +238,7 @@ public class Character : MonoBehaviour
 
         endedPositionDashRatio /= DashFrames;
 
-
-        if (frameData == null) return;
-        CurrentAnimator.Play(frameData.AnimationName);
-        state.startup = frameData.Startup;
-        state.active = frameData.Active;
-        state.recovering = frameData.Recovery;
+        PlayAnimation(frameData,0.05f);
 
         cooldownDash += state.startup + state.active + state.recovering;
     }
@@ -317,24 +313,16 @@ public class Character : MonoBehaviour
                 return frameDataDict["SideAir"];
             }
         }
-
-        Debug.Log($"{frameData.AnimationName}");
-
+        
         rb.velocity = new Vector3(
             (frameData.StopVelocityX) ? 0 : rb.velocity.x,
             (frameData.StopVelocityY) ? 0 : rb.velocity.y,
             rb.velocity.z);
 
-        CurrentAnimator.CrossFade(frameData.AnimationName, 0.1f);
-
-        state.startup = frameData.Startup;
-        state.active = frameData.Active;
-        state.recovering = frameData.Recovery;
-
+        PlayAnimation(frameData);
+        
         lastAttackChargeUltimate = (heavy ? chargeUltimateHeavy : chargeUltimateLight);
-
-        checkedHitsAfterAttack = false;
-
+        
         return;
 
         FrameDataSo.FrameData AttackUp(bool heavyAttack)
@@ -342,6 +330,20 @@ public class Character : MonoBehaviour
             return frameDataDict[
                 state.grounded ? (heavyAttack ? "UpHeavy" : "UpLight") : (heavyAttack ? "Recovery" : "UpAir")];
         }
+    }
+
+    private void PlayAnimation(FrameDataSo.FrameData frameData,float transitionDuration = 0.1f)
+    {
+        if (frameData == null) return;
+        
+        var str = frameData.AnimationName;
+        Debug.Log($"Playing {str} data : {frameData.Startup}, {frameData.Active}, {frameData.Recovery}");
+        
+        CurrentAnimator.CrossFade(frameData.AnimationName, transitionDuration);
+
+        state.startup = frameData.Startup;
+        state.active = frameData.Active;
+        state.recovering = frameData.Recovery;
     }
 
     private void Update()
@@ -509,8 +511,14 @@ public class Character : MonoBehaviour
     private void DecreaseAttackFrames()
     {
         if (!state.IsActionPending) return;
-        if (state.startup > 0) state.startup--;
-        else if (state.active > 0)
+
+        if (state.startup > 0)
+        {
+            state.startup--;
+            return;
+        }
+        
+        if (state.active > 0)
         {
             if (!OnActionTerminated)
             {
@@ -520,32 +528,35 @@ public class Character : MonoBehaviour
             }
 
             state.active--;
+            return;
         }
-        else if (state.recovering > 0)
+        
+        if (state.recovering > 0)
         {
             if (OnActionTerminated)
             {
                 OnActionTerminated = false;
+                
+                if (CurrentBattleModel.HitThisFrame()) GainUltimate(lastAttackChargeUltimate, true);
+                
                 OnActiveEnd?.Invoke();
+                normalModel.ResetHitboxes();
+                transformedModel.ResetHitboxes();
+                
                 OnActiveEnd = null;
             }
-
-            if (!checkedHitsAfterAttack)
-                if (CurrentBattleModel.HitThisFrame())
-                    GainUltimate(lastAttackChargeUltimate, true);
-            checkedHitsAfterAttack = true;
+            
             state.recovering--;
-            normalModel.ResetHitboxes();
-            transformedModel.ResetHitboxes();
+            
+            if(state.recovering > 0) return;
+            
+            if (!OnActionTerminated)
+            {
+                OnActionTerminated = true;
+                OnRecoveringEnd?.Invoke();
+                OnRecoveringEnd = null;
+            }
         }
-
-        if (!OnActionTerminated)
-        {
-            OnActionTerminated = true;
-            OnRecoveringEnd?.Invoke();
-            OnRecoveringEnd = null;
-        }
-        state.ResetStates();
     }
 
     private void DecreaseStunDuration()
@@ -671,6 +682,7 @@ public class Character : MonoBehaviour
 
     private void HandleAnimations()
     {
+        CurrentAnimator.SetBool(animCanInput, !CannotInput);
         CurrentAnimator.SetBool(animCanInput, !CannotInput);
         CurrentAnimator.SetBool(animIsGrounded, state.grounded);
         CurrentAnimator.SetBool(animIsLedged, state.ledged);
