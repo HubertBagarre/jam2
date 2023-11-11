@@ -305,7 +305,7 @@ MonoBehaviour:
     direction: {x: 0, y: 0, z: 0}
     force: 10
     fixedForce: 0
-    damage: 0
+    damage: 10
     maxStunDuration: 10
 --- !u!1001 &5471949744422355947
 PrefabInstance:

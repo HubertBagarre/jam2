@@ -60,6 +60,8 @@ public class Character : MonoBehaviour
     private int cooldownDash = 0;
     private bool OnCooldownShield => cooldownShield > 0;
     private bool OnCooldownDash => cooldownDash > 0;
+    private float CumulDamage;
+    private bool HasLostInput = false;
 
     [Serializable]
     private class State
@@ -98,6 +100,8 @@ public class Character : MonoBehaviour
         public bool dead;
 
 
+
+
         public void ResetStates()
         {
             maxStunDuration = 0;
@@ -130,6 +134,8 @@ public class Character : MonoBehaviour
         rb.velocity = Vector3.zero;
 
         state.ResetStates();
+        CumulDamage = 0;
+        HasLostInput = false;
     }
 
     public void Respawn()
@@ -282,9 +288,21 @@ public class Character : MonoBehaviour
         DecreaseCooldownShieldFrames();
         DecreaseActivationDashFrames();
         DecreaseCooldownDashFrames();
+        StopLostInput();
         Drop();
         CheckIsGrounded();
         CheckLedging();
+    }
+
+    private void StopLostInput()
+    {
+        if (CannotInput) return;
+        if (!HasLostInput) return;
+        if (!state.Stunned && controller.InputTriggered)
+        {
+            HasLostInput = false;
+            rb.velocity = Vector3.zero;
+        }
     }
 
     private void CheckLedging()
@@ -502,7 +520,7 @@ public class Character : MonoBehaviour
     public void TakeHit(HitData data)
     {
         if (state.Invulnerable || state.dead || state.shielded) return;
-
+        CumulDamage += data.damage;
         foreach (var go in hitboxes)
         {
             go.SetActive(false);
@@ -513,8 +531,11 @@ public class Character : MonoBehaviour
         if (state.stunDuration > state.maxStunDuration) state.stunDuration = state.maxStunDuration;
 
         rb.velocity = Vector3.zero;
-        rb.AddForce(data.direction * data.force, ForceMode.Impulse);
+        rb.AddForce(data.direction * data.force * (CumulDamage * 0.01f), ForceMode.VelocityChange); //multiply by percentDamage
+        HasLostInput = true;
     }
+    
+    
 
     private void OnTriggerEnter(Collider other)
     {
