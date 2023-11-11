@@ -157,7 +157,7 @@ Material:
     - _NoiseStrength: 0.1
     - _OutlineEnabled: 1
     - _OutlineMode: 0
-    - _OutlineWidth: 11.63
+    - _OutlineWidth: 6.64
     - _OverrideShadowColor: 0
     - _QueueControl: 0
     - _QueueOffset: 50

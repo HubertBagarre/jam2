@@ -7,7 +7,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Base
+  m_Name: Blue
   m_Shader: {fileID: -6465566751694194690, guid: 2c3c6a46626419c4f8bbdeab2ec2afbd,
     type: 3}
   m_ValidKeywords:
@@ -166,7 +166,7 @@ Material:
     - Vector1_85d44c600d6c46b38d9c8065f25681ea: 0
     - Vector1_8dd6492e16194799b37d5efeb9926b89: 0.5
     - Vector1_c89cb8dc56774a9583c7b9c3a5725c4c: 0
-    - Vector1_e5b6f1488dec4326bd8bbd0e05156810: -0
+    - Vector1_e5b6f1488dec4326bd8bbd0e05156810: -0.05
     - _1st2nd_Shades_Feather: 0.0001
     - _1st_ShadeColor_Feather: 0.0001
     - _1st_ShadeColor_Step: 0.5
@@ -210,19 +210,19 @@ Material:
     - _Glossiness: 0
     - _GlossyReflections: 0
     - _HAFTONESHAPES: 0
-    - _HafltoneFadeDistance: 100
+    - _HafltoneFadeDistance: 8.8
     - _HalfToneEnabled: 0
     - _HalfToneIncludeReceivedShadow: 0
-    - _HalftoneDiffuseOffest: -0.37
+    - _HalftoneDiffuseOffest: -0.9
     - _HalftoneFadeToColor: 0
     - _HalftoneLightSizeFactor: 1
-    - _HalftoneScale: 15.4
-    - _HalftoneSize: 2
+    - _HalftoneScale: 23.42
+    - _HalftoneSize: 0.92
     - _HalftoneUseScreenSpaceUV: 1
     - _HatchingDensity: 1
     - _HatchingDiffuseOffset: 0
     - _HatchingDrawStrength: 4
-    - _HatchingEnabled: 0
+    - _HatchingEnabled: 1
     - _HatchingRotation: 0
     - _HatchingSmoothness: 0.2
     - _HighColor_Power: 0
@@ -280,7 +280,7 @@ Material:
     - _RimLight_FeatherOff: 0
     - _RimLight_InsideMask: 0.0001
     - _RimLight_Power: 0.1
-    - _RimPower: 0.619
+    - _RimPower: 0.089
     - _Rotate_EmissiveUV: 0
     - _Rotate_MatCapUV: 0
     - _Rotate_NormalMapForMatCapUV: 0
@@ -329,12 +329,12 @@ Material:
     - _2nd_ShadeColor: {r: 1, g: 1, b: 1, a: 1}
     - _AngelRing_Color: {r: 1, g: 1, b: 1, a: 1}
     - _Ap_RimLightColor: {r: 1, g: 1, b: 1, a: 1}
-    - _BaseColor: {r: 0.65882355, g: 0.64705884, b: 0.7264151, a: 1}
+    - _BaseColor: {r: 0, g: 0.5810094, b: 1, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _ColorShift: {r: 0, g: 0, b: 0, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _Emissive_Color: {r: 0, g: 0, b: 0, a: 1}
-    - _HalftoneColor: {r: 0.1529263, g: 0.08597366, b: 0.7924528, a: 1}
+    - _HalftoneColor: {r: 1, g: 1, b: 1, a: 1}
     - _HatchingColor: {r: 0, g: 0, b: 0, a: 1}
     - _HatchingScale: {r: 15, g: 1, b: 0, a: 0}
     - _HighColor: {r: 0, g: 0, b: 0, a: 1}
@@ -342,7 +342,7 @@ Material:
     - _Outline_Color: {r: 0.5, g: 0.5, b: 0.5, a: 1}
     - _RimColor: {r: 1, g: 1, b: 1, a: 1}
     - _RimLightColor: {r: 1, g: 1, b: 1, a: 1}
-    - _ShadowColor: {r: 0.38116968, g: 0, b: 0.5471698, a: 1}
+    - _ShadowColor: {r: 0, g: 0, b: 0, a: 1}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
     - _ViewShift: {r: 0, g: 0, b: 0, a: 1}
   m_BuildTextureStacks: []
