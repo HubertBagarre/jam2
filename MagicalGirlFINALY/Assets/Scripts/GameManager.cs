@@ -35,7 +35,9 @@ public class GameManager : MonoBehaviour
     private List<MagicalGirlController> controllers = new ();
     private Dictionary<MagicalGirlController, (Action unbindAction,bool isReady,int playerOptionIndex)> controllerDict = new ();
     
-    private Dictionary<Character, int> stocks;
+    private static Dictionary<Character, int> stocks;
+    
+    private List<Character> characters = new ();
     
     private void Start()
     {
@@ -173,12 +175,35 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    private void DistribUltimate(Character character,float percent)
+    {
+        List<Character> otherCharacters = stocks.Keys.Where(c => c != character).ToList();
+        if(otherCharacters.Count == 0) return;
+        float curentTotalPercent = 0;
+
+        foreach (var ch in otherCharacters)
+        {
+            curentTotalPercent = ch.GainUltimate(percent);
+        }
+        
+        if(curentTotalPercent >= 1)
+        {
+            List<Character> allCh = stocks.Keys.ToList();
+            foreach (var c in allCh)
+            {
+                character.OnGainUltimate -= DistribUltimate;
+            }
+            Debug.Log("Ultimate");
+        }
+    }
+    
     private void SetupCharacter(MagicalGirlController controller)
     {
         var character = controller.SpawnCharacter();
 
         character.ApplyPlayerOptions(playerOptions[controllerDict[controller].playerOptionIndex]);
         newPlayerSpawned?.Invoke(character.transform);
+        character.OnGainUltimate += DistribUltimate;
         
         var playerPercent = Instantiate(playerPercentPrefab,playerPercentLayout);
 

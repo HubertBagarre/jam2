@@ -55,6 +55,7 @@ public class Character : MonoBehaviour
     public static event Action<Character> OnCreated;
     public static event Action<Character> OnDeath;
     public event Action<int,int> OnPercentChanged; 
+    public event Action<Character,float> OnGainUltimate; 
 
     private Vector3 cachedVelocity;
 
@@ -68,6 +69,9 @@ public class Character : MonoBehaviour
     private bool OnCooldownShield => cooldownShield > 0;
     private bool OnCooldownDash => cooldownDash > 0;
     private float CumulDamage;
+    [SerializeField] private float chargeUltimateLight = 0.1f;
+    [SerializeField] private float chargeUltimateHeavy= 0.2f;
+
 
     [SerializeField] private int useVelocityFrames = 0;
     [SerializeField] private bool hasMoved = false;
@@ -79,6 +83,8 @@ public class Character : MonoBehaviour
     private static readonly int animVelocityX = Animator.StringToHash("velocityX");
     private static readonly int animMagnitudeX = Animator.StringToHash("magnitudeX");
     private static readonly int animVelocityY = Animator.StringToHash("velocityY");
+    
+    [SerializeField, ReadOnly ]private float CumulUltimate = 0;
 
     [Serializable]
     private class State
@@ -308,6 +314,9 @@ public class Character : MonoBehaviour
         state.startup = frameData.Startup;
         state.active = frameData.Active;
         state.recovering = frameData.Recovery;
+        
+        float valueOfUlt = (heavy ? chargeUltimateHeavy : chargeUltimateLight);
+        GainUltimate(valueOfUlt, true);
 
         return;
 
@@ -366,11 +375,6 @@ public class Character : MonoBehaviour
             ledgeHit = Physics.Raycast(transform.position + Vector3.up * 0.5f + dir * ((1 - groundCheckHeight) * 0.5f),
                 dir, out hit,
                 rayDist, platformLayer);
-
-        Debug.DrawRay(transform.position - Vector3.up * 0.5f + dir * ((1 - groundCheckHeight) * 0.5f), dir * rayDist,
-            Color.red);
-        Debug.DrawRay(transform.position + Vector3.up * 0.5f + dir * ((1 - groundCheckHeight) * 0.5f), dir * rayDist,
-            Color.red);
 
         if (ledgeHit)
         {
@@ -622,5 +626,13 @@ public class Character : MonoBehaviour
         CurrentAnimator.SetFloat(animVelocityX, Velocity.x);
         CurrentAnimator.SetFloat(animMagnitudeX, Mathf.Abs(Velocity.x));
         CurrentAnimator.SetFloat(animVelocityY, Velocity.y);
+    }
+
+    public float GainUltimate(float percent, bool isMine = false)
+    {
+        if (state.transformed) return CumulUltimate;
+        CumulUltimate += percent;
+        if (isMine) OnGainUltimate?.Invoke(this,percent);
+        return CumulUltimate;
     }
 }
