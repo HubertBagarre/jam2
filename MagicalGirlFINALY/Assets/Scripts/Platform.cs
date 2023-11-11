@@ -8,39 +8,53 @@ public class Platform : MonoBehaviour
 {
     [SerializeField] private Vector3 finalPos;
     
-    private List<Rigidbody> _colliders = new List<Rigidbody>();
+    private List<Character> _colliders = new List<Character>();
 
     public void MoveTo(float speed)
     {
         transform.DOLocalMove(finalPos, speed);
     }
 
-    private void Update()
+    private void OnCharacterCollide(Character ch)
     {
-        foreach (var t in _colliders)
+        ch.transform.position = new Vector3(ch.transform.position.x, transform.position.y + transform.lossyScale.y * 1.5f , ch.transform.position.z);
+        _colliders.Add(ch);
+        ch.OnTouchGround();
+    }
+    
+    private void OnCharacterExit(Character ch)
+    {
+        if (_colliders.Contains(ch))
         {
-            var velocity = t.velocity;
-            velocity = new Vector3(velocity.x, 0.3f, velocity.z);
-            t.velocity = velocity;
+            _colliders.Remove(ch);
+            ch.OnAirborne();
         }
     }
 
     private void OnTriggerEnter(Collider other)
     {
         if (other.transform.position.y < transform.position.y) return;
-        Rigidbody rg = other.GetComponent<Rigidbody>();
-        other.transform.position = new Vector3(other.transform.position.x, transform.position.y + transform.lossyScale.y , other.transform.position.z);
-        rg.velocity = new Vector3(rg.velocity.x, 0, rg.velocity.z);
-        _colliders.Add(rg);
+        Character ch = other.GetComponent<Character>();
+
+        OnCharacterCollide(ch);
     }
 
     private void OnTriggerExit(Collider other)
     {
-        Rigidbody rg = other.GetComponent<Rigidbody>();
-
-        if (_colliders.Contains(rg))
-        {
-            _colliders.Remove(rg);
-        }
+        Character ch = other.GetComponent<Character>();
+        OnCharacterExit(ch);
+    }
+    
+    private void OnCollisionEnter(Collision other)
+    {
+        if (other.transform.position.y < transform.position.y) return;
+        Character ch = other.gameObject.GetComponent<Character>();
+        OnCharacterCollide(ch);
+    }
+         
+    private void OnCollisionExit(Collision other)
+    {
+        Character ch = other.gameObject.GetComponent<Character>();
+        OnCharacterExit(ch);
     }
 }
