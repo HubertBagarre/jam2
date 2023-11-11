@@ -16,17 +16,17 @@ MonoBehaviour:
     type: 2}
   frameData:
   - <AnimationName>k__BackingField: UpHeavy
-    <Startup>k__BackingField: 10
-    <Active>k__BackingField: 10
-    <Recovery>k__BackingField: 10
+    <Startup>k__BackingField: 20
+    <Active>k__BackingField: 20
+    <Recovery>k__BackingField: 38
   - <AnimationName>k__BackingField: UpLight
     <Startup>k__BackingField: 20
     <Active>k__BackingField: 20
     <Recovery>k__BackingField: 38
   - <AnimationName>k__BackingField: Recovery
-    <Startup>k__BackingField: 10
-    <Active>k__BackingField: 10
-    <Recovery>k__BackingField: 10
+    <Startup>k__BackingField: 20
+    <Active>k__BackingField: 20
+    <Recovery>k__BackingField: 38
   - <AnimationName>k__BackingField: UpAir
     <Startup>k__BackingField: 10
     <Active>k__BackingField: 10
@@ -52,9 +52,9 @@ MonoBehaviour:
     <Active>k__BackingField: 10
     <Recovery>k__BackingField: 10
   - <AnimationName>k__BackingField: SideLight
-    <Startup>k__BackingField: 10
-    <Active>k__BackingField: 10
-    <Recovery>k__BackingField: 10
+    <Startup>k__BackingField: 20
+    <Active>k__BackingField: 20
+    <Recovery>k__BackingField: 38
   - <AnimationName>k__BackingField: SideAir
     <Startup>k__BackingField: 10
     <Active>k__BackingField: 10
