@@ -8,6 +8,7 @@ public class Character : MonoBehaviour
     [SerializeField] private Rigidbody rb;
     [SerializeField] private Animator animator;
     [SerializeField] private FrameDataSo frameDataSo;
+    [SerializeField] private List<GameObject> hitboxes;
     
     [Header("Settings")]
     [SerializeField] private float speed = 5f;
@@ -57,12 +58,7 @@ public class Character : MonoBehaviour
         
         OnCreated?.Invoke(this);
     }
-
-    private void MakeAnimationDict()
-    {
-        
-    }
-
+    
     public void InitStats()
     {
         jumpsLeft = maxAirJumps;
@@ -121,6 +117,27 @@ public class Character : MonoBehaviour
             {
                 frameData = AttackSide(heavy);
             }
+            
+            FrameDataSo.FrameData AttackDown(bool heavyAttack)
+            {
+                return frameDataDict[state.grounded ? (heavyAttack ? "DownHeavy" : "DownLight") : (heavyAttack ? "GroundPound" : "DownAir")];
+            }
+        
+            FrameDataSo.FrameData AttackSide(bool heavyAttack)
+            {
+                if (state.grounded)
+                {
+                    return frameDataDict[(heavyAttack ? "SideHeavy" : "SideLight")];
+                }
+
+                if (heavy)
+                {
+                    if(up < down) return AttackUp(true);
+                    return AttackDown(true);
+                }
+            
+                return frameDataDict["SideAir"];
+            }
         }
         
         Debug.Log($"{frameData.AnimationName}");
@@ -135,27 +152,6 @@ public class Character : MonoBehaviour
         FrameDataSo.FrameData AttackUp(bool heavyAttack)
         {
             return frameDataDict[state.grounded ? (heavyAttack ? "UpHeavy" : "UpLight") : (heavyAttack ? "Recovery" : "UpAir")];
-        }
-        
-        FrameDataSo.FrameData AttackDown(bool heavyAttack)
-        {
-            return frameDataDict[state.grounded ? (heavyAttack ? "DownHeavy" : "DownLight") : (heavyAttack ? "GroundPound" : "DownAir")];
-        }
-        
-        FrameDataSo.FrameData AttackSide(bool heavyAttack)
-        {
-            if (state.grounded)
-            {
-                return frameDataDict[(heavyAttack ? "SideHeavy" : "SideLight")];
-            }
-
-            if (heavy)
-            {
-                if(up < down) return AttackUp(true);
-                return AttackDown(true);
-            }
-            
-            frameData = frameDataDict["SideAir"];
         }
         
     }
@@ -229,6 +225,11 @@ public class Character : MonoBehaviour
     public void TakeHit(HitData data)
     {
         if(state.Invulnerable || state.dead) return;
+
+        foreach (var go in hitboxes)
+        {
+            go.SetActive(false);
+        }
         
         state.maxStunDuration = data.maxStunDuration;
         state.stunDuration += data.stunDuration;

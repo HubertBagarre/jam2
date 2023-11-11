@@ -10,6 +10,8 @@ public class GameManager : MonoBehaviour
     
     private void Start()
     {
+        Application.targetFrameRate = 60;
+        
         stocks = new Dictionary<Character, int>();
         
         Character.OnCreated += AddCharacterToDictionary;

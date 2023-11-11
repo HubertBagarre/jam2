@@ -5,6 +5,8 @@ using UnityEngine;
 
 public class AttackHitbox : MonoBehaviour
 {
+    public enum DirectionType { Up, Right, Forward, Custom}
+    
     [Header("Components")]
     [SerializeField] private Character own;
     
@@ -16,11 +18,18 @@ public class AttackHitbox : MonoBehaviour
         var character = other.GetComponent<Character>();
         if(character == null) return;
         if(character == own) return;
+
+        var tr = transform;
+        hitData.direction = hitData.directionType switch
+        {
+            DirectionType.Up => tr.up,
+            DirectionType.Right => tr.right,
+            DirectionType.Forward => tr.forward,
+            DirectionType.Custom => hitData.direction,
+            _ => hitData.direction
+        };
         
-        hitData.direction = transform.up;
-        
-        Debug.Log($"{transform.up}");
-        Debug.DrawRay(transform.position,transform.up * hitData.force,Color.red, 1f);
+        Debug.DrawRay(tr.position,hitData.direction * hitData.force,Color.red, 1f);
         character.TakeHit(hitData);
     }
 }
@@ -29,7 +38,8 @@ public class AttackHitbox : MonoBehaviour
 public struct HitData
 {
     public int stunDuration;
-    [HideInInspector] public Vector3 direction;
+    public AttackHitbox.DirectionType directionType;
+    public Vector3 direction;
     public float force;
     public float damage;
     public int maxStunDuration;
