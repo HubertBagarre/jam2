@@ -202,6 +202,7 @@ public class GameManager : MonoBehaviour
         playerPercent.SetupStocks(stocksPerCharacter);
         
         character.OnPercentChanged += UpdatePercent;
+        character.OnTransformationChargeUpdated += playerPercent.UpdateTransformationCharge;
         Character.OnDeath += DecreaseStocks;
         
         return;

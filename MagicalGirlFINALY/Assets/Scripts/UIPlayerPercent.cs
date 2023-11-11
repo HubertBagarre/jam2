@@ -11,6 +11,7 @@ public class UIPlayerPercent : MonoBehaviour
     [SerializeField] private GameObject stockObj;
     [SerializeField] private Transform stockLayout;
     public List<GameObject> stocksObjs = new List<GameObject>();
+    [SerializeField] private Image transformationChargeImage;
     
     public void SetupStocks(int amount)
     {
@@ -28,5 +29,10 @@ public class UIPlayerPercent : MonoBehaviour
         var stock = stocksObjs[0];
         stock.SetActive(false);
         stocksObjs.Remove(stock);
+    }
+
+    public void UpdateTransformationCharge(float value)
+    {
+        transformationChargeImage.fillAmount = value;
     }
 }

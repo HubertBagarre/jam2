@@ -54,7 +54,8 @@ public class Character : MonoBehaviour
 
     public static event Action<Character> OnCreated;
     public static event Action<Character> OnDeath;
-    public event Action<int,int> OnPercentChanged; 
+    public event Action<int,int> OnPercentChanged;
+    public event Action<float> OnTransformationChargeUpdated;
 
     private Vector3 cachedVelocity;
 
