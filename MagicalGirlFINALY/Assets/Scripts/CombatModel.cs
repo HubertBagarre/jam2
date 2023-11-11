@@ -6,7 +6,8 @@ public class CombatModel : MonoBehaviour
 {
     [field: SerializeField] public Animator Animator { get; private set; }
     [field: SerializeField] public FrameDataSo FrameData { get; private set; }
-    
+
+    [SerializeField] private List<GameObject> objectsToShow;
     [SerializeField] private List<AttackHitbox> hitboxes = new ();
 
     public void ResetHitboxes()
@@ -26,7 +27,10 @@ public class CombatModel : MonoBehaviour
     
     public void Show(bool value)
     {
-        Animator.gameObject.SetActive(value);
+        foreach (var modelChildGo in objectsToShow)
+        {
+            modelChildGo.SetActive(value);
+        }
     }
     
     

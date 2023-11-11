@@ -175,11 +175,12 @@ public class Character : MonoBehaviour
 
     public void ApplyPlayerOptions(GameManager.PlayerOptions options)
     {
-        var model = options.NormalModel;
-        normalModel = Instantiate(model, ModelParent);
-        model = options.TransformedModel;
-        transformedModel = Instantiate(model, ModelParent);
-
+        normalModel = Instantiate(options.NormalModel, ModelParent);
+        normalModel.gameObject.name = "NormalModel";
+        
+        transformedModel = Instantiate(options.TransformedModel, ModelParent);
+        transformedModel.gameObject.name = "TransformedModel";
+        
         Transformation(false);
     }
 
@@ -196,18 +197,41 @@ public class Character : MonoBehaviour
         Transformation(false);
     }
 
+    [ContextMenu("Transformation (true)")]
+    private void TransformationTrue()
+    {
+        Transformation(true);
+    }
+
+    [ContextMenu("Transformation (false)")]
+    private void TransformationFalse()
+    {
+        Transformation(false);
+    }
+    
+    
+    
     public void Transformation(bool transformed)
     {
+        Debug.Log($"Transformation : {transformed}");
+        
         if (transformed) state.transformedFrames = transformationFrames;
         normalModel.Show(!transformed);
         transformedModel.Show(transformed);
 
         if (CurrentFrameData) frameDataDict = CurrentFrameData.MakeDictionary();
+        // if (transformed) transformedModel.gameObject.SetActive(true);
+        // else normalModel.gameObject.SetActive(true);
+        // CurrentAnimator.CrossFade("Transformation", 0.1f);
 
-        //TODO: check if transformed if yes you decrease by elapsed time
-        if (transformed)
+        StartCoroutine(PlayAnimationDelayed());
+        
+        return;
+        IEnumerator PlayAnimationDelayed()
         {
-            StartCoroutine(decreaseUltimate());
+            yield return new WaitForEndOfFrame();
+            normalModel.Animator.CrossFade("Transformation", 0.1f);
+            transformedModel.Animator.CrossFade("Transformation", 0.1f);
         }
     }
 
