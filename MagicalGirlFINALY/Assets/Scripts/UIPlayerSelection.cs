@@ -7,6 +7,7 @@ using UnityEngine.UI;
 public class UIPlayerSelection : MonoBehaviour
 {
     [field: SerializeField] public Image Image { get; private set; }
+    [field: SerializeField] public TextMeshProUGUI NameText { get; private set; }
     [field: SerializeField] public TextMeshProUGUI Text { get; private set; }
     
     

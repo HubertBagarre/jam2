@@ -7,26 +7,37 @@ using UnityEngine.Serialization;
 
 public class Character : MonoBehaviour
 {
-    [Header("Components")] [SerializeField]
-    private Rigidbody rb;
-
-    [SerializeField] private Animator animator;
-    [SerializeField] private FrameDataSo frameDataSo;
+    [Header("Components")]
+    [SerializeField] private Rigidbody rb;
+    [field: SerializeField] public Transform ModelParent { get; private set; }
+    
+    private CombatModel normalModel;
+    private CombatModel transformedModel;
+    private Animator CurrentAnimator => state.transformed ? transformedModel.Animator : normalModel.Animator;
+    private FrameDataSo CurrentFrameData => state.transformed ? transformedModel.FrameData : normalModel.FrameData;
     [SerializeField] private List<GameObject> hitboxes;
     [SerializeField, ReadOnly] private float gravityMultiplier = 1f;
 
-    [Header("Settings")] [SerializeField] private float runSpeed = 5f;
+    [Header("Settings")]
+    [SerializeField] private float runSpeed = 5f;
     [SerializeField] private float ledgeGravity = 0.3f;
+    [Space]
     [SerializeField] private int ledgeJumpFrames = 30;
     [SerializeField] private int ledgeFrames = 10;
     [SerializeField] private int groundFrames = 10;
     [SerializeField] private int dropFrames = 10;
+    [SerializeField] private int ShieldFrames = 10;
+    [SerializeField] private int DashFrames = 10;
+    [SerializeField] private int cooldownFrameReloadShield = 10;
+    [SerializeField] private int cooldownFrameReloadDash = 10;
+    [SerializeField] private int transformationFrames = 60;
 
     [Space] [SerializeField] private float groundRange = 0.1f;
     [SerializeField] private float groundCheckHeight = 0.1f;
     [SerializeField] private LayerMask platformLayer;
     [SerializeField] private LayerMask platformLayerDrop;
     [Space] [SerializeField] private float jumpForce = 5f;
+    [Space] [SerializeField] private float dashForce = 5f;
     [SerializeField] private int maxAirJumps = 2;
     [SerializeField] private bool ledgeJumpIsAirJump = true;
 
@@ -37,11 +48,13 @@ public class Character : MonoBehaviour
     //states
     [SerializeField] private State state = new();
     private bool CannotInput => !state.CanInput || !hasController;
+    private Vector3 endedPositionDashRatio;
 
     public Vector3 Velocity => rb.velocity;
 
     public static event Action<Character> OnCreated;
     public static event Action<Character> OnDeath;
+    public event Action<int,int> OnPercentChanged; 
 
     private Vector3 cachedVelocity;
 
@@ -50,12 +63,32 @@ public class Character : MonoBehaviour
     private Dictionary<string, FrameDataSo.FrameData> frameDataDict;
     private bool OldTurnedLeft = true;
 
+    private int cooldownShield = 0;
+    private int cooldownDash = 0;
+    private bool OnCooldownShield => cooldownShield > 0;
+    private bool OnCooldownDash => cooldownDash > 0;
+    private float CumulDamage;
+
+    [SerializeField] private int useVelocityFrames = 0;
+    [SerializeField] private bool hasMoved = false;
+    
+    private static readonly int animCanInput = Animator.StringToHash("canInput");
+    private static readonly int animIsGrounded = Animator.StringToHash("isGrounded");
+    private static readonly int animIsLedged = Animator.StringToHash("isLedged");
+    private static readonly int animIsDropping = Animator.StringToHash("isDropping");
+    private static readonly int animVelocityX = Animator.StringToHash("velocityX");
+    private static readonly int animMagnitudeX = Animator.StringToHash("magnitudeX");
+    private static readonly int animVelocityY = Animator.StringToHash("velocityY");
+
     [Serializable]
     private class State
     {
+        public bool transformed => transformedFrames > 0;
+        public int transformedFrames;
+        
         public bool grounded;
         public int groundFrames;
-        
+
         public bool dropping => dropFrames > 0;
         public int dropFrames;
 
@@ -76,12 +109,20 @@ public class Character : MonoBehaviour
         public bool ledged => ledgeFrames > 0;
         public int ledgeFrames;
 
+        public bool shielded => shieldFrames > 0;
+        public int shieldFrames;
+
+        public bool dashed => dashFrames > 0;
+        public int dashFrames;
+
         public bool CanInput => !Stunned && !IsActionPending && !dead;
 
         public bool dead;
-
+        
         public void ResetStates()
         {
+            transformedFrames = 0;
+            
             maxStunDuration = 0;
             stunDuration = 0;
 
@@ -95,16 +136,18 @@ public class Character : MonoBehaviour
 
     private void Start()
     {
-        if (frameDataSo)
-            frameDataDict = frameDataSo.MakeDictionary();
-
         InitStats();
 
         OnCreated?.Invoke(this);
     }
-
+    
     public void InitStats()
     {
+        if (CurrentFrameData) frameDataDict = CurrentFrameData.MakeDictionary();
+        
+        normalModel.ResetHitboxes();
+        transformedModel.ResetHitboxes();
+        
         state.grounded = false;
         airJumpsLeft = maxAirJumps;
 
@@ -112,6 +155,30 @@ public class Character : MonoBehaviour
         rb.velocity = Vector3.zero;
 
         state.ResetStates();
+        CumulDamage = 0;
+        OnPercentChanged?.Invoke(0,0);
+
+        useVelocityFrames = 0;
+        hasMoved = false;
+    }
+
+    public void ApplyPlayerOptions(GameManager.PlayerOptions options)
+    {
+        var model = options.NormalModel;
+        normalModel = Instantiate(model, ModelParent);
+        model = options.TransformedModel;
+        transformedModel = Instantiate(model, ModelParent);
+        
+        Transform(false);
+    }
+
+    public void Transform(bool transformed)
+    {
+        if(transformed) state.transformedFrames = transformationFrames;
+        normalModel.Show(!transformed);
+        transformedModel.Show(transformed);
+        
+        if (CurrentFrameData) frameDataDict = CurrentFrameData.MakeDictionary();
     }
 
     public void Respawn()
@@ -119,6 +186,43 @@ public class Character : MonoBehaviour
         InitStats();
         state.dead = false;
         state.invulFrames = (int)(respawnInvulSeconds * 60);
+    }
+
+    public void Shield()
+    {
+        Debug.Log("Shield");
+        if (CannotInput || OnCooldownShield) return;
+        state.shieldFrames = ShieldFrames;
+        frameDataDict.TryGetValue("Shield", out var frameData);
+        cooldownShield = cooldownFrameReloadShield + ShieldFrames;
+        if (frameData == null) return;
+        CurrentAnimator.Play(frameData.AnimationName);
+        state.startup = frameData.Startup;
+        state.active = frameData.Active;
+        state.recovering = frameData.Recovery;
+
+        cooldownShield += state.startup + state.active + state.recovering;
+    }
+
+    public void Dash()
+    {
+        if (CannotInput || OnCooldownDash) return;
+        state.dashFrames = DashFrames;
+        frameDataDict.TryGetValue("Dash", out var frameData);
+        cooldownDash = cooldownFrameReloadDash + DashFrames;
+        Vector2 dir = controller.StickInput;
+        endedPositionDashRatio = new Vector3(dir.x, dir.y, 0) * dashForce;
+
+        endedPositionDashRatio /= DashFrames;
+
+
+        if (frameData == null) return;
+        CurrentAnimator.Play(frameData.AnimationName);
+        state.startup = frameData.Startup;
+        state.active = frameData.Active;
+        state.recovering = frameData.Recovery;
+
+        cooldownDash += state.startup + state.active + state.recovering;
     }
 
     public void Jump()
@@ -199,7 +303,8 @@ public class Character : MonoBehaviour
             (frameData.StopVelocityY) ? 0 : rb.velocity.y,
             rb.velocity.z);
 
-        animator.Play(frameData.AnimationName);
+        CurrentAnimator.CrossFade(frameData.AnimationName, 0.1f);
+
         state.startup = frameData.Startup;
         state.active = frameData.Active;
         state.recovering = frameData.Recovery;
@@ -215,6 +320,7 @@ public class Character : MonoBehaviour
 
     private void Update()
     {
+        DecreaseTransformedFrames();
         DecreaseStunDuration();
         DecreaseAttackFrames();
         DecreaseInvulFrames();
@@ -222,11 +328,25 @@ public class Character : MonoBehaviour
         DecreaseLedgeFrames();
         DecreaseGroundFrames();
         DecreaseDropFrames();
+        DecreaseActivationShieldFrames();
+        DecreaseCooldownShieldFrames();
+        DecreaseActivationDashFrames();
+        DecreaseCooldownDashFrames();
         Drop();
         CheckIsGrounded();
         CheckLedging();
     }
-
+    
+    private void DecreaseTransformedFrames()
+    {
+        if (!state.transformed) return;
+        state.transformedFrames--;
+        
+        if(transformationFrames > 0) return;
+        
+        Transform(false);
+    }
+    
     private void CheckLedging()
     {
         if (CannotInput || state.grounded) return;
@@ -270,7 +390,7 @@ public class Character : MonoBehaviour
     {
         if (CannotInput) return;
 
-        if (controller.StickInput.y < 0) state.dropFrames = dropFrames;
+        if (controller.StickInput.y < -0.5f) state.dropFrames = dropFrames;
     }
 
     private void CheckIsGrounded()
@@ -328,6 +448,33 @@ public class Character : MonoBehaviour
         state.dropFrames--;
     }
 
+
+    private void DecreaseActivationShieldFrames()
+    {
+        if (!state.shielded) return;
+        state.shieldFrames--;
+    }
+
+    private void DecreaseCooldownShieldFrames()
+    {
+        if (!OnCooldownShield) return;
+        cooldownShield--;
+    }
+
+    private void DecreaseActivationDashFrames()
+    {
+        if (!state.dashed) return;
+        state.dashFrames--;
+        if (!Physics.Raycast(transform.position, endedPositionDashRatio, out var hit, 1f))
+            rb.MovePosition(transform.position + endedPositionDashRatio);
+    }
+
+    private void DecreaseCooldownDashFrames()
+    {
+        if (!OnCooldownDash) return;
+        cooldownDash--;
+    }
+
     private void DecreaseInvulFrames()
     {
         if (!state.Invulnerable) return;
@@ -352,6 +499,7 @@ public class Character : MonoBehaviour
     {
         UpdateMove();
         ApplyGravity();
+        HandleAnimations();
     }
 
     private void ApplyGravity()
@@ -361,8 +509,17 @@ public class Character : MonoBehaviour
 
     private void UpdateMove()
     {
+        if(useVelocityFrames > 0) useVelocityFrames--;
+        
         if (CannotInput) return;
+        
         if (state.ledged || state.ledgeJumped) return;
+
+        
+        if(controller.StickInput.x != 0)hasMoved = true;
+        
+        if(useVelocityFrames > 0 && !hasMoved) return;
+        
 
         cachedVelocity = rb.velocity;
         cachedVelocity.x = controller.StickInput.x * runSpeed;
@@ -376,6 +533,7 @@ public class Character : MonoBehaviour
         {
             eulerAngle.y = 90;
         }
+
         transform.eulerAngles = eulerAngle;
     }
 
@@ -412,8 +570,10 @@ public class Character : MonoBehaviour
 
     public void TakeHit(HitData data)
     {
-        if (state.Invulnerable || state.dead) return;
-
+        if (state.Invulnerable || state.dead || state.shielded) return;
+        var prev = (int)CumulDamage;
+        CumulDamage += data.damage;
+        OnPercentChanged?.Invoke(prev,(int)CumulDamage);
         foreach (var go in hitboxes)
         {
             go.SetActive(false);
@@ -424,8 +584,21 @@ public class Character : MonoBehaviour
         if (state.stunDuration > state.maxStunDuration) state.stunDuration = state.maxStunDuration;
 
         rb.velocity = Vector3.zero;
-        rb.AddForce(data.direction * data.force, ForceMode.Impulse);
+        
+        CurrentAnimator.Play("Hit");
+        normalModel.ResetHitboxes();
+        transformedModel.ResetHitboxes();
+
+        var force = data.force;
+        if(!data.fixedForce) force *= CumulDamage * 0.01f;
+        
+        rb.AddForce(data.direction * force, ForceMode.VelocityChange); //multiply by percentDamage
+        
+        useVelocityFrames = data.useVelocityDuration;
+        hasMoved = false;
     }
+    
+    
 
     private void OnTriggerEnter(Collider other)
     {
@@ -438,5 +611,16 @@ public class Character : MonoBehaviour
             default:
                 break;
         }
+    }
+
+    private void HandleAnimations()
+    {
+        CurrentAnimator.SetBool(animCanInput, !CannotInput);
+        CurrentAnimator.SetBool(animIsGrounded, state.grounded);
+        CurrentAnimator.SetBool(animIsLedged, state.ledged);
+        CurrentAnimator.SetBool(animIsDropping, state.dropping);
+        CurrentAnimator.SetFloat(animVelocityX, Velocity.x);
+        CurrentAnimator.SetFloat(animMagnitudeX, Mathf.Abs(Velocity.x));
+        CurrentAnimator.SetFloat(animVelocityY, Velocity.y);
     }
 }

@@ -18,10 +18,13 @@ public class MagicalGirlController : MonoBehaviour
     private Character character;
     private bool hasCharacter;
     
+    public bool InputTriggered => StickInput.x > 0 || StickInput.x < 0 || StickInput.y > 0 || StickInput.y < 0 || JumpPressed || LightAttackPressed || HeavyAttackPressed || DodgePressed || ShieldOrDashPressed;
+    
     [field:SerializeField] public bool JumpPressed { get; private set; }
     [field:SerializeField] public bool LightAttackPressed { get; private set; }
     [field:SerializeField] public bool HeavyAttackPressed { get; private set; }
     [field:SerializeField] public bool DodgePressed { get; private set; }
+    [field:SerializeField] public bool ShieldOrDashPressed { get; private set; }
     
     public static event Action<MagicalGirlController> OnJoinedGame; 
     
@@ -30,17 +33,16 @@ public class MagicalGirlController : MonoBehaviour
         Debug.Log("Joined Game!");
         
         OnJoinedGame?.Invoke(this);
-        
-        
-        //input.enabled = false;
     }
-
-    public void SpawnCharacter()
+    
+    public Character SpawnCharacter()
     {
         character = Instantiate(characterPrefab,Vector3.zero, spawnRotation);
         hasCharacter = true;
         character.controller = this;
         character.hasController = true;
+
+        return character;
     }
 
     public void Move(InputAction.CallbackContext context)
@@ -88,5 +90,18 @@ public class MagicalGirlController : MonoBehaviour
     {
         if(context.started) DodgePressed = true;
         if(context.canceled) DodgePressed = false;
+    }
+
+    public void ShieldOrDash(InputAction.CallbackContext context)
+    {
+        if(!hasCharacter) return;
+        
+        if (context.started)
+        {
+            ShieldOrDashPressed = true;
+            if (StickInput is { x: 0, y: 0 }) character.Shield();
+            else character.Dash();
+        }
+        if(context.canceled) ShieldOrDashPressed = false;
     }
 }
