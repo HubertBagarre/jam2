@@ -21,6 +21,8 @@ public class Character : MonoBehaviour
     [SerializeField] private int ledgeFrames = 10;
     [SerializeField] private int groundFrames = 10;
     [SerializeField] private int dropFrames = 10;
+    [SerializeField] private int ShieldFrames = 10;
+    [SerializeField] private int cooldownFrameReloadShield = 10;
 
     [Space] [SerializeField] private float groundRange = 0.1f;
     [SerializeField] private float groundCheckHeight = 0.1f;
@@ -49,6 +51,9 @@ public class Character : MonoBehaviour
     public bool hasController = false;
     private Dictionary<string, FrameDataSo.FrameData> frameDataDict;
     private bool OldTurnedLeft = true;
+    
+    private int cooldownShield = 0;
+    private bool OnCooldownShield => cooldownShield > 0;
 
     [Serializable]
     private class State
@@ -75,6 +80,9 @@ public class Character : MonoBehaviour
 
         public bool ledged => ledgeFrames > 0;
         public int ledgeFrames;
+        
+        public bool shielded => shieldFrames > 0;
+        public int shieldFrames;
 
         public bool CanInput => !Stunned && !IsActionPending && !dead;
 
@@ -119,6 +127,22 @@ public class Character : MonoBehaviour
         InitStats();
         state.dead = false;
         state.invulFrames = (int)(respawnInvulSeconds * 60);
+    }
+    
+    public void Shield()
+    {
+        if (CannotInput || OnCooldownShield) return;
+        state.shieldFrames = ShieldFrames;
+        frameDataDict.TryGetValue("Shield", out var frameData);
+        cooldownShield = cooldownFrameReloadShield + ShieldFrames;
+        if (frameData == null) return;
+        animator.Play(frameData.AnimationName);
+        state.startup = frameData.Startup;
+        state.active = frameData.Active;
+        state.recovering = frameData.Recovery;
+        
+        cooldownShield += state.startup + state.active + state.recovering;
+        
     }
 
     public void Jump()
@@ -222,6 +246,8 @@ public class Character : MonoBehaviour
         DecreaseLedgeFrames();
         DecreaseGroundFrames();
         DecreaseDropFrames();
+        DecreaseActivationShieldFrames();
+        DecreaseCooldownShieldFrames();
         Drop();
         CheckIsGrounded();
         CheckLedging();
@@ -327,6 +353,19 @@ public class Character : MonoBehaviour
         if (!state.dropping) return;
         state.dropFrames--;
     }
+    
+    
+    private void DecreaseActivationShieldFrames()
+    {
+        if (!state.shielded) return;
+        state.shieldFrames--;
+    }
+    
+    private void DecreaseCooldownShieldFrames()
+    {
+        if (!OnCooldownShield) return;
+        cooldownShield--;
+    }
 
     private void DecreaseInvulFrames()
     {
@@ -412,7 +451,7 @@ public class Character : MonoBehaviour
 
     public void TakeHit(HitData data)
     {
-        if (state.Invulnerable || state.dead) return;
+        if (state.Invulnerable || state.dead || state.shielded) return;
 
         foreach (var go in hitboxes)
         {

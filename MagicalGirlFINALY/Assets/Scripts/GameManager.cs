@@ -107,6 +107,9 @@ public class GameManager : MonoBehaviour
         
         controller.Input.actions["Dodge"].started += controller.Dodge;
         controller.Input.actions["Dodge"].canceled += controller.Dodge;
+        
+        controller.Input.actions["Shield"].started += controller.Shield;
+        controller.Input.actions["Shield"].canceled += controller.Shield;
     }
 
     private void StartGame()
