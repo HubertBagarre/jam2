@@ -43,12 +43,14 @@ public class MagicalGirlController : MonoBehaviour
         
     }
 
-    public void SpawnCharacter()
+    public Character SpawnCharacter()
     {
         character = Instantiate(characterPrefab,Vector3.zero, spawnRotation);
         hasCharacter = true;
         character.controller = this;
         character.hasController = true;
+
+        return character;
     }
 
     public void Move(InputAction.CallbackContext context)

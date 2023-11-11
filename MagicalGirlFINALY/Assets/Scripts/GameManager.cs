@@ -17,6 +17,8 @@ public class GameManager : MonoBehaviour
     [Header("Components")]
     [SerializeField] private Transform playerSelectionLayout;
     [SerializeField] private UIPlayerSelection playerSelectionPrefab;
+    [SerializeField] private Transform playerPercentLayout;
+    [SerializeField] private UIPlayerPercent playerPercentPrefab;
     
     
     private List<MagicalGirlController> controllers = new ();
@@ -110,6 +112,8 @@ public class GameManager : MonoBehaviour
         
         controller.Input.actions["Shield"].started += controller.ShieldOrDash;
         controller.Input.actions["Shield"].canceled += controller.ShieldOrDash;
+        
+        
     }
 
     private void StartGame()
@@ -129,6 +133,8 @@ public class GameManager : MonoBehaviour
         {
             BindControlsForGame(controller);
             controller.SpawnCharacter();
+            
+            var playerPercent = Instantiate(playerPercentPrefab,playerPercentLayout);
         }
     }
     
