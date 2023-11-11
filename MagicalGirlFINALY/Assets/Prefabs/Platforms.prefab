@@ -110,7 +110,7 @@ GameObject:
   - component: {fileID: 982974298380805341}
   - component: {fileID: 2902758154847458305}
   - component: {fileID: 2259165088206111332}
-  m_Layer: 8
+  m_Layer: 10
   m_Name: Platform1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -207,8 +207,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ba20773e9358fbf4bbb2f88f61773114, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  <isTransparent>k__BackingField: 1
-  finalPos: {x: -1.5, y: 4.5, z: -7.5}
+  finalPos: {x: -1.5, y: 2, z: -7.5}
 --- !u!1 &6346963149865559440
 GameObject:
   m_ObjectHideFlags: 0
@@ -222,7 +221,7 @@ GameObject:
   - component: {fileID: 4903742066850150296}
   - component: {fileID: 3920295394679998389}
   - component: {fileID: 4952796644817799048}
-  m_Layer: 8
+  m_Layer: 10
   m_Name: Platform2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -319,8 +318,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ba20773e9358fbf4bbb2f88f61773114, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  <isTransparent>k__BackingField: 1
-  finalPos: {x: -11, y: 4.5, z: -7.5}
+  finalPos: {x: -11, y: 2, z: -7.5}
 --- !u!1 &6971492999056365585
 GameObject:
   m_ObjectHideFlags: 0
@@ -530,7 +528,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ba20773e9358fbf4bbb2f88f61773114, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  <isTransparent>k__BackingField: 0
   finalPos: {x: 0, y: 0, z: 0}
 --- !u!1 &8409619449582552951
 GameObject:

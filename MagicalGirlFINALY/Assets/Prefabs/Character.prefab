@@ -134,11 +134,31 @@ MonoBehaviour:
   frameDataSo: {fileID: 11400000, guid: b96639d5d7cbb44409c2713c8c31b838, type: 2}
   hitboxes: []
   speed: 5
+  groundRange: 0.1
+  groundCheckHeight: 0.1
+  platformLayer:
+    serializedVersion: 2
+    m_Bits: 1280
+  platformLayerDrop:
+    serializedVersion: 2
+    m_Bits: 256
   jumpForce: 9
   maxAirJumps: 2
   ledgeJumpIsAirJump: 1
+  jumpsLeft: 0
   respawnInvulSeconds: 3
+  state:
+    grounded: 0
+    dropping: 0
+    startup: 0
+    active: 0
+    recovering: 0
+    maxStunDuration: 0
+    stunDuration: 0
+    invulFrames: 0
+    dead: 0
   controller: {fileID: 0}
+  hasController: 0
 --- !u!1 &7537521638968687182
 GameObject:
   m_ObjectHideFlags: 0

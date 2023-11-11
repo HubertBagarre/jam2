@@ -31,6 +31,7 @@ public class MagicalGirlController : MonoBehaviour
         character = Instantiate(characterPrefab,Vector3.zero, spawnRotation);
         hasCharacter = true;
         character.controller = this;
+        character.hasController = true;
     }
 
     public void Move(InputAction.CallbackContext context)

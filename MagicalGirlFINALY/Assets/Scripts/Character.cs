@@ -12,21 +12,24 @@ public class Character : MonoBehaviour
     
     [Header("Settings")]
     [SerializeField] private float speed = 5f;
-
+    
+    [Space]
     [SerializeField] private float groundRange = 0.1f;
+    [SerializeField] private float groundCheckHeight = 0.1f;
+    [SerializeField] private LayerMask platformLayer;
+    [SerializeField] private LayerMask platformLayerDrop;
     [Space]
     [SerializeField] private float jumpForce = 5f;
     [SerializeField] private int maxAirJumps = 2;
     [SerializeField] private bool ledgeJumpIsAirJump = true;
     
-    
-    
-    private int jumpsLeft;
+    [SerializeField] private int jumpsLeft;
     
     [SerializeField] private float respawnInvulSeconds= 3;
     
     //states
     [SerializeField] private State state = new ();
+    private bool CannotInput => !state.CanInput || !hasController;
     
     public Vector3 Velocity => rb.velocity;
 
@@ -36,12 +39,14 @@ public class Character : MonoBehaviour
     private Vector3 cachedVelocity;
     
     public MagicalGirlController controller;
+    public bool hasController = false;
     private Dictionary<string,FrameDataSo.FrameData> frameDataDict;
     
     [Serializable]
     private class State
     {
         public bool grounded;
+        public bool dropping;
         
         public bool IsAttacking => totalFrames > 0;
         public int totalFrames => startup + active + recovering;
@@ -93,7 +98,7 @@ public class Character : MonoBehaviour
     
     public void Jump()
     {
-        if(!state.CanInput) return;
+        if(CannotInput) return;
         
         if(jumpsLeft <= 0) return;
         
@@ -107,7 +112,7 @@ public class Character : MonoBehaviour
 
     public void Attack(bool heavy = false)
     {
-        if(!state.CanInput) return;
+        if(CannotInput) return;
         
         rb.velocity = Vector3.zero; //TODO do better
         
@@ -170,27 +175,44 @@ public class Character : MonoBehaviour
         DecreaseStunDuration();
         DecreaseAttackFrames();
         DecreaseInvulFrames();
+        Drop();
         CheckIsGrounded();
+    }
+
+    private void Drop()
+    {
+        state.dropping = false;
+        
+        if(CannotInput) return;
+        
+        // TODO probably count frames
+        
+        if(controller.StickInput.y < 0) state.dropping = true;
     }
 
     private void CheckIsGrounded()
     {
         if(state.dead || state.Stunned) return;
 
-        var height = 0.5f;
-        var groundHit = Physics.Raycast(transform.position - Vector3.right * 0.5f - Vector3.up * height, Vector3.down, out var hit,
-            groundRange+height);
+        var mask = state.dropping ? platformLayerDrop : platformLayer;
+        
+        var rayDist = groundRange+groundCheckHeight;
+        
+        var groundHit = Physics.Raycast(transform.position - Vector3.right * 0.5f - Vector3.up * (1-groundCheckHeight), Vector3.down, out var hit,
+            rayDist,mask);
         if (!groundHit)
-            groundHit = Physics.Raycast(transform.position + Vector3.right * 0.5f - Vector3.up * height, Vector3.down, out hit,
-                groundRange+height);
-        Debug.DrawRay(transform.position - Vector3.right * 0.5f - Vector3.up, Vector3.down * groundRange, Color.red);
-        Debug.DrawRay(transform.position + Vector3.right * 0.5f - Vector3.up, Vector3.down * groundRange, Color.red);
+            groundHit = Physics.Raycast(transform.position + Vector3.right * 0.5f - Vector3.up * (1-groundCheckHeight), Vector3.down, out hit,
+                rayDist,mask);
+        
+        Debug.DrawRay(transform.position - Vector3.right * 0.5f - Vector3.up * (1-groundCheckHeight), Vector3.down * rayDist, Color.red);
+        Debug.DrawRay(transform.position + Vector3.right * 0.5f - Vector3.up * (1-groundCheckHeight), Vector3.down * rayDist, Color.red);
+        
         if(Velocity.y > 0) groundHit = false;
         if(groundHit)
         {
-            if (hit.collider.gameObject.layer == 8 && !state.grounded)
+            if (!state.grounded)
             {
-                OnTouchGround();
+                OnTouchGround(hit.point);
             }
         }
         else if(state.grounded)
@@ -228,7 +250,7 @@ public class Character : MonoBehaviour
 
     private void UpdateMove()
     {
-        if(!state.CanInput) return;
+        if(CannotInput) return;
         if(controller == null) return;
 
         cachedVelocity = rb.velocity;
@@ -244,12 +266,17 @@ public class Character : MonoBehaviour
         OnDeath?.Invoke(this);
     }
     
-    public void OnTouchGround()
+    public void OnTouchGround(Vector3 groundPos)
     {
         jumpsLeft = maxAirJumps;
         state.grounded = true;
         rb.useGravity = false;
-        rb.velocity = new Vector3(rb.velocity.x, 0, rb.velocity.z);
+        
+        var inverseVel = Velocity;
+        inverseVel.y *= -1;
+        rb.AddForce(inverseVel, ForceMode.VelocityChange);
+
+        var pos = transform.position;
     }
     
     public void OnAirborne()
