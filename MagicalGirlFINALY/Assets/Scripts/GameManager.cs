@@ -112,8 +112,6 @@ public class GameManager : MonoBehaviour
         
         controller.Input.actions["Shield"].started += controller.ShieldOrDash;
         controller.Input.actions["Shield"].canceled += controller.ShieldOrDash;
-        
-        
     }
 
     private void StartGame()
@@ -132,9 +130,24 @@ public class GameManager : MonoBehaviour
         foreach (var controller in controllers)
         {
             BindControlsForGame(controller);
-            controller.SpawnCharacter();
             
-            var playerPercent = Instantiate(playerPercentPrefab,playerPercentLayout);
+            SetupCharacter(controller);
+        }
+    }
+
+    private void SetupCharacter(MagicalGirlController controller)
+    {
+        var character = controller.SpawnCharacter();
+        
+        var playerPercent = Instantiate(playerPercentPrefab,playerPercentLayout);
+
+        character.OnPercentChanged += UpdatePercent;
+        
+        return;
+        
+        void UpdatePercent(int previous,int percent)
+        {
+            playerPercent.PercentText.text = $"{percent}%"; //TODO anim stylé
         }
     }
     

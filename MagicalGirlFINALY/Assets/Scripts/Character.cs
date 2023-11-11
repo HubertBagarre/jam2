@@ -48,6 +48,7 @@ public class Character : MonoBehaviour
 
     public static event Action<Character> OnCreated;
     public static event Action<Character> OnDeath;
+    public event Action<int,int> OnPercentChanged; 
 
     private Vector3 cachedVelocity;
 
@@ -106,10 +107,7 @@ public class Character : MonoBehaviour
         public bool CanInput => !Stunned && !IsActionPending && !dead;
 
         public bool dead;
-
-
-
-
+        
         public void ResetStates()
         {
             maxStunDuration = 0;
@@ -143,6 +141,7 @@ public class Character : MonoBehaviour
 
         state.ResetStates();
         CumulDamage = 0;
+        OnPercentChanged?.Invoke(0,0);
         HasLostInput = false;
     }
 
@@ -528,7 +527,9 @@ public class Character : MonoBehaviour
     public void TakeHit(HitData data)
     {
         if (state.Invulnerable || state.dead || state.shielded) return;
+        var prev = (int)CumulDamage;
         CumulDamage += data.damage;
+        OnPercentChanged?.Invoke(prev,(int)CumulDamage);
         foreach (var go in hitboxes)
         {
             go.SetActive(false);
