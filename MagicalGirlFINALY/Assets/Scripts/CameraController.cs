@@ -1,26 +1,25 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using DG.Tweening;
 using UnityEngine;
 
 public class CameraController : MonoBehaviour
 {
+    public static event Action<float> OnDezoomEvent;
+    
 [SerializeField] private Camera _camera;
-[SerializeField] private float maxSizeCam = 12f;
-[SerializeField] private float speedDezoom = 0.1f;
+[SerializeField] private float maxPosCam = 12f;
 [SerializeField] private float delayDezoom = 0.01f;
 
-IEnumerator OnDezoom()
+private void OnDezoom()
 {
-    while (_camera.orthographicSize < maxSizeCam)
-    {
-        _camera.orthographicSize += speedDezoom;
-        transform.position = new Vector3(transform.position.x, transform.position.y + speedDezoom, transform.position.z);
-        yield return new WaitForSeconds(delayDezoom);
-    }
+    OnDezoomEvent?.Invoke(delayDezoom);
+    transform.DOMoveZ(maxPosCam, delayDezoom);
 }
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.Space))
-            StartCoroutine(OnDezoom());
+            OnDezoom();
     }
 }
