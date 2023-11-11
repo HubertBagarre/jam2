@@ -16,6 +16,7 @@ public class Character : MonoBehaviour
     [Header("Settings")]
     [SerializeField] private float runSpeed = 5f;
     [SerializeField] private float ledgeGravity = 0.3f;
+    [SerializeField] private int ledgeJumpFrames = 30;
     
     [Space]
     [SerializeField] private float groundRange = 0.1f;
@@ -63,6 +64,9 @@ public class Character : MonoBehaviour
         public int stunDuration;
         public bool Invulnerable => invulFrames > 0;
         public int invulFrames;
+
+        public bool ledgeJumped => jumpFrames > 0;
+        public int jumpFrames;
         
         public bool CanInput => !Stunned && !IsAttacking && !dead;
         
@@ -126,7 +130,15 @@ public class Character : MonoBehaviour
         cachedVelocity = rb.velocity;
         cachedVelocity.y = 0;
         rb.velocity = cachedVelocity;
-        rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
+
+        var dir = Vector3.up;
+        if (state.ledged)
+        {
+            state.jumpFrames = ledgeJumpFrames;
+            dir = Vector3.up + (Vector3.right * -controller.StickInput.x).normalized;
+        }
+        
+        rb.AddForce(dir.normalized * jumpForce, ForceMode.Impulse);
     }
 
     public void Attack(bool heavy = false)
@@ -194,6 +206,7 @@ public class Character : MonoBehaviour
         DecreaseStunDuration();
         DecreaseAttackFrames();
         DecreaseInvulFrames();
+        DecreaseJumpFrames();
         Drop();
         CheckIsGrounded();
         CheckLedging();
@@ -270,6 +283,12 @@ public class Character : MonoBehaviour
         }
     }
 
+    private void DecreaseJumpFrames()
+    {
+        if(!state.ledgeJumped) return;
+        state.jumpFrames--;
+    }
+
     private void DecreaseInvulFrames()
     {
         if(!state.Invulnerable) return;
@@ -304,7 +323,7 @@ public class Character : MonoBehaviour
     private void UpdateMove()
     {
         if(CannotInput) return;
-        if(state.ledged) return;
+        if(state.ledged || state.ledgeJumped) return;
 
         cachedVelocity = rb.velocity;
         cachedVelocity.x = controller.StickInput.x * runSpeed;
