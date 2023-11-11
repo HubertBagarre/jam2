@@ -53,10 +53,9 @@ public class Character : MonoBehaviour
     [Serializable]
     private class State
     {
-        public bool grounded => groundFrames > 0;
+        public bool grounded;
         public int groundFrames;
-
-
+        
         public bool dropping => dropFrames > 0;
         public int dropFrames;
 
@@ -106,6 +105,7 @@ public class Character : MonoBehaviour
 
     public void InitStats()
     {
+        state.grounded = false;
         airJumpsLeft = maxAirJumps;
 
         gravityMultiplier = 1f;
@@ -254,6 +254,7 @@ public class Character : MonoBehaviour
 
         if (ledgeHit)
         {
+            state.ledgeFrames = ledgeFrames;
             if (!state.ledged)
             {
                 OnLedgeTouch();
@@ -291,6 +292,7 @@ public class Character : MonoBehaviour
         if (Velocity.y > 0) groundHit = false;
         if (groundHit)
         {
+            state.groundFrames = groundFrames;
             if (!state.grounded)
             {
                 OnTouchGround();
@@ -388,14 +390,13 @@ public class Character : MonoBehaviour
     public void OnLedgeTouch()
     {
         airJumpsLeft = maxAirJumps;
-        state.ledgeFrames = ledgeFrames;
         gravityMultiplier = ledgeGravity;
     }
 
     public void OnTouchGround()
     {
+        state.grounded = true;
         airJumpsLeft = maxAirJumps;
-        state.groundFrames = groundFrames;
         gravityMultiplier = 0f;
 
         var inverseVel = Velocity;
@@ -405,6 +406,7 @@ public class Character : MonoBehaviour
 
     public void OnAirborne()
     {
+        state.grounded = false;
         gravityMultiplier = 1f;
     }
 

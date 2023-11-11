@@ -41,6 +41,7 @@ public struct HitData
     public AttackHitbox.DirectionType directionType;
     public Vector3 direction;
     public float force;
+    public bool fixedForce;
     public float damage;
     public int maxStunDuration;
 }

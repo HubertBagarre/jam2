@@ -136,6 +136,10 @@ MonoBehaviour:
   gravityMultiplier: 1
   runSpeed: 5
   ledgeGravity: 0.15
+  ledgeJumpFrames: 30
+  ledgeFrames: 10
+  groundFrames: 0
+  dropFrames: 10
   groundRange: 0.1
   groundCheckHeight: 0.1
   platformLayer:
@@ -150,15 +154,16 @@ MonoBehaviour:
   airJumpsLeft: 0
   respawnInvulSeconds: 3
   state:
-    grounded: 0
-    dropping: 0
-    ledged: 0
+    groundFrames: 0
+    dropFrames: 0
     startup: 0
     active: 0
     recovering: 0
     maxStunDuration: 0
     stunDuration: 0
     invulFrames: 0
+    jumpFrames: 0
+    ledgeFrames: 0
     dead: 0
   controller: {fileID: 0}
   hasController: 0

@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Serialization;
@@ -6,6 +7,7 @@ public class MagicalGirlController : MonoBehaviour
 {
     [Header("Components")]
     [SerializeField] private Character characterPrefab;
+    [field: SerializeField] public PlayerInput Input { get; private set; }
 
     [Header("Settings")]
     [SerializeField] private Quaternion spawnRotation;
@@ -21,12 +23,19 @@ public class MagicalGirlController : MonoBehaviour
     [field:SerializeField] public bool HeavyAttackPressed { get; private set; }
     [field:SerializeField] public bool DodgePressed { get; private set; }
     
+    public static event Action<MagicalGirlController> OnJoinedGame; 
+    
     private void Start()
     {
-        SpawnCharacter();
+        Debug.Log("Joined Game!");
+        
+        OnJoinedGame?.Invoke(this);
+        
+        
+        //input.enabled = false;
     }
 
-    private void SpawnCharacter()
+    public void SpawnCharacter()
     {
         character = Instantiate(characterPrefab,Vector3.zero, spawnRotation);
         hasCharacter = true;
@@ -36,10 +45,7 @@ public class MagicalGirlController : MonoBehaviour
 
     public void Move(InputAction.CallbackContext context)
     {
-        if(!hasCharacter) return;
         StickInput = context.ReadValue<Vector2>();
-        
-        //character.Move(StickInput);
     }
     
     public void Jump(InputAction.CallbackContext context)
