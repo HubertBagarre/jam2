@@ -4,6 +4,8 @@ using UnityEngine;
 public class AttackHitbox : MonoBehaviour
 {
     public enum DirectionType { Up, Right, Forward, Custom}
+
+    public bool hit;
     
     [Header("Components")]
     [SerializeField] private Character own;
@@ -29,6 +31,7 @@ public class AttackHitbox : MonoBehaviour
         
         Debug.DrawRay(tr.position,hitData.direction * hitData.force,Color.red, 1f);
         character.TakeHit(hitData);
+        hit = true;
     }
 }
 

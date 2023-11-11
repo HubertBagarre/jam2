@@ -13,8 +13,9 @@ public class Character : MonoBehaviour
     
     private CombatModel normalModel;
     private CombatModel transformedModel;
-    private Animator CurrentAnimator => state.transformed ? transformedModel.Animator : normalModel.Animator;
-    private FrameDataSo CurrentFrameData => state.transformed ? transformedModel.FrameData : normalModel.FrameData;
+    private CombatModel CurrentBattleModel => state.transformed ? transformedModel : normalModel;
+    private Animator CurrentAnimator => CurrentBattleModel.Animator;
+    private FrameDataSo CurrentFrameData => CurrentBattleModel.FrameData;
     [SerializeField] private List<GameObject> hitboxes;
     [SerializeField, ReadOnly] private float gravityMultiplier = 1f;
 
@@ -73,7 +74,7 @@ public class Character : MonoBehaviour
     [SerializeField] private float chargeUltimateLight = 0.1f;
     [SerializeField] private float chargeUltimateHeavy= 0.2f;
 
-
+    [SerializeField] private bool checkedHitsAfterAttack = false;
     [SerializeField] private int useVelocityFrames = 0;
     [SerializeField] private bool hasMoved = false;
     
@@ -86,6 +87,8 @@ public class Character : MonoBehaviour
     private static readonly int animVelocityY = Animator.StringToHash("velocityY");
     
     [SerializeField, ReadOnly ]private float CumulUltimate = 0;
+    
+    private float lastAttackChargeUltimate = 0;
 
     [Serializable]
     private class State
@@ -165,6 +168,7 @@ public class Character : MonoBehaviour
         CumulDamage = 0;
         OnPercentChanged?.Invoke(0,0);
 
+        checkedHitsAfterAttack = true;
         useVelocityFrames = 0;
         hasMoved = false;
     }
@@ -316,9 +320,10 @@ public class Character : MonoBehaviour
         state.active = frameData.Active;
         state.recovering = frameData.Recovery;
         
-        float valueOfUlt = (heavy ? chargeUltimateHeavy : chargeUltimateLight);
-        GainUltimate(valueOfUlt, true);
+        lastAttackChargeUltimate = (heavy ? chargeUltimateHeavy : chargeUltimateLight);
 
+        checkedHitsAfterAttack = false;
+        
         return;
 
         FrameDataSo.FrameData AttackUp(bool heavyAttack)
@@ -491,7 +496,16 @@ public class Character : MonoBehaviour
         if (!state.IsActionPending) return;
         if (state.startup > 0) state.startup--;
         else if (state.active > 0) state.active--;
-        else if (state.recovering > 0) state.recovering--;
+        else if (state.recovering > 0)
+        {
+            if(!checkedHitsAfterAttack)
+                if (CurrentBattleModel.HitThisFrame())
+                    GainUltimate(lastAttackChargeUltimate, true);
+            checkedHitsAfterAttack = true;
+            state.recovering--;
+            normalModel.ResetHitboxes();
+            transformedModel.ResetHitboxes();
+        }
     }
 
     private void DecreaseStunDuration()
@@ -632,8 +646,10 @@ public class Character : MonoBehaviour
     public float GainUltimate(float percent, bool isMine = false)
     {
         if (state.transformed) return CumulUltimate;
+
         CumulUltimate += percent;
         if (isMine) OnGainUltimate?.Invoke(this,percent);
+        OnTransformationChargeUpdated?.Invoke(CumulUltimate);
         return CumulUltimate;
     }
 }

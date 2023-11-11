@@ -205,11 +205,13 @@ public class GameManager : MonoBehaviour
         
         if(curentTotalPercent >= 1)
         {
-            List<Character> allCh = stocks.Keys.ToList();
-            foreach (var c in allCh)
+            foreach (var ch in otherCharacters)
             {
-                character.OnGainUltimate -= DistribUltimate;
+                ch.GainUltimate(-1f);
+                ch.OnGainUltimate -= DistribUltimate;
             }
+            character.OnGainUltimate -= DistribUltimate;
+            character.GainUltimate(-1f);
             Debug.Log("Ultimate");
         }
     }

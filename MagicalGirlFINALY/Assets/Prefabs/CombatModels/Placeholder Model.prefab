@@ -74,7 +74,7 @@ MonoBehaviour:
   <FrameData>k__BackingField: {fileID: 11400000, guid: b96639d5d7cbb44409c2713c8c31b838,
     type: 2}
   hitboxes:
-  - {fileID: 4269230433476601274}
+  - {fileID: 374712135297452594}
 --- !u!1 &211703602486445545
 GameObject:
   m_ObjectHideFlags: 0
@@ -1164,6 +1164,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 163b253b36d274940830c58d0e9a1873, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  hit: 0
   own: {fileID: 0}
   hitData:
     stunDuration: 60
