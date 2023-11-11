@@ -11,7 +11,7 @@ Material:
   m_Shader: {fileID: -6465566751694194690, guid: 2c3c6a46626419c4f8bbdeab2ec2afbd,
     type: 3}
   m_ValidKeywords:
-  - _HAFTONESHAPES_STRIPE
+  - _HAFTONESHAPES_DOT
   m_InvalidKeywords: []
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
@@ -66,15 +66,15 @@ Material:
     - _BumpScale: 1
     - _DitherTexelSize: 4
     - _DitherThreshold: 1
-    - _HAFTONESHAPES: 1
+    - _HAFTONESHAPES: 0
     - _HafltoneFadeDistance: 10
     - _HalfToneEnabled: 1
     - _HalfToneIncludeReceivedShadow: 0
-    - _HalftoneDiffuseOffest: -0.07
+    - _HalftoneDiffuseOffest: -1
     - _HalftoneFadeToColor: 0
-    - _HalftoneLightSizeFactor: 0
-    - _HalftoneScale: 0
-    - _HalftoneSize: 0.3
+    - _HalftoneLightSizeFactor: 0.657
+    - _HalftoneScale: 20
+    - _HalftoneSize: 0.24
     - _HalftoneUseScreenSpaceUV: 1
     - _HatchingDensity: 1
     - _HatchingDiffuseOffset: 0
