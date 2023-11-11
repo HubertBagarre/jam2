@@ -518,6 +518,16 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2588573072394554812, guid: 35b4c455e382c914ab8148b8e4b610cb,
+        type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 700
+      objectReference: {fileID: 0}
+    - target: {fileID: 2588573072394554812, guid: 35b4c455e382c914ab8148b8e4b610cb,
+        type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4460291200769018193, guid: 35b4c455e382c914ab8148b8e4b610cb,
         type: 3}
       propertyPath: m_Name
@@ -583,6 +593,17 @@ PrefabInstance:
       propertyPath: minPlayers
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 5461991820127786423, guid: 35b4c455e382c914ab8148b8e4b610cb,
+        type: 3}
+      propertyPath: m_Type
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5461991820127786423, guid: 35b4c455e382c914ab8148b8e4b610cb,
+        type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 2e11ce6314125224288fe060d412f73c,
+        type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 35b4c455e382c914ab8148b8e4b610cb, type: 3}
 --- !u!1001 &6162783637208589557
