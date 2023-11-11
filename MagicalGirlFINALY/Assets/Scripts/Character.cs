@@ -62,6 +62,14 @@ public class Character : MonoBehaviour
     private bool OnCooldownDash => cooldownDash > 0;
     private float CumulDamage;
     private bool HasLostInput = false;
+    
+    private static readonly int animCanInput = Animator.StringToHash("canInput");
+    private static readonly int animIsGrounded = Animator.StringToHash("isGrounded");
+    private static readonly int animIsLedged = Animator.StringToHash("isLedged");
+    private static readonly int animIsDropping = Animator.StringToHash("isDropping");
+    private static readonly int animVelocityX = Animator.StringToHash("velocityX");
+    private static readonly int animMagnitudeX = Animator.StringToHash("magnitudeX");
+    private static readonly int animVelocityY = Animator.StringToHash("velocityY");
 
     [Serializable]
     private class State
@@ -348,7 +356,7 @@ public class Character : MonoBehaviour
     {
         if (CannotInput) return;
 
-        if (controller.StickInput.y < 0) state.dropFrames = dropFrames;
+        if (controller.StickInput.y < -0.5f) state.dropFrames = dropFrames;
     }
 
     private void CheckIsGrounded()
@@ -531,6 +539,9 @@ public class Character : MonoBehaviour
         if (state.stunDuration > state.maxStunDuration) state.stunDuration = state.maxStunDuration;
 
         rb.velocity = Vector3.zero;
+        
+        animator.Play("Hit");
+        
         rb.AddForce(data.direction * data.force * (CumulDamage * 0.01f), ForceMode.VelocityChange); //multiply by percentDamage
         HasLostInput = true;
     }
@@ -552,11 +563,12 @@ public class Character : MonoBehaviour
 
     private void HandleAnimations()
     {
-        animator.SetInteger("stunnedFrames", state.stunDuration);
-
-        if (CannotInput) return;
-
-        var running = state.grounded && controller.StickInput.x != 0;
-        animator.SetBool("isRunning", running);
+        animator.SetBool(animCanInput, !CannotInput);
+        animator.SetBool(animIsGrounded, state.grounded);
+        animator.SetBool(animIsLedged, state.ledged);
+        animator.SetBool(animIsDropping, state.dropping);
+        animator.SetFloat(animVelocityX, Velocity.x);
+        animator.SetFloat(animMagnitudeX, Mathf.Abs(Velocity.x));
+        animator.SetFloat(animVelocityY, Velocity.y);
     }
 }
