@@ -22,6 +22,11 @@ public class UIPlayerPercent : MonoBehaviour
         }
         stockObj.SetActive(false);
     }
+    
+    public void UpdatePercent(int previous,int percent)
+    {
+        PercentText.text = $"{percent}%"; //TODO anim stylé
+    }
 
     public void LoseStock()
     {
@@ -34,5 +39,7 @@ public class UIPlayerPercent : MonoBehaviour
     public void UpdateTransformationCharge(float value)
     {
         transformationChargeImage.fillAmount = value;
+        
+        //TODO dotween smooth
     }
 }
