@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.Collections;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Accessibility;
 using UnityEngine.Serialization;
@@ -58,6 +59,7 @@ public class Character : MonoBehaviour
     public event Action<int, int> OnPercentChanged;
     public event Action<float> OnTransformationChargeUpdated;
     public event Action<Character, float> OnGainUltimate;
+    private event Action OnTransformationCome;
 
     private Vector3 cachedVelocity;
 
@@ -89,6 +91,11 @@ public class Character : MonoBehaviour
     [SerializeField, ReadOnly] private float CumulUltimate = 0;
 
     private float lastAttackChargeUltimate = 0;
+
+    public event Action OnStartupEnd;
+    public event Action OnActiveEnd;
+    public event Action OnRecoveringEnd;
+    public bool OnActionTerminated = false;
 
     [Serializable]
     private class State
@@ -177,62 +184,23 @@ public class Character : MonoBehaviour
     {
         normalModel = Instantiate(options.NormalModel, ModelParent);
         normalModel.gameObject.name = "NormalModel";
-        
+
         transformedModel = Instantiate(options.TransformedModel, ModelParent);
         transformedModel.gameObject.name = "TransformedModel";
-        
+
         Transformation(false);
     }
 
-    IEnumerator decreaseUltimate()
-    {
-        while (CumulUltimate > 0)
-        {
-            yield return new WaitForSeconds(0.01f);
-            CumulUltimate -= 0.01f;
-            OnTransformationChargeUpdated?.Invoke(CumulUltimate);
-        }
-
-        CumulUltimate = 0;
-        Transformation(false);
-    }
-
-    [ContextMenu("Transformation (true)")]
-    private void TransformationTrue()
-    {
-        Transformation(true);
-    }
-
-    [ContextMenu("Transformation (false)")]
-    private void TransformationFalse()
-    {
-        Transformation(false);
-    }
-    
-    
-    
     public void Transformation(bool transformed)
     {
         Debug.Log($"Transformation : {transformed}");
-        
-        if (transformed) state.transformedFrames = transformationFrames;
+
+        if (transformed)
+            state.transformedFrames = transformationFrames;
         normalModel.Show(!transformed);
         transformedModel.Show(transformed);
 
         if (CurrentFrameData) frameDataDict = CurrentFrameData.MakeDictionary();
-        // if (transformed) transformedModel.gameObject.SetActive(true);
-        // else normalModel.gameObject.SetActive(true);
-        // CurrentAnimator.CrossFade("Transformation", 0.1f);
-
-        StartCoroutine(PlayAnimationDelayed());
-        
-        return;
-        IEnumerator PlayAnimationDelayed()
-        {
-            yield return new WaitForEndOfFrame();
-            normalModel.Animator.CrossFade("Transformation", 0.1f);
-            transformedModel.Animator.CrossFade("Transformation", 0.1f);
-        }
     }
 
     public void Respawn()
@@ -399,9 +367,13 @@ public class Character : MonoBehaviour
     {
         if (!state.transformed) return;
         state.transformedFrames--;
+        OnTransformationChargeUpdated?.Invoke(CumulUltimate);
+//calc percent of state.transformedFrames by transformationFrames
 
+        float percent = (float)state.transformedFrames / transformationFrames;
+        Debug.Log($"percent : {percent}");
         if (transformationFrames > 0) return;
-
+        
         Transformation(false);
     }
 
@@ -538,9 +510,26 @@ public class Character : MonoBehaviour
     {
         if (!state.IsActionPending) return;
         if (state.startup > 0) state.startup--;
-        else if (state.active > 0) state.active--;
+        else if (state.active > 0)
+        {
+            if (!OnActionTerminated)
+            {
+                OnActionTerminated = true;
+                OnStartupEnd?.Invoke();
+                OnStartupEnd = null;
+            }
+
+            state.active--;
+        }
         else if (state.recovering > 0)
         {
+            if (OnActionTerminated)
+            {
+                OnActionTerminated = false;
+                OnActiveEnd?.Invoke();
+                OnActiveEnd = null;
+            }
+
             if (!checkedHitsAfterAttack)
                 if (CurrentBattleModel.HitThisFrame())
                     GainUltimate(lastAttackChargeUltimate, true);
@@ -549,6 +538,14 @@ public class Character : MonoBehaviour
             normalModel.ResetHitboxes();
             transformedModel.ResetHitboxes();
         }
+
+        if (!OnActionTerminated)
+        {
+            OnActionTerminated = true;
+            OnRecoveringEnd?.Invoke();
+            OnRecoveringEnd = null;
+        }
+        state.ResetStates();
     }
 
     private void DecreaseStunDuration()
@@ -576,12 +573,10 @@ public class Character : MonoBehaviour
         if (CannotInput) return;
 
         if (state.ledged || state.ledgeJumped) return;
-
-
+        
         if (controller.StickInput.x != 0) hasMoved = true;
 
         if (useVelocityFrames > 0 && !hasMoved) return;
-
 
         cachedVelocity = rb.velocity;
         cachedVelocity.x = controller.StickInput.x * runSpeed;
