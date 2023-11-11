@@ -680,6 +680,7 @@ MonoBehaviour:
   stockObj: {fileID: 1510654836307551119}
   stockLayout: {fileID: 4667984696763867933}
   stocksObjs: []
+  transformationChargeImage: {fileID: 8505459794640780300}
 --- !u!1 &8118329399078355227
 GameObject:
   m_ObjectHideFlags: 0
