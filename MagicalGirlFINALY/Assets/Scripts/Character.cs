@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using Unity.Collections;
 using UnityEngine;
@@ -7,10 +8,11 @@ using UnityEngine.Serialization;
 
 public class Character : MonoBehaviour
 {
-    [Header("Components")]
-    [SerializeField] private Rigidbody rb;
+    [Header("Components")] [SerializeField]
+    private Rigidbody rb;
+
     [field: SerializeField] public Transform ModelParent { get; private set; }
-    
+
     private CombatModel normalModel;
     private CombatModel transformedModel;
     private CombatModel CurrentBattleModel => state.transformed ? transformedModel : normalModel;
@@ -19,11 +21,9 @@ public class Character : MonoBehaviour
     [SerializeField] private List<GameObject> hitboxes;
     [SerializeField, ReadOnly] private float gravityMultiplier = 1f;
 
-    [Header("Settings")]
-    [SerializeField] private float runSpeed = 5f;
+    [Header("Settings")] [SerializeField] private float runSpeed = 5f;
     [SerializeField] private float ledgeGravity = 0.3f;
-    [Space]
-    [SerializeField] private int ledgeJumpFrames = 30;
+    [Space] [SerializeField] private int ledgeJumpFrames = 30;
     [SerializeField] private int ledgeFrames = 10;
     [SerializeField] private int groundFrames = 10;
     [SerializeField] private int dropFrames = 10;
@@ -55,9 +55,9 @@ public class Character : MonoBehaviour
 
     public static event Action<Character> OnCreated;
     public static event Action<Character> OnDeath;
-    public event Action<int,int> OnPercentChanged;
+    public event Action<int, int> OnPercentChanged;
     public event Action<float> OnTransformationChargeUpdated;
-    public event Action<Character,float> OnGainUltimate; 
+    public event Action<Character, float> OnGainUltimate;
 
     private Vector3 cachedVelocity;
 
@@ -72,12 +72,12 @@ public class Character : MonoBehaviour
     private bool OnCooldownDash => cooldownDash > 0;
     private float CumulDamage;
     [SerializeField] private float chargeUltimateLight = 0.1f;
-    [SerializeField] private float chargeUltimateHeavy= 0.2f;
+    [SerializeField] private float chargeUltimateHeavy = 0.2f;
 
     [SerializeField] private bool checkedHitsAfterAttack = false;
     [SerializeField] private int useVelocityFrames = 0;
     [SerializeField] private bool hasMoved = false;
-    
+
     private static readonly int animCanInput = Animator.StringToHash("canInput");
     private static readonly int animIsGrounded = Animator.StringToHash("isGrounded");
     private static readonly int animIsLedged = Animator.StringToHash("isLedged");
@@ -85,9 +85,9 @@ public class Character : MonoBehaviour
     private static readonly int animVelocityX = Animator.StringToHash("velocityX");
     private static readonly int animMagnitudeX = Animator.StringToHash("magnitudeX");
     private static readonly int animVelocityY = Animator.StringToHash("velocityY");
-    
-    [SerializeField, ReadOnly ]private float CumulUltimate = 0;
-    
+
+    [SerializeField, ReadOnly] private float CumulUltimate = 0;
+
     private float lastAttackChargeUltimate = 0;
 
     [Serializable]
@@ -95,7 +95,7 @@ public class Character : MonoBehaviour
     {
         public bool transformed => transformedFrames > 0;
         public int transformedFrames;
-        
+
         public bool grounded;
         public int groundFrames;
 
@@ -128,11 +128,11 @@ public class Character : MonoBehaviour
         public bool CanInput => !Stunned && !IsActionPending && !dead;
 
         public bool dead;
-        
+
         public void ResetStates()
         {
             transformedFrames = 0;
-            
+
             maxStunDuration = 0;
             stunDuration = 0;
 
@@ -150,14 +150,14 @@ public class Character : MonoBehaviour
 
         OnCreated?.Invoke(this);
     }
-    
+
     public void InitStats()
     {
         if (CurrentFrameData) frameDataDict = CurrentFrameData.MakeDictionary();
-        
+
         normalModel.ResetHitboxes();
         transformedModel.ResetHitboxes();
-        
+
         state.grounded = false;
         airJumpsLeft = maxAirJumps;
 
@@ -166,7 +166,7 @@ public class Character : MonoBehaviour
 
         state.ResetStates();
         CumulDamage = 0;
-        OnPercentChanged?.Invoke(0,0);
+        OnPercentChanged?.Invoke(0, 0);
 
         checkedHitsAfterAttack = true;
         useVelocityFrames = 0;
@@ -179,17 +179,36 @@ public class Character : MonoBehaviour
         normalModel = Instantiate(model, ModelParent);
         model = options.TransformedModel;
         transformedModel = Instantiate(model, ModelParent);
-        
-        Transform(false);
+
+        Transformation(false);
     }
 
-    public void Transform(bool transformed)
+    IEnumerator decreaseUltimate()
     {
-        if(transformed) state.transformedFrames = transformationFrames;
+        while (CumulUltimate > 0)
+        {
+            yield return new WaitForSeconds(0.01f);
+            CumulUltimate -= 0.01f;
+            OnTransformationChargeUpdated?.Invoke(CumulUltimate);
+        }
+
+        CumulUltimate = 0;
+        Transformation(false);
+    }
+
+    public void Transformation(bool transformed)
+    {
+        if (transformed) state.transformedFrames = transformationFrames;
         normalModel.Show(!transformed);
         transformedModel.Show(transformed);
-        
+
         if (CurrentFrameData) frameDataDict = CurrentFrameData.MakeDictionary();
+
+        //TODO: check if transformed if yes you decrease by elapsed time
+        if (transformed)
+        {
+            StartCoroutine(decreaseUltimate());
+        }
     }
 
     public void Respawn()
@@ -319,11 +338,11 @@ public class Character : MonoBehaviour
         state.startup = frameData.Startup;
         state.active = frameData.Active;
         state.recovering = frameData.Recovery;
-        
+
         lastAttackChargeUltimate = (heavy ? chargeUltimateHeavy : chargeUltimateLight);
 
         checkedHitsAfterAttack = false;
-        
+
         return;
 
         FrameDataSo.FrameData AttackUp(bool heavyAttack)
@@ -351,17 +370,17 @@ public class Character : MonoBehaviour
         CheckIsGrounded();
         CheckLedging();
     }
-    
+
     private void DecreaseTransformedFrames()
     {
         if (!state.transformed) return;
         state.transformedFrames--;
-        
-        if(transformationFrames > 0) return;
-        
-        Transform(false);
+
+        if (transformationFrames > 0) return;
+
+        Transformation(false);
     }
-    
+
     private void CheckLedging()
     {
         if (CannotInput || state.grounded) return;
@@ -498,7 +517,7 @@ public class Character : MonoBehaviour
         else if (state.active > 0) state.active--;
         else if (state.recovering > 0)
         {
-            if(!checkedHitsAfterAttack)
+            if (!checkedHitsAfterAttack)
                 if (CurrentBattleModel.HitThisFrame())
                     GainUltimate(lastAttackChargeUltimate, true);
             checkedHitsAfterAttack = true;
@@ -528,17 +547,17 @@ public class Character : MonoBehaviour
 
     private void UpdateMove()
     {
-        if(useVelocityFrames > 0) useVelocityFrames--;
-        
+        if (useVelocityFrames > 0) useVelocityFrames--;
+
         if (CannotInput) return;
-        
+
         if (state.ledged || state.ledgeJumped) return;
 
-        
-        if(controller.StickInput.x != 0)hasMoved = true;
-        
-        if(useVelocityFrames > 0 && !hasMoved) return;
-        
+
+        if (controller.StickInput.x != 0) hasMoved = true;
+
+        if (useVelocityFrames > 0 && !hasMoved) return;
+
 
         cachedVelocity = rb.velocity;
         cachedVelocity.x = controller.StickInput.x * runSpeed;
@@ -592,7 +611,7 @@ public class Character : MonoBehaviour
         if (state.Invulnerable || state.dead || state.shielded) return;
         var prev = (int)CumulDamage;
         CumulDamage += data.damage;
-        OnPercentChanged?.Invoke(prev,(int)CumulDamage);
+        OnPercentChanged?.Invoke(prev, (int)CumulDamage);
         foreach (var go in hitboxes)
         {
             go.SetActive(false);
@@ -603,21 +622,20 @@ public class Character : MonoBehaviour
         if (state.stunDuration > state.maxStunDuration) state.stunDuration = state.maxStunDuration;
 
         rb.velocity = Vector3.zero;
-        
+
         CurrentAnimator.Play("Hit");
         normalModel.ResetHitboxes();
         transformedModel.ResetHitboxes();
 
         var force = data.force;
-        if(!data.fixedForce) force *= CumulDamage * 0.01f;
-        
+        if (!data.fixedForce) force *= CumulDamage * 0.01f;
+
         rb.AddForce(data.direction * force, ForceMode.VelocityChange); //multiply by percentDamage
-        
+
         useVelocityFrames = data.useVelocityDuration;
         hasMoved = false;
     }
-    
-    
+
 
     private void OnTriggerEnter(Collider other)
     {
@@ -648,8 +666,14 @@ public class Character : MonoBehaviour
         if (state.transformed) return CumulUltimate;
 
         CumulUltimate += percent;
-        if (isMine) OnGainUltimate?.Invoke(this,percent);
+        if (isMine) OnGainUltimate?.Invoke(this, percent);
         OnTransformationChargeUpdated?.Invoke(CumulUltimate);
+
+        if (CumulUltimate >= 1)
+        {
+            Transformation(true);
+        }
+
         return CumulUltimate;
     }
 }
