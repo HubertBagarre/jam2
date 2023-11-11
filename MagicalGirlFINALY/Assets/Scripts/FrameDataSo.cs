@@ -6,7 +6,7 @@ using UnityEngine;
 public class FrameDataSo : ScriptableObject
 {
     [field: SerializeField] public RuntimeAnimatorController AnimatorController { get; private set; }
-    public List<FrameData> frameData;
+    [field: SerializeField] public List<FrameData> frameData;
     
     public Dictionary<string,FrameData> MakeDictionary()
     {
@@ -26,5 +26,7 @@ public class FrameDataSo : ScriptableObject
         [field: SerializeField] public int Startup { get; private set; }
         [field: SerializeField] public int Active { get; private set; }
         [field: SerializeField] public int Recovery { get; private set; }
+        [field: SerializeField] public bool StopVelocityX { get; private set; }
+        [field: SerializeField] public bool StopVelocityY { get; private set; }
     }
 }

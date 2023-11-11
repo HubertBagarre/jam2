@@ -12,18 +12,19 @@ Material:
   m_ValidKeywords:
   - _HALFTONESHAPE_DOT
   - _OUTLINE
+  - _RECEIVE_SHADOWS_OFF
   - _RIMLIGHTING_ON
   m_InvalidKeywords:
   - _ALPHAMODULATE_ON
   - _HAFTONESHAPES_DOT
+  - _RECEIVESHADOWS_OFF
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
-  m_CustomRenderQueue: 3050
+  m_CustomRenderQueue: 2000
   stringTagMap:
-    RenderType: Transparent
-  disabledShaderPasses:
-  - SHADOWCASTER
+    RenderType: Opaque
+  disabledShaderPasses: []
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
@@ -68,7 +69,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
-        m_Texture: {fileID: 2800000, guid: 5bff88edc6faa7f4bbff987ff7b12688, type: 3}
+        m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _RampTex:
@@ -110,7 +111,7 @@ Material:
     - Vector1_e5b6f1488dec4326bd8bbd0e05156810: 0
     - _AllToon_OverrideShadowColor: 0
     - _AlphaClip: 0
-    - _Blend: 3
+    - _Blend: 0
     - _BrushLowerCut: 0
     - _BrushSize: 0.8
     - _BumpScale: 1
@@ -156,17 +157,17 @@ Material:
     - _NoiseStrength: 0.1
     - _OutlineEnabled: 1
     - _OutlineMode: 0
-    - _OutlineWidth: 15
+    - _OutlineWidth: 11.63
     - _OverrideShadowColor: 0
     - _QueueControl: 0
-    - _QueueOffset: 0
+    - _QueueOffset: 50
     - _RIMLIGHTING: 0
-    - _ReceiveShadows: 1
+    - _ReceiveShadows: 0
     - _RimEnabled: 1
     - _RimLightAlign: -1
     - _RimLightSmoothness: 0
     - _RimLightSmootness: 0
-    - _RimPower: 0.796
+    - _RimPower: 0.282
     - _SPECULARHIGHLIGHTS: 0
     - _ShadowPatternSize: 0.3
     - _Shininess: 0
@@ -184,19 +185,19 @@ Material:
     - _SpecularHighlights: 1
     - _SpecularSize: 0.25
     - _SpherizeNormalEnabled: 0
-    - _SrcBlend: 2
+    - _SrcBlend: 1
     - _StencilComp: 0
     - _StencilRef: 0
     - _StepViaRampTexture: 0
-    - _Surface: 1
+    - _Surface: 0
     - _USERAMPCOLOR: 0
     - _UseClipPattern: 0
     - _UseNormalMap: 0
     - _UseRampColor: 0
-    - _ZWrite: 0
+    - _ZWrite: 1
     m_Colors:
     - Color_e33122dd1341407eb6ef24a34b660f09: {r: 0, g: 0, b: 0, a: 0}
-    - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
+    - _BaseColor: {r: 0.89411765, g: 0.7525903, b: 0.6313726, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 119.42823, g: 119.42823, b: 119.42823, a: 1}
     - _FaceFrontDirection: {r: 0, g: 0, b: 1, a: 0}
@@ -206,10 +207,10 @@ Material:
     - _HalftoneColor: {r: 0.517647, g: 0.517647, b: 0.517647, a: 1}
     - _HatchingColor: {r: 0, g: 0, b: 0, a: 1}
     - _HatchingScale: {r: 15, g: 1, b: 0, a: 0}
-    - _OutlineColor: {r: 0, g: 0, b: 0, a: 1}
-    - _OutlineDistancFade: {r: -51.219513, g: -2.439022, b: 0, a: 0}
+    - _OutlineColor: {r: 0.764151, g: 0.4783242, b: 0.42172483, a: 1}
+    - _OutlineDistancFade: {r: -90.243904, g: 200, b: 0, a: 0}
     - _RimColor: {r: 1, g: 1, b: 1, a: 1}
-    - _ShadowColor: {r: 1, g: 1, b: 1, a: 1}
+    - _ShadowColor: {r: 0.990566, g: 0.061910372, b: 0, a: 1}
     - _SpecColor: {r: 0.5, g: 0.5, b: 0.5, a: 0.5}
     - _SpherizeNormalOrigin: {r: 0, g: 0, b: 0, a: 0}
   m_BuildTextureStacks: []

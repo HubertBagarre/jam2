@@ -7,12 +7,11 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: New Material
+  m_Name: Base
   m_Shader: {fileID: -6465566751694194690, guid: 2c3c6a46626419c4f8bbdeab2ec2afbd,
     type: 3}
   m_ValidKeywords:
   - _HAFTONESHAPES_DOT
-  - _RIMLIGHTING_ON
   m_InvalidKeywords: []
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
@@ -40,7 +39,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _BaseMap:
-        m_Texture: {fileID: 0}
+        m_Texture: {fileID: 2800000, guid: e689b914be9762d4592b85daa6dbb676, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _BumpMap:
@@ -167,7 +166,7 @@ Material:
     - Vector1_85d44c600d6c46b38d9c8065f25681ea: 0
     - Vector1_8dd6492e16194799b37d5efeb9926b89: 0.5
     - Vector1_c89cb8dc56774a9583c7b9c3a5725c4c: 0
-    - Vector1_e5b6f1488dec4326bd8bbd0e05156810: -0.32
+    - Vector1_e5b6f1488dec4326bd8bbd0e05156810: -0
     - _1st2nd_Shades_Feather: 0.0001
     - _1st_ShadeColor_Feather: 0.0001
     - _1st_ShadeColor_Step: 0.5
@@ -211,14 +210,14 @@ Material:
     - _Glossiness: 0
     - _GlossyReflections: 0
     - _HAFTONESHAPES: 0
-    - _HafltoneFadeDistance: 8.8
+    - _HafltoneFadeDistance: 100
     - _HalfToneEnabled: 1
     - _HalfToneIncludeReceivedShadow: 0
-    - _HalftoneDiffuseOffest: -0.9
+    - _HalftoneDiffuseOffest: -0.37
     - _HalftoneFadeToColor: 0
     - _HalftoneLightSizeFactor: 1
-    - _HalftoneScale: 23.42
-    - _HalftoneSize: 0.92
+    - _HalftoneScale: 15.4
+    - _HalftoneSize: 2
     - _HalftoneUseScreenSpaceUV: 1
     - _HatchingDensity: 1
     - _HatchingDiffuseOffset: 0
@@ -273,7 +272,7 @@ Material:
     - _Parallax: 0.005
     - _QueueControl: 0
     - _QueueOffset: 0
-    - _RIMLIGHTING: 1
+    - _RIMLIGHTING: 0
     - _ReceiveShadows: 1
     - _RimLight: 0
     - _RimLightAlign: -1
@@ -281,7 +280,7 @@ Material:
     - _RimLight_FeatherOff: 0
     - _RimLight_InsideMask: 0.0001
     - _RimLight_Power: 0.1
-    - _RimPower: 0.261
+    - _RimPower: 0.314
     - _Rotate_EmissiveUV: 0
     - _Rotate_MatCapUV: 0
     - _Rotate_NormalMapForMatCapUV: 0
@@ -330,20 +329,20 @@ Material:
     - _2nd_ShadeColor: {r: 1, g: 1, b: 1, a: 1}
     - _AngelRing_Color: {r: 1, g: 1, b: 1, a: 1}
     - _Ap_RimLightColor: {r: 1, g: 1, b: 1, a: 1}
-    - _BaseColor: {r: 0.9568628, g: 0.854902, b: 0.79215693, a: 1}
+    - _BaseColor: {r: 0.8962264, g: 0.8962264, b: 0.8962264, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _ColorShift: {r: 0, g: 0, b: 0, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _Emissive_Color: {r: 0, g: 0, b: 0, a: 1}
-    - _HalftoneColor: {r: 1, g: 1, b: 1, a: 1}
+    - _HalftoneColor: {r: 0.15292633, g: 0.08597367, b: 0.7924528, a: 0.34117648}
     - _HatchingColor: {r: 0, g: 0, b: 0, a: 1}
     - _HatchingScale: {r: 15, g: 1, b: 0, a: 0}
     - _HighColor: {r: 0, g: 0, b: 0, a: 1}
     - _MatCapColor: {r: 1, g: 1, b: 1, a: 1}
     - _Outline_Color: {r: 0.5, g: 0.5, b: 0.5, a: 1}
-    - _RimColor: {r: 1, g: 1, b: 1, a: 0.34901962}
+    - _RimColor: {r: 0, g: 0, b: 0, a: 1}
     - _RimLightColor: {r: 1, g: 1, b: 1, a: 1}
-    - _ShadowColor: {r: 0, g: 0, b: 0, a: 1}
+    - _ShadowColor: {r: 0.38116968, g: 0, b: 0.5471698, a: 1}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
     - _ViewShift: {r: 0, g: 0, b: 0, a: 1}
   m_BuildTextureStacks: []
