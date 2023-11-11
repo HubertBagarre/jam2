@@ -90,14 +90,15 @@ public class MagicalGirlController : MonoBehaviour
         if(context.canceled) DodgePressed = false;
     }
 
-    public void Shield(InputAction.CallbackContext context)
+    public void ShieldOrDash(InputAction.CallbackContext context)
     {
         if(!hasCharacter) return;
         
         if (context.started)
         {
             //ShieldPressed = true;
-            character.Shield();
+            if (StickInput is { x: 0, y: 0 }) character.Shield();
+            else character.Dash();
         }
         //if(context.canceled) ShieldPressed = false;
     }

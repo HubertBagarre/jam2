@@ -140,6 +140,10 @@ MonoBehaviour:
   ledgeFrames: 10
   groundFrames: 0
   dropFrames: 10
+  ShieldFrames: 10
+  DashFrames: 10
+  cooldownFrameReloadShield: 10
+  cooldownFrameReloadDash: 10
   groundRange: 0.1
   groundCheckHeight: 0.1
   platformLayer:
@@ -149,11 +153,13 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 256
   jumpForce: 9
+  dashForce: 5
   maxAirJumps: 2
   ledgeJumpIsAirJump: 1
   airJumpsLeft: 0
   respawnInvulSeconds: 3
   state:
+    grounded: 0
     groundFrames: 0
     dropFrames: 0
     startup: 0
@@ -164,6 +170,8 @@ MonoBehaviour:
     invulFrames: 0
     jumpFrames: 0
     ledgeFrames: 0
+    shieldFrames: 0
+    dashFrames: 0
     dead: 0
   controller: {fileID: 0}
   hasController: 0
@@ -296,6 +304,7 @@ MonoBehaviour:
     directionType: 0
     direction: {x: 0, y: 0, z: 0}
     force: 10
+    fixedForce: 0
     damage: 0
     maxStunDuration: 10
 --- !u!1001 &5471949744422355947
