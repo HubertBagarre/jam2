@@ -207,12 +207,9 @@ public class GameManager : MonoBehaviour
         {
             foreach (var ch in otherCharacters)
             {
-                ch.GainUltimate(-1f);
                 ch.OnGainUltimate -= DistribUltimate;
             }
             character.OnGainUltimate -= DistribUltimate;
-            character.GainUltimate(-1f);
-            Debug.Log("Ultimate");
         }
     }
     

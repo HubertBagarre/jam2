@@ -81,3 +81,9 @@ MonoBehaviour:
     <Recovery>k__BackingField: 10
     <StopVelocityX>k__BackingField: 0
     <StopVelocityY>k__BackingField: 0
+  - <AnimationName>k__BackingField: Transformation
+    <Startup>k__BackingField: 10
+    <Active>k__BackingField: 10
+    <Recovery>k__BackingField: 10
+    <StopVelocityX>k__BackingField: 1
+    <StopVelocityY>k__BackingField: 1
