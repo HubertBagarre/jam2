@@ -112,7 +112,7 @@ Rigidbody:
   m_Mass: 1
   m_Drag: 0
   m_AngularDrag: 0.05
-  m_UseGravity: 1
+  m_UseGravity: 0
   m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 120
@@ -133,7 +133,9 @@ MonoBehaviour:
   animator: {fileID: 1917074273144749690}
   frameDataSo: {fileID: 11400000, guid: b96639d5d7cbb44409c2713c8c31b838, type: 2}
   hitboxes: []
-  speed: 5
+  gravityMultiplier: 1
+  runSpeed: 5
+  ledgeGravity: 0.15
   groundRange: 0.1
   groundCheckHeight: 0.1
   platformLayer:
@@ -145,11 +147,12 @@ MonoBehaviour:
   jumpForce: 9
   maxAirJumps: 2
   ledgeJumpIsAirJump: 1
-  jumpsLeft: 0
+  airJumpsLeft: 0
   respawnInvulSeconds: 3
   state:
     grounded: 0
     dropping: 0
+    ledged: 0
     startup: 0
     active: 0
     recovering: 0
