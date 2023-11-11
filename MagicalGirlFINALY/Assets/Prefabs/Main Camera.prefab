@@ -133,4 +133,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _camera: {fileID: 1951928310336527957}
   maxPosCam: -14
+  minPosCam: -10
   delayDezoom: 3
+  _targets: []
+  centerOfWorld: {fileID: 0}
+  delayBeforeUpdateScreen: 0.75

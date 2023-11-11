@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -7,6 +8,8 @@ using Random = UnityEngine.Random;
 
 public class GameManager : MonoBehaviour
 {
+    public static event Action<Transform> newPlayerSpawned;
+    
     [Header("Game Settings")]
     [SerializeField] private Transform respawnPoint;
     [SerializeField] private Transform[] spawnPoints;
@@ -23,8 +26,6 @@ public class GameManager : MonoBehaviour
     
     private List<MagicalGirlController> controllers = new ();
     private Dictionary<MagicalGirlController, (Action unbindAction,bool isReady)> controllerDict = new ();
-    
-    
     
     private Dictionary<Character, int> stocks;
     
@@ -138,6 +139,7 @@ public class GameManager : MonoBehaviour
     private void SetupCharacter(MagicalGirlController controller)
     {
         var character = controller.SpawnCharacter();
+        newPlayerSpawned?.Invoke(character.transform);
         
         var playerPercent = Instantiate(playerPercentPrefab,playerPercentLayout);
 

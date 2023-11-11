@@ -392,6 +392,8 @@ MonoBehaviour:
   playerPercentLayout: {fileID: 624495729315189642}
   playerPercentPrefab: {fileID: 4123359861323842069, guid: d6ce7d6112c4d6540ab07de21769ced3,
     type: 3}
+  redirect:
+  - {fileID: 0}
 --- !u!114 &688923783799495815
 MonoBehaviour:
   m_ObjectHideFlags: 0
