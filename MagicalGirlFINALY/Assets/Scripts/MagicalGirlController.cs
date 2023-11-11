@@ -60,16 +60,20 @@ public class MagicalGirlController : MonoBehaviour
         if (context.started)
         {
             LightAttackPressed = true;
-            character.Attack();
+            character.Attack(false);
         }
         if(context.canceled) LightAttackPressed = false;
     }
 
     public void HeavyAttack(InputAction.CallbackContext context)
     {
-        if(!hasCharacter) return;   
-        
-        if(context.started) HeavyAttackPressed = true;
+        if(!hasCharacter) return;
+
+        if (context.started)
+        {
+            HeavyAttackPressed = true;
+            character.Attack(true);
+        }
         if(context.canceled) HeavyAttackPressed = false;
     }
     

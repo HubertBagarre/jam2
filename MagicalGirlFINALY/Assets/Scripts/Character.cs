@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -8,22 +7,16 @@ public class Character : MonoBehaviour
     [Header("Components")]
     [SerializeField] private Rigidbody rb;
     [SerializeField] private Animator animator;
+    [SerializeField] private FrameDataSo frameDataSo;
     
     [Header("Settings")]
     [SerializeField] private float speed = 5f;
     [SerializeField] private float jumpForce = 5f;
     [SerializeField] private int maxAirJumps = 2;
     [SerializeField] private bool ledgeJumpIsAirJump = true;
-
-    [Header("Volé")]
-    [SerializeField] private float maxSpeed = 8f;
-    [SerializeField] private float acceleration = 200f;
-    [SerializeField] private AnimationCurve accelerationFactorFromDot;
-    [SerializeField] private float maxAccelForce = 150;
-    [SerializeField] private AnimationCurve maxAccelForceFactorFromDot;
-    
-    
     private int jumpsLeft;
+    
+    [SerializeField] private float respawnInvulSeconds= 3;
     
     //states
     private State state = new ();
@@ -34,43 +27,65 @@ public class Character : MonoBehaviour
     private Vector3 cachedVelocity;
     
     public MagicalGirlController controller;
+    private Dictionary<string,FrameDataSo.FrameData> frameDataDict;
     
     private class State
     {
         public bool grounded;
-        public bool stunned;
         
-        public bool startup;
-        public bool attacking;
-        public bool recovering;
+        public bool IsAttacking => totalFrames > 0;
+        public int totalFrames => startup + active + recovering;
+        public int startup;
+        public int active;
+        public int recovering;
+        public bool Stunned => stunDuration > 0;
+        public int maxStunDuration;
+        public int stunDuration;
+        public bool Invulnerable => invulFrames > 0;
+        public int invulFrames;
         
-        
-        
-        
-        public bool CanInput => !stunned && !startup && !attacking && !recovering && !dead;
-        
-        
+        public bool CanInput => !Stunned && !IsAttacking && !dead;
         
         public bool dead;
     }
     
     private void Start()
     {
+        frameDataDict = frameDataSo.MakeDictionary();
+        
         InitStats();
         
         OnCreated?.Invoke(this);
     }
 
-    public void InitStats()
-    {
-        jumpsLeft = maxAirJumps;
-    }
-    
-    public void Move(Vector2 direction)
+    private void MakeAnimationDict()
     {
         
     }
 
+    public void InitStats()
+    {
+        jumpsLeft = maxAirJumps;
+        
+        rb.velocity = Vector3.zero;
+        
+        state.maxStunDuration = 0;
+        state.stunDuration = 0;
+        
+        state.startup = 0;
+        state.active = 0;
+        state.recovering = 0;
+        
+        state.invulFrames = 0;
+    }
+
+    public void Respawn()
+    {
+        InitStats();
+        state.dead = false;
+        state.invulFrames = (int) (respawnInvulSeconds * 60);
+    }
+    
     public void Jump()
     {
         if(!state.CanInput) return;
@@ -85,14 +100,93 @@ public class Character : MonoBehaviour
         rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
     }
 
-    public void Attack()
+    public void Attack(bool heavy = false)
     {
-        animator.Play("Attack");
+        if(!state.CanInput) return;
+        
+        rb.velocity = Vector3.zero; //TODO do better
+        
+        var frameData = AttackUp(heavy);
+        
+        if (controller.StickInput != Vector2.zero)
+        {
+            var dot = Vector2.Dot(controller.StickInput, Vector2.up);
+            var up = Mathf.Abs(1f-dot);
+            var down = Mathf.Abs(-1f-dot);
+            var side = Mathf.Abs(0-dot);
+
+            if(up < down && up < side) frameData = AttackUp(heavy);
+            else if(down < up && down < side) frameData = AttackDown(heavy);
+            else
+            {
+                frameData = AttackSide(heavy);
+            }
+        }
+        
+        Debug.Log($"{frameData.AnimationName}");
+        
+        animator.Play(frameData.AnimationName);
+        state.startup = frameData.Startup;
+        state.active = frameData.Active;
+        state.recovering = frameData.Recovery;
+        
+        return;
+        
+        FrameDataSo.FrameData AttackUp(bool heavyAttack)
+        {
+            return frameDataDict[state.grounded ? (heavyAttack ? "UpHeavy" : "UpLight") : (heavyAttack ? "Recovery" : "UpAir")];
+        }
+        
+        FrameDataSo.FrameData AttackDown(bool heavyAttack)
+        {
+            return frameDataDict[state.grounded ? (heavyAttack ? "DownHeavy" : "DownLight") : (heavyAttack ? "GroundPound" : "DownAir")];
+        }
+        
+        FrameDataSo.FrameData AttackSide(bool heavyAttack)
+        {
+            if (state.grounded)
+            {
+                return frameDataDict[(heavyAttack ? "SideHeavy" : "SideLight")];
+            }
+
+            if (heavy)
+            {
+                if(up < down) return AttackUp(true);
+                return AttackDown(true);
+            }
+            
+            frameData = frameDataDict["SideAir"];
+        }
+        
     }
 
     private void Update()
     {
+        DecreaseStunDuration();
+        DecreaseAttackFrames();
+        DecreaseInvulFrames();
+    }
+    
+    private void DecreaseInvulFrames()
+    {
+        if(!state.Invulnerable) return;
+        state.invulFrames--;
+    }
+
+    private void DecreaseAttackFrames()
+    {
+        if(!state.IsAttacking) return;
+        if(state.startup > 0) state.startup--;
+        else if(state.active > 0) state.active--;
+        else if(state.recovering > 0) state.recovering--;
         
+        Debug.Log(state.totalFrames);
+    }
+
+    private void DecreaseStunDuration()
+    {
+        if(!state.Stunned) return;
+        state.stunDuration--;
     }
     
     private void FixedUpdate()
@@ -112,8 +206,10 @@ public class Character : MonoBehaviour
 
     private void Kill()
     {
+        state.dead = true;
+        InitStats();
+        
         OnDeath?.Invoke(this);
-        Debug.Log("OOF");
     }
     
     public void OnTouchGround()
@@ -130,6 +226,18 @@ public class Character : MonoBehaviour
         rb.useGravity = true;
     }
 
+    public void TakeHit(HitData data)
+    {
+        if(state.Invulnerable || state.dead) return;
+        
+        state.maxStunDuration = data.maxStunDuration;
+        state.stunDuration += data.stunDuration;
+        if(state.stunDuration > state.maxStunDuration) state.stunDuration = state.maxStunDuration;
+        
+        rb.velocity = Vector3.zero;
+        rb.AddForce(data.direction * data.force, ForceMode.Impulse);
+    }
+    
     private void OnTriggerEnter(Collider other)
     {
         //Debug.Log($"{other.gameObject.name} entered trigger (layer {other.gameObject.layer})");

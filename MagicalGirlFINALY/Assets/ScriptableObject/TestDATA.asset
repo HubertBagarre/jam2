@@ -1,0 +1,61 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c88fd576846294c4aa1b4ee455a6d944, type: 3}
+  m_Name: TestDATA
+  m_EditorClassIdentifier: 
+  <AnimatorController>k__BackingField: {fileID: 9100000, guid: 9b747e774438c5d45aeea1d6135909e9,
+    type: 2}
+  frameData:
+  - <AnimationName>k__BackingField: UpHeavy
+    <Startup>k__BackingField: 10
+    <Active>k__BackingField: 10
+    <Recovery>k__BackingField: 10
+  - <AnimationName>k__BackingField: UpLight
+    <Startup>k__BackingField: 10
+    <Active>k__BackingField: 10
+    <Recovery>k__BackingField: 10
+  - <AnimationName>k__BackingField: Recovery
+    <Startup>k__BackingField: 10
+    <Active>k__BackingField: 10
+    <Recovery>k__BackingField: 10
+  - <AnimationName>k__BackingField: UpAir
+    <Startup>k__BackingField: 10
+    <Active>k__BackingField: 10
+    <Recovery>k__BackingField: 10
+  - <AnimationName>k__BackingField: DownHeavy
+    <Startup>k__BackingField: 10
+    <Active>k__BackingField: 10
+    <Recovery>k__BackingField: 10
+  - <AnimationName>k__BackingField: DownLight
+    <Startup>k__BackingField: 10
+    <Active>k__BackingField: 10
+    <Recovery>k__BackingField: 10
+  - <AnimationName>k__BackingField: GroundPound
+    <Startup>k__BackingField: 10
+    <Active>k__BackingField: 10
+    <Recovery>k__BackingField: 10
+  - <AnimationName>k__BackingField: DownAir
+    <Startup>k__BackingField: 10
+    <Active>k__BackingField: 10
+    <Recovery>k__BackingField: 10
+  - <AnimationName>k__BackingField: SideHeavy
+    <Startup>k__BackingField: 10
+    <Active>k__BackingField: 10
+    <Recovery>k__BackingField: 10
+  - <AnimationName>k__BackingField: SideLight
+    <Startup>k__BackingField: 10
+    <Active>k__BackingField: 10
+    <Recovery>k__BackingField: 10
+  - <AnimationName>k__BackingField: SideAir
+    <Startup>k__BackingField: 10
+    <Active>k__BackingField: 10
+    <Recovery>k__BackingField: 10

@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -8,10 +9,7 @@ public class AttackHitbox : MonoBehaviour
     [SerializeField] private Character own;
     
     [Header("Settings")]
-    [SerializeField] private float damage = 1f;
-    [SerializeField] private Vector3 direction;
-    [SerializeField] private float force = 1f;
-    [SerializeField] private int hitStunDuration = 10;
+    [SerializeField] private HitData hitData;
     
     private void OnTriggerEnter(Collider other)
     {
@@ -19,8 +17,20 @@ public class AttackHitbox : MonoBehaviour
         if(character == null) return;
         if(character == own) return;
         
+        hitData.direction = transform.up;
+        
         Debug.Log($"{transform.up}");
-        Debug.DrawRay(transform.position,transform.up * force,Color.red, 1f);
-        //character.Rb.AddForce(transform.up * force, ForceMode.Impulse);
+        Debug.DrawRay(transform.position,transform.up * hitData.force,Color.red, 1f);
+        character.TakeHit(hitData);
     }
+}
+
+[Serializable]
+public struct HitData
+{
+    public int stunDuration;
+    [HideInInspector] public Vector3 direction;
+    public float force;
+    public float damage;
+    public int maxStunDuration;
 }

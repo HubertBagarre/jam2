@@ -24,6 +24,7 @@ public class GameManager : MonoBehaviour
     private void RespawnCharacter(Character character)
     {
         character.transform.position = respawnPoint.position;
+        character.Respawn();
         
         if(!stocks.ContainsKey(character)) AddCharacterToDictionary(character);
         stocks[character]--;
