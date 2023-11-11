@@ -47,6 +47,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   characterPrefab: {fileID: 786009414538781991, guid: 3a182e63e8e93754ab243771feb4e4c2,
     type: 3}
+  <Input>k__BackingField: {fileID: 528757118509483794}
   spawnRotation: {x: 0, y: -0.70710677, z: 0, w: 0.70710677}
   <StickInput>k__BackingField: {x: 0, y: 0}
   <JumpPressed>k__BackingField: 0
@@ -80,83 +81,23 @@ MonoBehaviour:
       m_Calls: []
   m_ActionEvents:
   - m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 528757118509483793}
-        m_TargetAssemblyTypeName: CharacterController, Assembly-CSharp
-        m_MethodName: Move
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
     m_ActionId: 1c030ac2-f9f8-451e-bd17-e4bced9af7d5
     m_ActionName: Game/Move[/XInputControllerWindows/leftStick,/XInputControllerWindows1/leftStick]
   - m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 528757118509483793}
-        m_TargetAssemblyTypeName: CharacterController, Assembly-CSharp
-        m_MethodName: Jump
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
     m_ActionId: 80dfe110-51bc-467c-b90a-b11b1da4ed36
     m_ActionName: Game/Jump[/XInputControllerWindows/buttonSouth,/XInputControllerWindows1/buttonSouth]
   - m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 528757118509483793}
-        m_TargetAssemblyTypeName: CharacterController, Assembly-CSharp
-        m_MethodName: LightAttack
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
     m_ActionId: 4e7c1961-c68c-48bf-ba7f-e90a2678d72a
     m_ActionName: Game/LightAttack[/XInputControllerWindows/buttonEast,/XInputControllerWindows1/buttonEast]
   - m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 528757118509483793}
-        m_TargetAssemblyTypeName: CharacterController, Assembly-CSharp
-        m_MethodName: HeavyAttack
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
     m_ActionId: ad13df80-fe61-4d1f-8258-7083b75a76f8
     m_ActionName: Game/HeavyAttack[/XInputControllerWindows/buttonWest,/XInputControllerWindows1/buttonWest,/XInputControllerWindows/buttonNorth,/XInputControllerWindows1/buttonNorth]
   - m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 528757118509483793}
-        m_TargetAssemblyTypeName: CharacterController, Assembly-CSharp
-        m_MethodName: Dodge
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
     m_ActionId: 9c6745ea-f996-4bf5-b7a5-66e6bc072570
     m_ActionName: Game/Dodge[/XInputControllerWindows/rightTrigger,/XInputControllerWindows1/rightTrigger,/XInputControllerWindows/leftTrigger,/XInputControllerWindows1/leftTrigger]
   m_NeverAutoSwitchControlSchemes: 0
