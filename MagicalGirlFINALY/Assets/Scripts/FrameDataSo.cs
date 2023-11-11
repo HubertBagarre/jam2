@@ -19,12 +19,13 @@ public class FrameDataSo : ScriptableObject
         return dict;
     }
     
-    [Serializable]
     public class FrameData
     {
         [field: SerializeField] public string AnimationName { get; private set; }
         [field: SerializeField] public int Startup { get; private set; }
         [field: SerializeField] public int Active { get; private set; }
         [field: SerializeField] public int Recovery { get; private set; }
+        [field: SerializeField] public bool StopVelocityX { get; private set; }
+        [field: SerializeField] public bool StopVelocityY { get; private set; }
     }
 }

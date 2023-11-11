@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Unity.Collections;
 using UnityEngine;
+using UnityEngine.Accessibility;
 using UnityEngine.Serialization;
 
 public class Character : MonoBehaviour
@@ -17,6 +18,9 @@ public class Character : MonoBehaviour
     [SerializeField] private float runSpeed = 5f;
     [SerializeField] private float ledgeGravity = 0.3f;
     [SerializeField] private int ledgeJumpFrames = 30;
+    [SerializeField] private int ledgeFrames = 10;
+    [SerializeField] private int groundFrames = 10;
+    [SerializeField] private int dropFrames = 10;
     
     [Space]
     [SerializeField] private float groundRange = 0.1f;
@@ -50,11 +54,14 @@ public class Character : MonoBehaviour
     [Serializable]
     private class State
     {
-        public bool grounded;
-        public bool dropping;
-        public bool ledged;
+        public bool grounded => groundFrames > 0;
+        public int groundFrames;
         
-        public bool IsAttacking => totalFrames > 0;
+        
+        public bool dropping => dropFrames > 0;
+        public int dropFrames;
+        
+        public bool IsActionPending => totalFrames > 0;
         public int totalFrames => startup + active + recovering;
         public int startup;
         public int active;
@@ -68,16 +75,15 @@ public class Character : MonoBehaviour
         public bool ledgeJumped => jumpFrames > 0;
         public int jumpFrames;
         
-        public bool CanInput => !Stunned && !IsAttacking && !dead;
+        public bool ledged => ledgeFrames > 0;
+        public int ledgeFrames;
+        
+        public bool CanInput => !Stunned && !IsActionPending && !dead;
         
         public bool dead;
 
         public void ResetStates()
         {
-            grounded = false;
-            ledged = false;
-            dropping = false;
-            
             maxStunDuration = 0;
             stunDuration = 0;
         
@@ -119,13 +125,11 @@ public class Character : MonoBehaviour
     {
         if(CannotInput) return;
 
-        var canJump = state.grounded || (state.ledged && !ledgeJumpIsAirJump);
-
-        if (!canJump) canJump = airJumpsLeft > 0;
+        var grounded = state.grounded || (state.ledged && !ledgeJumpIsAirJump);
         
-        if(!canJump) return;
+        if (!grounded && airJumpsLeft <=  0) return;
         
-        airJumpsLeft--;
+        if(!grounded) airJumpsLeft--;
         
         cachedVelocity = rb.velocity;
         cachedVelocity.y = 0;
@@ -145,7 +149,7 @@ public class Character : MonoBehaviour
     {
         if(CannotInput) return;
         
-        rb.velocity = Vector3.zero; //TODO do better
+        //rb.velocity = Vector3.zero; //TODO do better
         
         var frameData = AttackUp(heavy);
         
@@ -165,6 +169,7 @@ public class Character : MonoBehaviour
             
             FrameDataSo.FrameData AttackDown(bool heavyAttack)
             {
+                
                 return frameDataDict[state.grounded ? (heavyAttack ? "DownHeavy" : "DownLight") : (heavyAttack ? "GroundPound" : "DownAir")];
             }
         
@@ -187,6 +192,11 @@ public class Character : MonoBehaviour
         
         Debug.Log($"{frameData.AnimationName}");
         
+         rb.velocity = new Vector3(
+             (frameData.StopVelocityX) ? 0 : rb.velocity.x, 
+             (frameData.StopVelocityY) ? 0 : rb.velocity.y, 
+             rb.velocity.z);
+        
         animator.Play(frameData.AnimationName);
         state.startup = frameData.Startup;
         state.active = frameData.Active;
@@ -207,6 +217,9 @@ public class Character : MonoBehaviour
         DecreaseAttackFrames();
         DecreaseInvulFrames();
         DecreaseJumpFrames();
+        DecreaseLedgeFrames();
+        DecreaseGroundFrames();
+        DecreaseDropFrames();
         Drop();
         CheckIsGrounded();
         CheckLedging();
@@ -217,6 +230,8 @@ public class Character : MonoBehaviour
        if(CannotInput || state.grounded) return;
        
        if(controller.StickInput.x == 0) return;
+       
+       if (state.ledged && controller.StickInput.y == 0) return;
        
        var dir = (Vector3.right * controller.StickInput.x).normalized;
        
@@ -246,13 +261,9 @@ public class Character : MonoBehaviour
 
     private void Drop()
     {
-        state.dropping = false;
-        
         if(CannotInput) return;
         
-        // TODO probably count frames
-        
-        if(controller.StickInput.y < 0) state.dropping = true;
+        if(controller.StickInput.y < 0) state.dropFrames = dropFrames;
     }
 
     private void CheckIsGrounded()
@@ -288,7 +299,25 @@ public class Character : MonoBehaviour
         if(!state.ledgeJumped) return;
         state.jumpFrames--;
     }
-
+    
+    private void DecreaseLedgeFrames()
+    {
+        if(!state.ledged) return;
+        state.ledgeFrames--;
+    }
+    
+    private void DecreaseGroundFrames()
+    {
+        if(!state.grounded) return;
+        state.groundFrames--;
+    }
+    
+    private void DecreaseDropFrames()
+    {
+        if(!state.dropping) return;
+        state.dropFrames--;
+    }
+    
     private void DecreaseInvulFrames()
     {
         if(!state.Invulnerable) return;
@@ -297,7 +326,7 @@ public class Character : MonoBehaviour
 
     private void DecreaseAttackFrames()
     {
-        if(!state.IsAttacking) return;
+        if(!state.IsActionPending) return;
         if(state.startup > 0) state.startup--;
         else if(state.active > 0) state.active--;
         else if(state.recovering > 0) state.recovering--;
@@ -341,14 +370,14 @@ public class Character : MonoBehaviour
     public void OnLedgeTouch()
     {
         airJumpsLeft = maxAirJumps;
-        state.ledged = true;
+        state.ledgeFrames = ledgeFrames;
         gravityMultiplier = ledgeGravity;
     }
     
     public void OnTouchGround()
     {
         airJumpsLeft = maxAirJumps;
-        state.grounded = true;
+        state.groundFrames = groundFrames;
         gravityMultiplier = 0f;
         
         var inverseVel = Velocity;
@@ -358,8 +387,6 @@ public class Character : MonoBehaviour
     
     public void OnAirborne()
     {
-        state.grounded = false;
-        state.ledged = false;
         gravityMultiplier = 1f;
     }
 
