@@ -48,6 +48,7 @@ public class Character : MonoBehaviour
     public MagicalGirlController controller;
     public bool hasController = false;
     private Dictionary<string, FrameDataSo.FrameData> frameDataDict;
+    private bool OldTurnedLeft = true;
 
     [Serializable]
     private class State
@@ -364,6 +365,16 @@ public class Character : MonoBehaviour
         cachedVelocity = rb.velocity;
         cachedVelocity.x = controller.StickInput.x * runSpeed;
         rb.velocity = cachedVelocity;
+        Vector3 eulerAngle = transform.eulerAngles;
+        if (controller.StickInput.x < 0)
+        {
+            eulerAngle.y = -90;
+        }
+        else if (controller.StickInput.x > 0)
+        {
+            eulerAngle.y = 90;
+        }
+        transform.eulerAngles = eulerAngle;
     }
 
     private void Kill()
