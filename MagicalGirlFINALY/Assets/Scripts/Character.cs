@@ -68,7 +68,9 @@ public class Character : MonoBehaviour
     private bool OnCooldownShield => cooldownShield > 0;
     private bool OnCooldownDash => cooldownDash > 0;
     private float CumulDamage;
-    private bool HasLostInput = false;
+
+    [SerializeField] private int useVelocityFrames = 0;
+    [SerializeField] private bool hasMoved = false;
     
     private static readonly int animCanInput = Animator.StringToHash("canInput");
     private static readonly int animIsGrounded = Animator.StringToHash("isGrounded");
@@ -155,7 +157,9 @@ public class Character : MonoBehaviour
         state.ResetStates();
         CumulDamage = 0;
         OnPercentChanged?.Invoke(0,0);
-        HasLostInput = false;
+
+        useVelocityFrames = 0;
+        hasMoved = false;
     }
 
     public void ApplyPlayerOptions(GameManager.PlayerOptions options)
@@ -328,7 +332,6 @@ public class Character : MonoBehaviour
         DecreaseCooldownShieldFrames();
         DecreaseActivationDashFrames();
         DecreaseCooldownDashFrames();
-        StopLostInput();
         Drop();
         CheckIsGrounded();
         CheckLedging();
@@ -343,18 +346,7 @@ public class Character : MonoBehaviour
         
         Transform(false);
     }
-
-    private void StopLostInput()
-    {
-        if (CannotInput) return;
-        if (!HasLostInput) return;
-        if (!state.Stunned && controller.InputTriggered)
-        {
-            HasLostInput = false;
-            rb.velocity = Vector3.zero;
-        }
-    }
-
+    
     private void CheckLedging()
     {
         if (CannotInput || state.grounded) return;
@@ -517,8 +509,17 @@ public class Character : MonoBehaviour
 
     private void UpdateMove()
     {
+        if(useVelocityFrames > 0) useVelocityFrames--;
+        
         if (CannotInput) return;
+        
         if (state.ledged || state.ledgeJumped) return;
+
+        
+        if(controller.StickInput.x != 0)hasMoved = true;
+        
+        if(useVelocityFrames > 0 && !hasMoved) return;
+        
 
         cachedVelocity = rb.velocity;
         cachedVelocity.x = controller.StickInput.x * runSpeed;
@@ -587,9 +588,14 @@ public class Character : MonoBehaviour
         CurrentAnimator.Play("Hit");
         normalModel.ResetHitboxes();
         transformedModel.ResetHitboxes();
+
+        var force = data.force;
+        if(!data.fixedForce) force *= CumulDamage * 0.01f;
         
-        rb.AddForce(data.direction * data.force * (CumulDamage * 0.01f), ForceMode.VelocityChange); //multiply by percentDamage
-        HasLostInput = true;
+        rb.AddForce(data.direction * force, ForceMode.VelocityChange); //multiply by percentDamage
+        
+        useVelocityFrames = data.useVelocityDuration;
+        hasMoved = false;
     }
     
     

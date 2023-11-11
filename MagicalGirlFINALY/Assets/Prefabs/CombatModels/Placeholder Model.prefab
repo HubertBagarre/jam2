@@ -1173,6 +1173,7 @@ MonoBehaviour:
     fixedForce: 0
     damage: 10
     maxStunDuration: 10
+    useVelocityDuration: 120
 --- !u!1 &4285468783995001316
 GameObject:
   m_ObjectHideFlags: 0

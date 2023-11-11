@@ -304,6 +304,11 @@ PrefabInstance:
       propertyPath: m_WarningMessage
       value: 
       objectReference: {fileID: 0}
+    - target: {fileID: 4781989688017904965, guid: 3a182e63e8e93754ab243771feb4e4c2,
+        type: 3}
+      propertyPath: hitData.useVelocityDuration
+      value: 10
+      objectReference: {fileID: 0}
     - target: {fileID: 8958062694798543565, guid: 3a182e63e8e93754ab243771feb4e4c2,
         type: 3}
       propertyPath: m_IsActive
@@ -526,6 +531,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4460291200769018199, guid: 35b4c455e382c914ab8148b8e4b610cb,
+        type: 3}
+      propertyPath: minPlayers
+      value: 2
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 35b4c455e382c914ab8148b8e4b610cb, type: 3}

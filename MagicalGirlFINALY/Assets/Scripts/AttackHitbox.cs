@@ -42,4 +42,5 @@ public struct HitData
     public bool fixedForce;
     public float damage;
     public int maxStunDuration;
+    public int useVelocityDuration;
 }
