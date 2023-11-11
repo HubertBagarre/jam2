@@ -1,6 +1,4 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class AttackHitbox : MonoBehaviour
@@ -44,4 +42,5 @@ public struct HitData
     public bool fixedForce;
     public float damage;
     public int maxStunDuration;
+    public int useVelocityDuration;
 }
