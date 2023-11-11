@@ -199,13 +199,23 @@ public class GameManager : MonoBehaviour
         
         var playerPercent = Instantiate(playerPercentPrefab,playerPercentLayout);
 
+        playerPercent.SetupStocks(stocksPerCharacter);
+        
         character.OnPercentChanged += UpdatePercent;
+        Character.OnDeath += DecreaseStocks;
         
         return;
         
         void UpdatePercent(int previous,int percent)
         {
             playerPercent.PercentText.text = $"{percent}%"; //TODO anim stylé
+        }
+
+        void DecreaseStocks(Character c)
+        {
+            if(character != c ) return;
+            
+            playerPercent.LoseStock();
         }
     }
     
