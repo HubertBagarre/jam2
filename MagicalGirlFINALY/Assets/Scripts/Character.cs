@@ -405,9 +405,6 @@ public class Character : MonoBehaviour
     {
         if (!state.dashed) return;
         state.dashFrames--;
-        Debug.Log(endedPositionDashRatio);
-        Debug.DrawRay(transform.position, endedPositionDashRatio,
-            Color.red);
         if (!Physics.Raycast(transform.position, endedPositionDashRatio, out var hit, 1f))
             rb.MovePosition(transform.position + endedPositionDashRatio);
     }
