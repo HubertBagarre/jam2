@@ -12,8 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c88fd576846294c4aa1b4ee455a6d944, type: 3}
   m_Name: TestDATA
   m_EditorClassIdentifier: 
-  <AnimatorController>k__BackingField: {fileID: 9100000, guid: 9b747e774438c5d45aeea1d6135909e9,
-    type: 2}
+  <AnimatorPrefab>k__BackingField: {fileID: 0}
   frameData:
   - <AnimationName>k__BackingField: UpHeavy
     <Startup>k__BackingField: 20
@@ -76,6 +75,24 @@ MonoBehaviour:
     <StopVelocityX>k__BackingField: 1
     <StopVelocityY>k__BackingField: 0
   - <AnimationName>k__BackingField: SideAir
+    <Startup>k__BackingField: 10
+    <Active>k__BackingField: 10
+    <Recovery>k__BackingField: 10
+    <StopVelocityX>k__BackingField: 0
+    <StopVelocityY>k__BackingField: 0
+  - <AnimationName>k__BackingField: Dash
+    <Startup>k__BackingField: 10
+    <Active>k__BackingField: 10
+    <Recovery>k__BackingField: 10
+    <StopVelocityX>k__BackingField: 0
+    <StopVelocityY>k__BackingField: 0
+  - <AnimationName>k__BackingField: Shield
+    <Startup>k__BackingField: 10
+    <Active>k__BackingField: 10
+    <Recovery>k__BackingField: 10
+    <StopVelocityX>k__BackingField: 0
+    <StopVelocityY>k__BackingField: 0
+  - <AnimationName>k__BackingField: Transformation
     <Startup>k__BackingField: 10
     <Active>k__BackingField: 10
     <Recovery>k__BackingField: 10
