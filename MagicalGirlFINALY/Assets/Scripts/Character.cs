@@ -71,9 +71,16 @@ public class Character : MonoBehaviour
         animator.Play("Attack");
     }
 
-    private void Update()
+    void Update()
     {
+        if (Input.GetKeyDown(KeyCode.T))
+           Jump();
         
+        if (Input.GetKeyDown(KeyCode.D))
+            rb.velocity = new Vector3(5, 0, 0);
+        
+        if (Input.GetKeyDown(KeyCode.Q))
+            rb.velocity = new Vector3(-5, 0, 0);
     }
     
     private void FixedUpdate()
@@ -87,6 +94,20 @@ public class Character : MonoBehaviour
     {
         OnDeath?.Invoke(this);
         Debug.Log("OOF");
+    }
+    
+    public void OnTouchGround()
+    {
+        jumpsLeft = maxAirJumps;
+        state.grounded = true;
+        rb.useGravity = false;
+        rb.velocity = new Vector3(rb.velocity.x, 0, rb.velocity.z); 
+    }
+    
+    public void OnAirborne()
+    {
+        state.grounded = false;
+        rb.useGravity = true;
     }
 
     private void OnTriggerEnter(Collider other)
