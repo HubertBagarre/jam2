@@ -7,10 +7,19 @@ using Random = UnityEngine.Random;
 
 public class GameManager : MonoBehaviour
 {
+    [Serializable]
+    public class PlayerOptions
+    {
+        [field: SerializeField] public string Name { get; private set; }
+        [field: SerializeField] public CombatModel NormalModel{ get; private set; }
+        [field: SerializeField] public CombatModel TransformedModel{ get; private set; }
+    }
+    
     [Header("Game Settings")]
     [SerializeField] private Transform respawnPoint;
     [SerializeField] private Transform[] spawnPoints;
     private List<Transform> availableSpawnPoints = new ();
+    [SerializeField] private PlayerOptions[] playerOptions;
     [SerializeField] private int stocksPerCharacter = 3;
     [SerializeField] private int minPlayers = 2;
 
@@ -22,9 +31,7 @@ public class GameManager : MonoBehaviour
     
     
     private List<MagicalGirlController> controllers = new ();
-    private Dictionary<MagicalGirlController, (Action unbindAction,bool isReady)> controllerDict = new ();
-    
-    
+    private Dictionary<MagicalGirlController, (Action unbindAction,bool isReady,int playerOptionIndex)> controllerDict = new ();
     
     private Dictionary<Character, int> stocks;
     
@@ -52,6 +59,7 @@ public class GameManager : MonoBehaviour
     private void BindControlForMenu(MagicalGirlController controller)
     {
         var playerSelection = Instantiate(playerSelectionPrefab,playerSelectionLayout);
+        var currentDir = 0;
         
         controller.Input.actions["Move"].started += ChangeCharacter;
         controller.Input.actions["Move"].performed += ChangeCharacter;
@@ -59,7 +67,7 @@ public class GameManager : MonoBehaviour
         
         controller.Input.actions["Jump"].started += ToggleReady;
         
-        controllerDict.Add(controller,(UnbindAction,false));
+        controllerDict.Add(controller,(UnbindAction,false,0));
         playerSelection.Text.text = controllerDict[controller].isReady ? "Ready" : "Not Ready";
         
         return;
@@ -77,14 +85,42 @@ public class GameManager : MonoBehaviour
         
         void ChangeCharacter(InputAction.CallbackContext context)
         {
+            var value = context.ReadValue<Vector2>();
             
+            var ready = controllerDict[controller].isReady;
+            var playerOptionIndex = controllerDict[controller].playerOptionIndex;
+
+            switch (value.x)
+            {
+                case > 0:
+                    if(currentDir > 0.5f) return;
+                    playerOptionIndex++;
+                    currentDir = 1;
+                    break;
+                case < 0:
+                    if(currentDir < -0.5f) return;
+                    playerOptionIndex--;
+                    currentDir = -1;
+                    break;
+                default:
+                    currentDir = 0;
+                    return;
+            }
+
+            if(playerOptionIndex < 0) playerOptionIndex = playerOptions.Length - 1;
+            if(playerOptionIndex >= playerOptions.Length) playerOptionIndex = 0;
+            
+            controllerDict[controller] = (UnbindAction,ready,playerOptionIndex);
+            
+            playerSelection.NameText.text = playerOptions[playerOptionIndex].Name;
         }
 
         
         void ToggleReady(InputAction.CallbackContext context)
         {
             var ready = controllerDict[controller].isReady;
-            controllerDict[controller] = (UnbindAction,!ready);
+            var playerOptionIndex = controllerDict[controller].playerOptionIndex;
+            controllerDict[controller] = (UnbindAction,!ready,playerOptionIndex);
             
             playerSelection.Text.text = controllerDict[controller].isReady ? "Ready" : "Not Ready";
 
@@ -138,6 +174,8 @@ public class GameManager : MonoBehaviour
     private void SetupCharacter(MagicalGirlController controller)
     {
         var character = controller.SpawnCharacter();
+
+        character.ApplyPlayerOptions(playerOptions[controllerDict[controller].playerOptionIndex]);
         
         var playerPercent = Instantiate(playerPercentPrefab,playerPercentLayout);
 

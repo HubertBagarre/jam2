@@ -33,16 +33,8 @@ public class MagicalGirlController : MonoBehaviour
         Debug.Log("Joined Game!");
         
         OnJoinedGame?.Invoke(this);
-        
-        
-        //input.enabled = false;
     }
     
-    private void Update()
-    {
-        
-    }
-
     public Character SpawnCharacter()
     {
         character = Instantiate(characterPrefab,Vector3.zero, spawnRotation);

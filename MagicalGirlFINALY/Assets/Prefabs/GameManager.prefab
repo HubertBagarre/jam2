@@ -384,6 +384,17 @@ MonoBehaviour:
   spawnPoints:
   - {fileID: 815013168}
   - {fileID: 203792348}
+  playerOptions:
+  - <Name>k__BackingField: Bequille
+    <NormalModel>k__BackingField: {fileID: -6361588022190968414, guid: ac2fc00aee4a27e40adaf3091c82214a,
+      type: 3}
+    <TransformedModel>k__BackingField: {fileID: -6361588022190968414, guid: ac2fc00aee4a27e40adaf3091c82214a,
+      type: 3}
+  - <Name>k__BackingField: Brawler
+    <NormalModel>k__BackingField: {fileID: -6361588022190968414, guid: ac2fc00aee4a27e40adaf3091c82214a,
+      type: 3}
+    <TransformedModel>k__BackingField: {fileID: -6361588022190968414, guid: ac2fc00aee4a27e40adaf3091c82214a,
+      type: 3}
   stocksPerCharacter: 3
   minPlayers: 1
   playerSelectionLayout: {fileID: 4080659678926837581}
