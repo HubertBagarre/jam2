@@ -15,17 +15,25 @@ public class Character : MonoBehaviour
     [SerializeField] private int maxAirJumps = 2;
     [SerializeField] private bool ledgeJumpIsAirJump = true;
 
+    [Header("Volé")]
+    [SerializeField] private float maxSpeed = 8f;
+    [SerializeField] private float acceleration = 200f;
+    [SerializeField] private AnimationCurve accelerationFactorFromDot;
+    [SerializeField] private float maxAccelForce = 150;
+    [SerializeField] private AnimationCurve maxAccelForceFactorFromDot;
+    
+    
     private int jumpsLeft;
     
     //states
-    private State state = new State();
+    private State state = new ();
 
     public static event Action<Character> OnCreated; 
     public static event Action<Character> OnDeath; 
     
-    private float targetSpeed = 0f;
-    
     private Vector3 cachedVelocity;
+    
+    public MagicalGirlController controller;
     
     private class State
     {
@@ -35,7 +43,13 @@ public class Character : MonoBehaviour
         public bool startup;
         public bool attacking;
         public bool recovering;
+        
+        
+        
+        
         public bool CanInput => !stunned && !startup && !attacking && !recovering && !dead;
+        
+        
         
         public bool dead;
     }
@@ -54,15 +68,20 @@ public class Character : MonoBehaviour
     
     public void Move(Vector2 direction)
     {
-        targetSpeed = direction.x * speed;
+        
     }
 
     public void Jump()
     {
+        if(!state.CanInput) return;
+        
         if(jumpsLeft <= 0) return;
         
         if(!state.grounded) jumpsLeft--;
-        
+
+        cachedVelocity = rb.velocity;
+        cachedVelocity.y = 0;
+        rb.velocity = cachedVelocity;
         rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
     }
 
@@ -71,22 +90,23 @@ public class Character : MonoBehaviour
         animator.Play("Attack");
     }
 
-    void Update()
+    private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.T))
-           Jump();
         
-        if (Input.GetKeyDown(KeyCode.D))
-            rb.velocity = new Vector3(5, 0, 0);
-        
-        if (Input.GetKeyDown(KeyCode.Q))
-            rb.velocity = new Vector3(-5, 0, 0);
     }
     
     private void FixedUpdate()
     {
+        UpdateMove();
+    }
+
+    private void UpdateMove()
+    {
+        if(!state.CanInput) return;
+        if(controller == null) return;
+
         cachedVelocity = rb.velocity;
-        cachedVelocity.x = targetSpeed;
+        cachedVelocity.x = controller.StickInput.x * speed;
         rb.velocity = cachedVelocity;
     }
 
@@ -122,4 +142,6 @@ public class Character : MonoBehaviour
                 break;
         }
     }
+    
+    
 }

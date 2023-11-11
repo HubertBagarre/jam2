@@ -20,7 +20,7 @@ public class MagicalGirlController : MonoBehaviour
     [field:SerializeField] public bool LightAttackPressed { get; private set; }
     [field:SerializeField] public bool HeavyAttackPressed { get; private set; }
     [field:SerializeField] public bool DodgePressed { get; private set; }
-
+    
     private void Start()
     {
         SpawnCharacter();
@@ -30,6 +30,7 @@ public class MagicalGirlController : MonoBehaviour
     {
         character = Instantiate(characterPrefab,Vector3.zero, spawnRotation);
         hasCharacter = true;
+        character.controller = this;
     }
 
     public void Move(InputAction.CallbackContext context)
@@ -37,7 +38,7 @@ public class MagicalGirlController : MonoBehaviour
         if(!hasCharacter) return;
         StickInput = context.ReadValue<Vector2>();
         
-        character.Move(StickInput);
+        //character.Move(StickInput);
     }
     
     public void Jump(InputAction.CallbackContext context)
