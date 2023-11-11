@@ -47,14 +47,14 @@ public class Platform : MonoBehaviour
     
     private void OnCollisionEnter(Collision other)
     {
-        if (other.transform.position.y < transform.position.y) return;
+        /*if (other.transform.position.y < transform.position.y) return;
         Character ch = other.gameObject.GetComponent<Character>();
-        OnCharacterCollide(ch);
+        OnCharacterCollide(ch);*/
     }
          
     private void OnCollisionExit(Collision other)
     {
-        Character ch = other.gameObject.GetComponent<Character>();
-        OnCharacterExit(ch);
+        /*Character ch = other.gameObject.GetComponent<Character>();
+        OnCharacterExit(ch);*/
     }
 }

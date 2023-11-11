@@ -161,8 +161,33 @@ public class Character : MonoBehaviour
         DecreaseStunDuration();
         DecreaseAttackFrames();
         DecreaseInvulFrames();
+        CheckIsGrounded();
     }
-    
+
+    private void CheckIsGrounded()
+    {
+        if(state.dead || state.Stunned) return;
+        
+        if (Physics.Raycast(transform.position - Vector3.right *0.5f, Vector3.down, out var hitL, 1.1f))
+        {
+            if (hitL.collider.gameObject.layer == 8 && !state.grounded)
+            {
+                OnTouchGround();
+            }
+        }
+        else if (Physics.Raycast(transform.position + Vector3.right *0.5f, Vector3.down, out var hitR, 1.1f))
+        {
+            if (hitR.collider.gameObject.layer == 8 && !state.grounded)
+            {
+                OnTouchGround();
+            }
+        }
+        else if(state.grounded)
+        {
+            OnAirborne();
+        }
+    }
+
     private void DecreaseInvulFrames()
     {
         if(!state.Invulnerable) return;
@@ -213,13 +238,15 @@ public class Character : MonoBehaviour
         jumpsLeft = maxAirJumps;
         state.grounded = true;
         rb.useGravity = false;
-        rb.velocity = new Vector3(rb.velocity.x, 0, rb.velocity.z); 
+        rb.velocity = new Vector3(rb.velocity.x, 0, rb.velocity.z);
+        Debug.Log("grounded");
     }
     
     public void OnAirborne()
     {
         state.grounded = false;
         rb.useGravity = true;
+        Debug.Log("airborne");
     }
 
     public void TakeHit(HitData data)
