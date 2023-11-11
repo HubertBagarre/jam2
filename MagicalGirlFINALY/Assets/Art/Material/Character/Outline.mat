@@ -7,7 +7,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Outline 1
+  m_Name: Outline
   m_Shader: {fileID: 4800000, guid: e88aeddd2ef1f934d805981244872e27, type: 3}
   m_ValidKeywords:
   - _HALFTONESHAPE_DOT
@@ -29,7 +29,7 @@ Material:
     serializedVersion: 3
     m_TexEnvs:
     - _BaseMap:
-        m_Texture: {fileID: 2800000, guid: 5bff88edc6faa7f4bbff987ff7b12688, type: 3}
+        m_Texture: {fileID: 2800000, guid: 2399861fd3e0a1c438effb1b6910d3c9, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _BumpMap:
@@ -69,7 +69,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
-        m_Texture: {fileID: 0}
+        m_Texture: {fileID: 2800000, guid: 2399861fd3e0a1c438effb1b6910d3c9, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _RampTex:
@@ -157,7 +157,7 @@ Material:
     - _NoiseStrength: 0.1
     - _OutlineEnabled: 1
     - _OutlineMode: 0
-    - _OutlineWidth: 2.87
+    - _OutlineWidth: 6.24
     - _OverrideShadowColor: 0
     - _QueueControl: 0
     - _QueueOffset: 50
@@ -167,7 +167,7 @@ Material:
     - _RimLightAlign: -1
     - _RimLightSmoothness: 0
     - _RimLightSmootness: 0
-    - _RimPower: 0.287
+    - _RimPower: 0.481
     - _SPECULARHIGHLIGHTS: 0
     - _ShadowPatternSize: 0.3
     - _Shininess: 0
@@ -177,7 +177,7 @@ Material:
     - _SpecClipMaskScale: 1
     - _SpecColor_1: 0.1
     - _SpecFalloff: 0
-    - _SpecShadowStrength: 1
+    - _SpecShadowStrength: 0
     - _SpecShadowStrenth: 1
     - _SpecSource: 0
     - _SpecularClipStrength: 0
@@ -197,7 +197,7 @@ Material:
     - _ZWrite: 1
     m_Colors:
     - Color_e33122dd1341407eb6ef24a34b660f09: {r: 0, g: 0, b: 0, a: 0}
-    - _BaseColor: {r: 0, g: 0.31117582, b: 1, a: 1}
+    - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 119.42823, g: 119.42823, b: 119.42823, a: 1}
     - _FaceFrontDirection: {r: 0, g: 0, b: 1, a: 0}
@@ -207,10 +207,10 @@ Material:
     - _HalftoneColor: {r: 0.517647, g: 0.517647, b: 0.517647, a: 1}
     - _HatchingColor: {r: 0, g: 0, b: 0, a: 1}
     - _HatchingScale: {r: 15, g: 1, b: 0, a: 0}
-    - _OutlineColor: {r: 0, g: 0.7999997, b: 1, a: 1}
+    - _OutlineColor: {r: 1, g: 0.11792451, b: 0.33584908, a: 1}
     - _OutlineDistancFade: {r: -90.243904, g: 200, b: 0, a: 0}
     - _RimColor: {r: 1, g: 1, b: 1, a: 1}
-    - _ShadowColor: {r: 0.5099903, g: 0, b: 0.7830189, a: 1}
+    - _ShadowColor: {r: 0, g: 0, b: 0, a: 0.47}
     - _SpecColor: {r: 0.5, g: 0.5, b: 0.5, a: 0.5}
     - _SpherizeNormalOrigin: {r: 0, g: 0, b: 0, a: 0}
   m_BuildTextureStacks: []
