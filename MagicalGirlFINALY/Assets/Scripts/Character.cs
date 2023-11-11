@@ -223,7 +223,8 @@ public class Character : MonoBehaviour
             (frameData.StopVelocityY) ? 0 : rb.velocity.y,
             rb.velocity.z);
 
-        animator.Play(frameData.AnimationName);
+        animator.CrossFade(frameData.AnimationName,0.1f);
+        
         state.startup = frameData.Startup;
         state.active = frameData.Active;
         state.recovering = frameData.Recovery;
@@ -391,6 +392,7 @@ public class Character : MonoBehaviour
     {
         UpdateMove();
         ApplyGravity();
+        HandleAnimations();
     }
 
     private void ApplyGravity()
@@ -478,4 +480,15 @@ public class Character : MonoBehaviour
                 break;
         }
     }
+    
+    private void HandleAnimations()
+    {
+        animator.SetInteger("stunnedFrames",state.stunDuration);
+        
+        if(CannotInput) return;
+
+        var running = state.grounded && controller.StickInput.x != 0;
+        animator.SetBool("isRunning",running);
+    }
+
 }
