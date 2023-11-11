@@ -89,4 +89,16 @@ public class MagicalGirlController : MonoBehaviour
         if(context.started) DodgePressed = true;
         if(context.canceled) DodgePressed = false;
     }
+
+    public void Shield(InputAction.CallbackContext context)
+    {
+        if(!hasCharacter) return;
+        
+        if (context.started)
+        {
+            //ShieldPressed = true;
+            character.Shield();
+        }
+        //if(context.canceled) ShieldPressed = false;
+    }
 }

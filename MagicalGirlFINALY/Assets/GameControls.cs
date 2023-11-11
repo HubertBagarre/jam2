@@ -71,6 +71,15 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Shield"",
+                    ""type"": ""Button"",
+                    ""id"": ""16fd3a7d-8a8c-4e52-ae6f-f67590540ce7"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -150,6 +159,17 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
                     ""action"": ""Dodge"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""7936416f-1eb8-4b23-b307-aa8aead5bbda"",
+                    ""path"": ""<Gamepad>/leftShoulder"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Shield"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -175,6 +195,7 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
         m_Game_LightAttack = m_Game.FindAction("LightAttack", throwIfNotFound: true);
         m_Game_HeavyAttack = m_Game.FindAction("HeavyAttack", throwIfNotFound: true);
         m_Game_Dodge = m_Game.FindAction("Dodge", throwIfNotFound: true);
+        m_Game_Shield = m_Game.FindAction("Shield", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -241,6 +262,7 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
     private readonly InputAction m_Game_LightAttack;
     private readonly InputAction m_Game_HeavyAttack;
     private readonly InputAction m_Game_Dodge;
+    private readonly InputAction m_Game_Shield;
     public struct GameActions
     {
         private @GameControls m_Wrapper;
@@ -250,6 +272,7 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
         public InputAction @LightAttack => m_Wrapper.m_Game_LightAttack;
         public InputAction @HeavyAttack => m_Wrapper.m_Game_HeavyAttack;
         public InputAction @Dodge => m_Wrapper.m_Game_Dodge;
+        public InputAction @Shield => m_Wrapper.m_Game_Shield;
         public InputActionMap Get() { return m_Wrapper.m_Game; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -274,6 +297,9 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
             @Dodge.started += instance.OnDodge;
             @Dodge.performed += instance.OnDodge;
             @Dodge.canceled += instance.OnDodge;
+            @Shield.started += instance.OnShield;
+            @Shield.performed += instance.OnShield;
+            @Shield.canceled += instance.OnShield;
         }
 
         private void UnregisterCallbacks(IGameActions instance)
@@ -293,6 +319,9 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
             @Dodge.started -= instance.OnDodge;
             @Dodge.performed -= instance.OnDodge;
             @Dodge.canceled -= instance.OnDodge;
+            @Shield.started -= instance.OnShield;
+            @Shield.performed -= instance.OnShield;
+            @Shield.canceled -= instance.OnShield;
         }
 
         public void RemoveCallbacks(IGameActions instance)
@@ -326,5 +355,6 @@ public partial class @GameControls: IInputActionCollection2, IDisposable
         void OnLightAttack(InputAction.CallbackContext context);
         void OnHeavyAttack(InputAction.CallbackContext context);
         void OnDodge(InputAction.CallbackContext context);
+        void OnShield(InputAction.CallbackContext context);
     }
 }
