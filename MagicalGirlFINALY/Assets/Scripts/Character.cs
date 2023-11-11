@@ -12,15 +12,23 @@ public class Character : MonoBehaviour
     
     [Header("Settings")]
     [SerializeField] private float speed = 5f;
+
+    [SerializeField] private float groundRange = 0.1f;
+    [Space]
     [SerializeField] private float jumpForce = 5f;
     [SerializeField] private int maxAirJumps = 2;
     [SerializeField] private bool ledgeJumpIsAirJump = true;
+    
+    
+    
     private int jumpsLeft;
     
     [SerializeField] private float respawnInvulSeconds= 3;
     
     //states
-    private State state = new ();
+    [SerializeField] private State state = new ();
+    
+    public Vector3 Velocity => rb.velocity;
 
     public static event Action<Character> OnCreated; 
     public static event Action<Character> OnDeath; 
@@ -30,6 +38,7 @@ public class Character : MonoBehaviour
     public MagicalGirlController controller;
     private Dictionary<string,FrameDataSo.FrameData> frameDataDict;
     
+    [Serializable]
     private class State
     {
         public bool grounded;
@@ -167,17 +176,19 @@ public class Character : MonoBehaviour
     private void CheckIsGrounded()
     {
         if(state.dead || state.Stunned) return;
-        
-        if (Physics.Raycast(transform.position - Vector3.right *0.5f, Vector3.down, out var hitL, 1.1f))
+
+        var height = 0.5f;
+        var groundHit = Physics.Raycast(transform.position - Vector3.right * 0.5f - Vector3.up * height, Vector3.down, out var hit,
+            groundRange+height);
+        if (!groundHit)
+            groundHit = Physics.Raycast(transform.position + Vector3.right * 0.5f - Vector3.up * height, Vector3.down, out hit,
+                groundRange+height);
+        Debug.DrawRay(transform.position - Vector3.right * 0.5f - Vector3.up, Vector3.down * groundRange, Color.red);
+        Debug.DrawRay(transform.position + Vector3.right * 0.5f - Vector3.up, Vector3.down * groundRange, Color.red);
+        if(Velocity.y > 0) groundHit = false;
+        if(groundHit)
         {
-            if (hitL.collider.gameObject.layer == 8 && !state.grounded)
-            {
-                OnTouchGround();
-            }
-        }
-        else if (Physics.Raycast(transform.position + Vector3.right *0.5f, Vector3.down, out var hitR, 1.1f))
-        {
-            if (hitR.collider.gameObject.layer == 8 && !state.grounded)
+            if (hit.collider.gameObject.layer == 8 && !state.grounded)
             {
                 OnTouchGround();
             }
@@ -239,14 +250,12 @@ public class Character : MonoBehaviour
         state.grounded = true;
         rb.useGravity = false;
         rb.velocity = new Vector3(rb.velocity.x, 0, rb.velocity.z);
-        Debug.Log("grounded");
     }
     
     public void OnAirborne()
     {
         state.grounded = false;
         rb.useGravity = true;
-        Debug.Log("airborne");
     }
 
     public void TakeHit(HitData data)

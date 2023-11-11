@@ -6,6 +6,8 @@ using UnityEngine;
 
 public class Platform : MonoBehaviour
 {
+    [field:SerializeField] public bool isTransparent { get; private set; }
+    
     [SerializeField] private Vector3 finalPos;
     
     private List<Character> _colliders = new List<Character>();
@@ -19,7 +21,7 @@ public class Platform : MonoBehaviour
     {
         ch.transform.position = new Vector3(ch.transform.position.x, transform.position.y + transform.lossyScale.y * 1.5f , ch.transform.position.z);
         _colliders.Add(ch);
-        ch.OnTouchGround();
+        //ch.OnTouchGround();
     }
     
     private void OnCharacterExit(Character ch)
@@ -27,7 +29,7 @@ public class Platform : MonoBehaviour
         if (_colliders.Contains(ch))
         {
             _colliders.Remove(ch);
-            ch.OnAirborne();
+            //ch.OnAirborne();
         }
     }
 

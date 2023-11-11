@@ -132,8 +132,9 @@ MonoBehaviour:
   rb: {fileID: 786009414538781988}
   animator: {fileID: 1917074273144749690}
   frameDataSo: {fileID: 11400000, guid: b96639d5d7cbb44409c2713c8c31b838, type: 2}
+  hitboxes: []
   speed: 5
-  jumpForce: 5
+  jumpForce: 9
   maxAirJumps: 2
   ledgeJumpIsAirJump: 1
   respawnInvulSeconds: 3
@@ -264,6 +265,7 @@ MonoBehaviour:
   own: {fileID: 786009414538781991}
   hitData:
     stunDuration: 60
+    directionType: 0
     direction: {x: 0, y: 0, z: 0}
     force: 10
     damage: 0
