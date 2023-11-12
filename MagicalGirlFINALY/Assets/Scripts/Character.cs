@@ -340,13 +340,13 @@ public partial class Character : MonoBehaviour
         OnDeath?.Invoke(this);
     }
 
-    public void OnLedgeTouch()
+    private void OnLedgeTouch()
     {
         airJumpsLeft = maxAirJumps;
         gravityMultiplier = ledgeGravity;
     }
 
-    public void OnTouchGround()
+    private void OnTouchGround()
     {
         state.grounded = true;
         airJumpsLeft = maxAirJumps;
@@ -357,7 +357,7 @@ public partial class Character : MonoBehaviour
         rb.AddForce(inverseVel, ForceMode.VelocityChange);
     }
 
-    public void OnAirborne()
+    private void OnAirborne()
     {
         state.grounded = false;
         gravityMultiplier = 1f;
@@ -365,7 +365,6 @@ public partial class Character : MonoBehaviour
     
     private void OnTriggerEnter(Collider other)
     {
-        //Debug.Log($"{other.gameObject.name} entered trigger (layer {other.gameObject.layer})");
         switch (other.gameObject.layer)
         {
             case 9:

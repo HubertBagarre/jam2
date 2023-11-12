@@ -16,7 +16,7 @@ public partial class Character : MonoBehaviour
         Transformation(false);
     }
 
-    public void Transformation(bool transformed)
+    private void Transformation(bool transformed)
     {
         Debug.Log($"Transformation : {transformed}");
         

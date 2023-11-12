@@ -34,11 +34,11 @@ public partial class Character : MonoBehaviour
             OnAirborne();
         }
     }
-    
-        public void InitStats()
+
+    private void InitStats()
     {
         if (CurrentFrameData) frameDataDict = CurrentFrameData.MakeDictionary();
-        
+
         normalModel.ResetHitboxes();
         transformedModel.ResetHitboxes();
 
@@ -55,7 +55,7 @@ public partial class Character : MonoBehaviour
 
         useVelocityFrames = 0;
         hasMoved = false;
-        
+
         normalModel.Show(true);
         transformedModel.Show(false);
     }
@@ -70,8 +70,8 @@ public partial class Character : MonoBehaviour
 
         Transformation(false);
     }
-    
-       private void CheckLedging()
+
+    private void CheckLedging()
     {
         if (CannotInput || state.grounded) return;
 
@@ -111,7 +111,7 @@ public partial class Character : MonoBehaviour
 
         if (controller.StickInput.y < -0.5f) state.dropFrames = dropFrames;
     }
-    
+
     public void TakeHit(HitData data)
     {
         if (state.Invulnerable || state.dead || state.shielded) return;
