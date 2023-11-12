@@ -11,17 +11,24 @@ public partial class Character : MonoBehaviour
         var rayDist = groundRange + groundCheckHeight;
 
         var groundHit = false;
-        RaycastHit hit;
 
         foreach (var feet in CurrentBattleModel.Foots)
         {
-            Vector3 transformedFeetPos =
-                transform.position - Vector3.right * 0.5f - Vector3.up * (1 - groundCheckHeight);
+            Vector3 transformedFeetPos = transform.position - Vector3.up * (1 - groundCheckHeight);
             transformedFeetPos.x = feet.position.x;
             groundHit = Physics.Raycast(
-                transformedFeetPos, Vector3.down, out hit,
+                transformedFeetPos, Vector3.down, out _,
                 rayDist, mask);
+            Debug.DrawRay(transformedFeetPos, Vector3.down * rayDist, Color.red, 0.1f);
             if (groundHit) break;
+        }
+        if(CurrentBattleModel.Foots.Count == 0)
+        {
+            Vector3 transformedFeetPos = transform.position - Vector3.up * (1 - groundCheckHeight);
+            groundHit = Physics.Raycast(
+                transformedFeetPos, Vector3.down, out _,
+                rayDist, mask);
+            Debug.DrawRay(transformedFeetPos, Vector3.down * rayDist, Color.red, 0.1f);
         }
 
         if (Velocity.y > 0) groundHit = false;

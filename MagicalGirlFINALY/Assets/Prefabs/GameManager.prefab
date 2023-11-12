@@ -599,12 +599,12 @@ MonoBehaviour:
   - {fileID: 203792348}
   playerOptions:
   - <Name>k__BackingField: Bequille
-    <NormalModel>k__BackingField: {fileID: -6361588022190968414, guid: ac2fc00aee4a27e40adaf3091c82214a,
+    <NormalModel>k__BackingField: {fileID: 3879579689496312274, guid: 22471ac4830727b4a9983e797e989598,
       type: 3}
     <TransformedModel>k__BackingField: {fileID: -6361588022190968414, guid: 64477c117d24a2640a18e0963abf120b,
       type: 3}
   - <Name>k__BackingField: Brawler
-    <NormalModel>k__BackingField: {fileID: -6361588022190968414, guid: ac2fc00aee4a27e40adaf3091c82214a,
+    <NormalModel>k__BackingField: {fileID: 3879579689496312274, guid: 22471ac4830727b4a9983e797e989598,
       type: 3}
     <TransformedModel>k__BackingField: {fileID: -6361588022190968414, guid: 64477c117d24a2640a18e0963abf120b,
       type: 3}
