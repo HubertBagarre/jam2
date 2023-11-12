@@ -290,13 +290,16 @@ public class GameManager : MonoBehaviour
 
     private void RespawnCharacter(Character character)
     {
-        character.transform.position = respawnPoint.position;
         if(!stocks.ContainsKey(character)) SpawnCharacter(character);
         stocks[character]--;
         
-        if(stocks[character] > 0) character.Respawn();
+        if (stocks[character] > 0 || stocks.Count <= 1)
+        {
+            character.transform.position = respawnPoint.position;
+            character.Respawn();
+        }
         
-        if(stocks.Count(stock => stock.Value > 0) > 1) return;
+        if(stocks.Count(stock => stock.Value > 0) > 1 || stocks.Count <= 1) return;
         
         var winner = stocks.FirstOrDefault(stock => stock.Value > 0).Key;
 
