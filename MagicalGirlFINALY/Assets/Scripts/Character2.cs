@@ -9,13 +9,14 @@ public partial class Character : MonoBehaviour
         var mask = state.dropping ? platformLayerDrop : platformLayer;
 
         var rayDist = groundRange + groundCheckHeight;
-        
+
         var groundHit = false;
         RaycastHit hit;
 
         foreach (var feet in CurrentBattleModel.Foots)
         {
-            Vector3 transformedFeetPos = transform.position - Vector3.right * 0.5f - Vector3.up * (1 - groundCheckHeight);
+            Vector3 transformedFeetPos =
+                transform.position - Vector3.right * 0.5f - Vector3.up * (1 - groundCheckHeight);
             transformedFeetPos.x = feet.position.x;
             groundHit = Physics.Raycast(
                 transformedFeetPos, Vector3.down, out hit,
@@ -52,9 +53,12 @@ public partial class Character : MonoBehaviour
         rb.velocity = Vector3.zero;
 
         state.ResetStates();
-        CumulDamage = 0;
+        if (!firstTransform)
+            CumulDamage = 0;
         OnPercentChanged?.Invoke(0, 0);
-        OnGainUltimate?.Invoke(this, 0f);
+        OnGainUltimate?.Invoke(this, CumulDamage);
+
+        CumulUltimate = 0;
 
         useVelocityFrames = 0;
         hasMoved = false;
@@ -74,6 +78,7 @@ public partial class Character : MonoBehaviour
         transformedModel.gameObject.name = "TransformedModel";
 
         Transformation(false);
+        firstTransform = true;
     }
 
     private void CheckLedging()
@@ -85,25 +90,26 @@ public partial class Character : MonoBehaviour
         if (state.ledged && controller.StickInput.y == 0) return;
 
         var dir = (Vector3.right * controller.StickInput.x).normalized;
-        
-        
+
+
         var rayDist = groundRange + groundCheckHeight;
         var ledgeHit = false;
         RaycastHit hit;
-        
-            Vector3 transformedFeetPosL = transform.position - Vector3.up * 0.5f + dir * ((1 - groundCheckHeight) * 0.5f);
-            transformedFeetPosL.x = CurrentBattleModel.Body.position.x;
-            ledgeHit = Physics.Raycast(transformedFeetPosL,
+
+        Vector3 transformedFeetPosL = transform.position - Vector3.up * 0.5f + dir * ((1 - groundCheckHeight) * 0.5f);
+        transformedFeetPosL.x = CurrentBattleModel.Body.position.x;
+        ledgeHit = Physics.Raycast(transformedFeetPosL,
+            dir, out hit,
+            rayDist, platformLayer);
+        if (!ledgeHit)
+        {
+            Vector3 transformedFeetPosR =
+                transform.position + Vector3.up * 0.5f + dir * ((1 - groundCheckHeight) * 0.5f);
+            transformedFeetPosR.x = CurrentBattleModel.Body.position.x;
+            ledgeHit = Physics.Raycast(transformedFeetPosR,
                 dir, out hit,
                 rayDist, platformLayer);
-            if (!ledgeHit)
-            {
-                Vector3 transformedFeetPosR = transform.position + Vector3.up * 0.5f + dir * ((1 - groundCheckHeight) * 0.5f);
-                transformedFeetPosR.x = CurrentBattleModel.Body.position.x;
-                ledgeHit = Physics.Raycast(transformedFeetPosR,
-                    dir, out hit,
-                    rayDist, platformLayer); 
-            }
+        }
 
         if (ledgeHit)
         {
@@ -112,6 +118,7 @@ public partial class Character : MonoBehaviour
                 state.ledgeDirection = dir;
                 OnLedgeTouch();
             }
+
             state.ledgeFrames = ledgeFrames;
         }
         else if (!state.grounded)
@@ -134,9 +141,9 @@ public partial class Character : MonoBehaviour
         state.startup = 0;
         state.active = 0;
         state.recovering = 0;
-        
+
         gravityMultiplier = 1f;
-        
+
         var prev = (int)CumulDamage;
         CumulDamage += data.damage;
         OnPercentChanged?.Invoke(prev, (int)CumulDamage);

@@ -19,6 +19,7 @@ public partial class Character : MonoBehaviour
     private void Transformation(bool transformed)
     {
         Debug.Log($"Transformation : {transformed}");
+        firstTransform = false;
 
 
         if (CurrentFrameData) frameDataDict = CurrentFrameData.MakeDictionary();
