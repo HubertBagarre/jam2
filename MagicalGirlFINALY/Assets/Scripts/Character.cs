@@ -204,6 +204,16 @@ public partial class Character : MonoBehaviour, ICameraFollow
     {
         if (!state.Invulnerable) return;
         state.invulFrames--;
+
+        var blink = state.invulFrames % CurrentBattleModel.ratioChangeColor > CurrentBattleModel.ratioChangeColor / 2;
+        
+        CurrentBattleModel.changeRimLightInvulnerability(blink);
+        
+        if (state.invulFrames == 0)
+        {
+            transformedModel.ChangeMaterial(false);
+            normalModel.ChangeMaterial(false);
+        }
     }
 
     private void DecreaseActionFrames()

@@ -60,6 +60,8 @@ public partial class Character : MonoBehaviour
             InitStats();
             state.dead = false;
             state.invulFrames = (int)(respawnInvulSeconds * 60);
+            transformedModel.ChangeMaterial(true);
+            normalModel.ChangeMaterial(true);
             
             transform.position = position;
         }

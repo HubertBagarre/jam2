@@ -89,9 +89,19 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: -1953213378237915967, guid: 6a296018bd487f3429eca08a5d1491a2,
         type: 3}
+      propertyPath: renderer
+      value: 
+      objectReference: {fileID: 2355671217641624119}
+    - target: {fileID: -1953213378237915967, guid: 6a296018bd487f3429eca08a5d1491a2,
+        type: 3}
       propertyPath: fx.Array.size
       value: 2
       objectReference: {fileID: 0}
+    - target: {fileID: -1953213378237915967, guid: 6a296018bd487f3429eca08a5d1491a2,
+        type: 3}
+      propertyPath: normalMaterial
+      value: 
+      objectReference: {fileID: 2100000, guid: cc5f14b4b36a14f4db9d1317aa5175a4, type: 2}
     - target: {fileID: -1953213378237915967, guid: 6a296018bd487f3429eca08a5d1491a2,
         type: 3}
       propertyPath: fx.Array.data[0]
@@ -107,6 +117,11 @@ PrefabInstance:
       propertyPath: <Body>k__BackingField
       value: 
       objectReference: {fileID: 3418897982366068689}
+    - target: {fileID: -1953213378237915967, guid: 6a296018bd487f3429eca08a5d1491a2,
+        type: 3}
+      propertyPath: InvulnerabilityMaterial
+      value: 
+      objectReference: {fileID: 2100000, guid: 920f3b46cb1681441932f61f4aa31be4, type: 2}
     - target: {fileID: -1953213378237915967, guid: 6a296018bd487f3429eca08a5d1491a2,
         type: 3}
       propertyPath: <Foots>k__BackingField.Array.size
@@ -193,6 +208,12 @@ Transform:
 --- !u!4 &2060042398886700215 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5595016987333575076, guid: 6a296018bd487f3429eca08a5d1491a2,
+    type: 3}
+  m_PrefabInstance: {fileID: 5851235758285382931}
+  m_PrefabAsset: {fileID: 0}
+--- !u!137 &2355671217641624119 stripped
+SkinnedMeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 8179317121605302052, guid: 6a296018bd487f3429eca08a5d1491a2,
     type: 3}
   m_PrefabInstance: {fileID: 5851235758285382931}
   m_PrefabAsset: {fileID: 0}
