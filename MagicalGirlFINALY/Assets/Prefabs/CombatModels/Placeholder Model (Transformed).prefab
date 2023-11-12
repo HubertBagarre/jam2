@@ -73,7 +73,8 @@ MonoBehaviour:
   <Animator>k__BackingField: {fileID: 6770286958793494797}
   <FrameData>k__BackingField: {fileID: 11400000, guid: b96639d5d7cbb44409c2713c8c31b838,
     type: 2}
-  <ColoredRenderers>k__BackingField: []
+  <ColoredRenderers>k__BackingField:
+  - {fileID: 6470201196962683239}
   <Foots>k__BackingField:
   - {fileID: 3172469324028211885}
   - {fileID: 355574213122886368}
@@ -85,10 +86,11 @@ MonoBehaviour:
   fx: []
   hitboxes:
   - {fileID: 374712135297452594}
-  renderer: {fileID: 6470201196962683239}
-  normalMaterial: {fileID: 2100000, guid: 6fb75892f372fd34c95cafb24be8cb3c, type: 2}
+  modifiedRenderers:
+  - {fileID: 6470201196962683239}
   InvulnerabilityMaterial: {fileID: 2100000, guid: 920f3b46cb1681441932f61f4aa31be4,
     type: 2}
+  HitMaterial: {fileID: 2100000, guid: dcfd7e5a5a5b6664584ac8e63d5d8671, type: 2}
 --- !u!1 &211703602486445545
 GameObject:
   m_ObjectHideFlags: 0
@@ -1179,7 +1181,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   hit: 0
-  own: {fileID: 0}
   hitData:
     stunDuration: 60
     directionType: 0

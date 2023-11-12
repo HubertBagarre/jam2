@@ -49,7 +49,7 @@ public class CombatModel : MonoBehaviour
     {
         foreach (var rend in modifiedRenderers)
         {
-            if (!isInvulnerable) SetNormalMaterial(rend);
+            if (isInvulnerable) SetNormalMaterial(rend);
             rend.material = isInvulnerable ? InvulnerabilityMaterial : normalMaterials[rend];
         }
         
@@ -65,7 +65,7 @@ public class CombatModel : MonoBehaviour
     {
         foreach (var rend in modifiedRenderers)
         {
-            if (!isHit) SetNormalMaterial(rend);
+            if (isHit) SetNormalMaterial(rend);
             rend.material = isHit ? HitMaterial : normalMaterials[rend];
         }
     }
