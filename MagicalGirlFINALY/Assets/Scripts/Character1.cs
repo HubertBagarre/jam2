@@ -223,9 +223,13 @@ public partial class Character : MonoBehaviour
 
         if (!state.shouldBeTransformed) return;
         state.transformedFrames--;
-        OnTransformationChargeUpdated?.Invoke(CumulUltimate);
 
         //TODO decrease cumul ultimate
+        CumulUltimate = state.transformedFrames / (float)transformationFrames;
+        
+        Debug.Log($"DecreaseTransformedFrames : {state.transformedFrames} / {transformationFrames} = {CumulUltimate}");
+        
+        OnTransformationChargeUpdated?.Invoke(CumulUltimate);
     }
 
     private void HandleAnimations()
