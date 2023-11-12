@@ -9,14 +9,19 @@ public partial class Character : MonoBehaviour
         var mask = state.dropping ? platformLayerDrop : platformLayer;
 
         var rayDist = groundRange + groundCheckHeight;
+        
+        var groundHit = false;
+        RaycastHit hit;
 
-        var groundHit = Physics.Raycast(
-            transform.position - Vector3.right * 0.5f - Vector3.up * (1 - groundCheckHeight), Vector3.down, out var hit,
-            rayDist, mask);
-        if (!groundHit)
+        foreach (var feet in CurrentBattleModel.Foots)
+        {
+            Vector3 transformedFeetPos = transform.position - Vector3.right * 0.5f - Vector3.up * (1 - groundCheckHeight);
+            transformedFeetPos.x = feet.position.x;
             groundHit = Physics.Raycast(
-                transform.position + Vector3.right * 0.5f - Vector3.up * (1 - groundCheckHeight), Vector3.down, out hit,
+                transformedFeetPos, Vector3.down, out hit,
                 rayDist, mask);
+            if (groundHit) break;
+        }
 
         if (Velocity.y > 0) groundHit = false;
         if (groundHit)
@@ -79,16 +84,24 @@ public partial class Character : MonoBehaviour
 
         var dir = (Vector3.right * controller.StickInput.x).normalized;
         
-
+        
         var rayDist = groundRange + groundCheckHeight;
-
-        var ledgeHit = Physics.Raycast(transform.position - Vector3.up * 0.5f + dir * ((1 - groundCheckHeight) * 0.5f),
-            dir, out var hit,
-            rayDist, platformLayer);
-        if (!ledgeHit)
-            ledgeHit = Physics.Raycast(transform.position + Vector3.up * 0.5f + dir * ((1 - groundCheckHeight) * 0.5f),
+        var ledgeHit = false;
+        RaycastHit hit;
+        
+            Vector3 transformedFeetPosL = transform.position - Vector3.up * 0.5f + dir * ((1 - groundCheckHeight) * 0.5f);
+            transformedFeetPosL.x = CurrentBattleModel.Body.position.x;
+            ledgeHit = Physics.Raycast(transformedFeetPosL,
                 dir, out hit,
                 rayDist, platformLayer);
+            if (!ledgeHit)
+            {
+                Vector3 transformedFeetPosR = transform.position + Vector3.up * 0.5f + dir * ((1 - groundCheckHeight) * 0.5f);
+                transformedFeetPosR.x = CurrentBattleModel.Body.position.x;
+                ledgeHit = Physics.Raycast(transformedFeetPosR,
+                    dir, out hit,
+                    rayDist, platformLayer); 
+            }
 
         if (ledgeHit)
         {
