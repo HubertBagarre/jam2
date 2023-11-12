@@ -6,6 +6,7 @@ public class CombatModel : MonoBehaviour
 {
     [field: SerializeField] public Animator Animator { get; private set; }
     [field: SerializeField] public FrameDataSo FrameData { get; private set; }
+    [field: SerializeField] public List<Transform> Foots { get; private set; }
 
     [SerializeField] private List<GameObject> objectsToShow;
     [SerializeField] private List<AttackHitbox> hitboxes = new ();
