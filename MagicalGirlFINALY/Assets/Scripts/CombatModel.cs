@@ -19,7 +19,7 @@ public class CombatModel : MonoBehaviour
 
     [FormerlySerializedAs("renderer")]
     [Header("Renderer")]
-    [SerializeField] private List<Renderer> modifiedRenderers;
+    [SerializeField] private List<Renderer> modifiedRenderers = new ();
     private Dictionary<Renderer,Material> normalMaterials = new ();
     [SerializeField] private Material InvulnerabilityMaterial;
     [SerializeField] private Material HitMaterial;

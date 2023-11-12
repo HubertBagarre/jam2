@@ -109,6 +109,11 @@ PrefabInstance:
       objectReference: {fileID: 3418897982366068689}
     - target: {fileID: -1953213378237915967, guid: 6a296018bd487f3429eca08a5d1491a2,
         type: 3}
+      propertyPath: modifiedRenderers.Array.size
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -1953213378237915967, guid: 6a296018bd487f3429eca08a5d1491a2,
+        type: 3}
       propertyPath: <Foots>k__BackingField.Array.size
       value: 2
       objectReference: {fileID: 0}

@@ -81,25 +81,23 @@ public partial class Character : MonoBehaviour
     private void GainShield(int i)
     {
         if (i != 1 || state.shieldFrames > 0) return;
-        state.shieldFrames = ShieldFrames;
-        Debug.Log("GainShield");
+        state.shieldFrames = shieldFrames;
     }
 
     private void LostShield(int i)
     {
         if (i != 1 || state.shieldFrames == 0) return;
         state.shieldFrames = 0;
-        Debug.Log("LostShield");
     }
 
     public void Dash()
     {
-        if (CannotInput || state.totalActiveFrames > 0) return;
+        if (CannotInput || state.totalActiveFrames > 0 || state.dashOnCooldown) return;
 
-
+        state.dashFrames = dashFrames;
+        
         var dir = controller.StickInput;
-
-
+        
         gravityMultiplier = 0f;
         var force = dir.normalized * dashForce;
         rb.velocity = Vector3.zero;

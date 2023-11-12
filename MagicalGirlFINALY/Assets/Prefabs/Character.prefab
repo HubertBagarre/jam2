@@ -138,8 +138,10 @@ MonoBehaviour:
   ledgeFrames: 10
   groundFrames: 0
   dropFrames: 10
-  ShieldFrames: 10
+  shieldFrames: 180
   transformationFrames: 600
+  dashFrames: 180
+  dashRefundOnGroundTouched: 120
   groundRange: 0.1
   groundCheckHeight: 0.1
   platformLayer:
@@ -170,6 +172,7 @@ MonoBehaviour:
     ledgeFrames: 0
     ledgeDirection: {x: 0, y: 0, z: 0}
     shieldFrames: 0
+    dashFrames: 0
     dead: 0
   controller: {fileID: 0}
   hasController: 0

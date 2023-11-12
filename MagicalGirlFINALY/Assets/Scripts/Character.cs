@@ -28,9 +28,11 @@ public partial class Character : MonoBehaviour, ICameraFollow
     [Space] 
     [SerializeField] private int groundFrames = 10;
     [SerializeField] private int dropFrames = 10;
-    [SerializeField] private int ShieldFrames = 10;
+    [SerializeField] private int shieldFrames = 1000;
     [SerializeField] private int transformationFrames = 60;
-
+    [SerializeField] private int dashFrames = 180;
+    [SerializeField] private int dashRefundOnGroundTouched = 120;
+    
     [Space] [SerializeField] private float groundRange = 0.1f;
     [SerializeField] private float groundCheckHeight = 0.1f;
     [SerializeField] private LayerMask platformLayer;
@@ -126,6 +128,8 @@ public partial class Character : MonoBehaviour, ICameraFollow
         public bool shielded => shieldFrames > 0;
         public int shieldFrames;
 
+        public bool dashOnCooldown => dashFrames > 0;
+        public int dashFrames;
 
         public bool CanInput => !Stunned && !IsActionPending && !dead;
 
@@ -164,6 +168,7 @@ public partial class Character : MonoBehaviour, ICameraFollow
         if(state.dead) return;
         
         DecreaseTransformedFrames();
+        DecreaseDashFrames();
         DecreaseStunDuration();
         DecreaseActionFrames();
         DecreaseInvulFrames();
@@ -214,6 +219,13 @@ public partial class Character : MonoBehaviour, ICameraFollow
             transformedModel.ChangeMaterialInvulnerability(false);
             normalModel.ChangeMaterialInvulnerability(false);
         }
+    }
+
+    private void DecreaseDashFrames()
+    {
+        if(!state.dashOnCooldown) return;
+        state.dashFrames--;
+        
     }
 
     private void DecreaseActionFrames()
@@ -336,6 +348,7 @@ public partial class Character : MonoBehaviour, ICameraFollow
     {
         state.grounded = true;
         airJumpsLeft = maxAirJumps;
+        if(state.dashOnCooldown) state.dashFrames -= dashRefundOnGroundTouched;
 
         var inverseVel = Velocity;
         inverseVel.y *= -1;
