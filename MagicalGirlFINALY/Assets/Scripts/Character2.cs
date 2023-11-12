@@ -115,6 +115,13 @@ public partial class Character : MonoBehaviour
     public void TakeHit(HitData data)
     {
         if (state.Invulnerable || state.dead || state.shielded) return;
+
+        state.startup = 0;
+        state.active = 0;
+        state.recovering = 0;
+        
+        gravityMultiplier = 1f;
+        
         var prev = (int)CumulDamage;
         CumulDamage += data.damage;
         OnPercentChanged?.Invoke(prev, (int)CumulDamage);

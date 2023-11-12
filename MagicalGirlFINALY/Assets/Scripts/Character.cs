@@ -21,9 +21,11 @@ public partial class Character : MonoBehaviour
     [SerializeField, ReadOnly] private float gravityMultiplier = 1f;
 
     [Header("Settings")] [SerializeField] private float runSpeed = 5f;
+    [Space] 
     [SerializeField] private float ledgeGravity = 0.3f;
-    [Space] [SerializeField] private int ledgeJumpFrames = 30;
+    [SerializeField] private int ledgeJumpFrames = 30;
     [SerializeField] private int ledgeFrames = 10;
+    [Space] 
     [SerializeField] private int groundFrames = 10;
     [SerializeField] private int dropFrames = 10;
     [SerializeField] private int ShieldFrames = 10;

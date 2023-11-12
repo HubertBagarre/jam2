@@ -81,15 +81,27 @@ public partial class Character : MonoBehaviour
     public void Dash()
     {
         if (CannotInput || state.totalActiveFrames > 0) return;
-        frameDataDict.TryGetValue("Dash", out var frameData);
-        Vector2 dir = controller.StickInput;
+        
+        
+        var dir = controller.StickInput;
+        
+        
+        gravityMultiplier = 0f;
+        var force = dir.normalized * dashForce;
         rb.velocity = Vector3.zero;
+
+        rb.AddForce(force, ForceMode.VelocityChange);
+        
+        frameDataDict.TryGetValue("Dash", out var frameData);
+        
         endedPositionDashRatio = new Vector3(dir.x, dir.y, 0) * dashForce;
         endedPositionDashRatio /= frameData.Active;
-
+        
         PlayAnimation(frameData, 0.05f);
 
-        OnActive += DashOnDirection;
+        
+        //OnActive += DashOnDirection;
+        OnRecovering += (framesLeft) => gravityMultiplier = framesLeft > 1 ? 0f : 1f;
     }
 
     public void DashOnDirection(int i)
