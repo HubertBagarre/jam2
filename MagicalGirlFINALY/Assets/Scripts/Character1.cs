@@ -118,7 +118,7 @@ public partial class Character : MonoBehaviour
         if (state.ledged)
         {
             state.jumpFrames = ledgeJumpFrames;
-            dir = Vector3.up + (Vector3.right * -controller.StickInput.x).normalized;
+            dir = Vector3.up + (-state.ledgeDirection).normalized;
         }
 
         rb.AddForce(dir.normalized * jumpForce, ForceMode.Impulse);

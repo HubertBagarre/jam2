@@ -116,6 +116,7 @@ public partial class Character : MonoBehaviour
 
         public bool ledged => ledgeFrames > 0;
         public int ledgeFrames;
+        public Vector3 ledgeDirection;
 
         public bool shielded => shieldFrames > 0;
         public int shieldFrames;

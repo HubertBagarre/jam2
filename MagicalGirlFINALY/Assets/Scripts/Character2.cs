@@ -78,6 +78,7 @@ public partial class Character : MonoBehaviour
         if (state.ledged && controller.StickInput.y == 0) return;
 
         var dir = (Vector3.right * controller.StickInput.x).normalized;
+        
 
         var rayDist = groundRange + groundCheckHeight;
 
@@ -93,6 +94,7 @@ public partial class Character : MonoBehaviour
         {
             if (!state.ledged)
             {
+                state.ledgeDirection = dir;
                 OnLedgeTouch();
             }
             state.ledgeFrames = ledgeFrames;
