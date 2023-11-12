@@ -106,7 +106,7 @@ public partial class Character : MonoBehaviour
         RaycastHit hit;
 
         Vector3 transformedFeetPosL = transform.position - Vector3.up * 0.5f + dir * ((1 - groundCheckHeight) * 0.5f);
-        transformedFeetPosL.x = CurrentBattleModel.Body.position.x;
+        //transformedFeetPosL.x = CurrentBattleModel.Body.position.x;
         ledgeHit = Physics.Raycast(transformedFeetPosL,
             dir, out hit,
             rayDist, platformLayer);
