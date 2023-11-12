@@ -19,26 +19,27 @@ public partial class Character : MonoBehaviour
     private void Transformation(bool transformed)
     {
         Debug.Log($"Transformation : {transformed}");
-        
-        
+
+
         if (CurrentFrameData) frameDataDict = CurrentFrameData.MakeDictionary();
-        
+
         frameDataDict.TryGetValue("Transformation", out var frameData);
-        
-        OnActiveEnd += SwitchModel;
-        
+
+        OnActive += SwitchModel;
+
         TransformedAnimator.CrossFade(frameData.AnimationName, 0.1f);
         NormalAnimator.CrossFade(frameData.AnimationName, 0.1f);
-        
+
         state.startup = frameData.Startup;
         state.active = frameData.Active;
         state.recovering = frameData.Recovery;
         if (transformed) state.transformedFrames = transformationFrames + state.totalFrames;
-        
+
         return;
-        
-        void SwitchModel()
+
+        void SwitchModel(int i)
         {
+            if (i != 1) return;
             normalModel.Show(!transformed);
             transformedModel.Show(transformed);
             state.isTransformed = transformed;
@@ -56,13 +57,29 @@ public partial class Character : MonoBehaviour
     {
         Debug.Log("Shield");
         if (CannotInput || OnCooldownShield) return;
-        state.shieldFrames = ShieldFrames;
+        // state.shieldFrames = ShieldFrames;
         frameDataDict.TryGetValue("Shield", out var frameData);
-        cooldownShield = cooldownFrameReloadShield + ShieldFrames;
-        
-        PlayAnimation(frameData,0.05f);
+        //cooldownShield = cooldownFrameReloadShield + ShieldFrames;
 
-        cooldownShield += state.startup + state.active + state.recovering;
+        PlayAnimation(frameData, 0.05f);
+        OnStartup += GainShield;
+        OnActive += LostShield;
+
+        //cooldownShield += state.startup + state.active + state.recovering;
+    }
+
+    private void GainShield(int i)
+    {
+        if (i != 1 || state.shieldFrames > 0) return;
+        state.shieldFrames = ShieldFrames;
+        Debug.Log("GainShield");
+    }
+
+    private void LostShield(int i)
+    {
+        if (i != 1 || state.shieldFrames == 0) return;
+        state.shieldFrames = 0;
+        Debug.Log("LostShield");
     }
 
     public void Dash()
@@ -76,7 +93,7 @@ public partial class Character : MonoBehaviour
 
         endedPositionDashRatio /= DashFrames;
 
-        PlayAnimation(frameData,0.05f);
+        PlayAnimation(frameData, 0.05f);
 
         cooldownDash += state.startup + state.active + state.recovering;
     }
@@ -151,16 +168,19 @@ public partial class Character : MonoBehaviour
                 return frameDataDict["SideAir"];
             }
         }
-        
+
         rb.velocity = new Vector3(
             (frameData.StopVelocityX) ? 0 : rb.velocity.x,
             (frameData.StopVelocityY) ? 0 : rb.velocity.y,
             rb.velocity.z);
 
         PlayAnimation(frameData);
-        
+
         lastAttackChargeUltimate = (heavy ? chargeUltimateHeavy : chargeUltimateLight);
-        
+
+        OnActive += checkAttack;
+
+
         return;
 
         FrameDataSo.FrameData AttackUp(bool heavyAttack)
@@ -170,33 +190,44 @@ public partial class Character : MonoBehaviour
         }
     }
 
-    private void PlayAnimation(FrameDataSo.FrameData frameData,float transitionDuration = 0.1f)
+    private void checkAttack(int i)
+    {
+        if (i != 1) return;
+        if (CurrentBattleModel.HitThisFrame()) GainUltimate(lastAttackChargeUltimate, true);
+    }
+
+    private void PlayAnimation(FrameDataSo.FrameData frameData, float transitionDuration = 0.1f)
     {
         if (frameData == null) return;
-        
+
         var str = frameData.AnimationName;
         Debug.Log($"Playing {str} data on {CurrentBattleModel}");
-        
+
         CurrentAnimator.CrossFade(frameData.AnimationName, transitionDuration);
+
+        OnStartup = null;
+        OnActive = null;
+        OnRecovering = null;
 
         state.startup = frameData.Startup;
         state.active = frameData.Active;
         state.recovering = frameData.Recovery;
     }
-    
+
     private void DecreaseTransformedFrames()
     {
         if (!state.shouldBeTransformed && state.isTransformed && !CannotInput)
         {
             Transformation(false);
         }
+
         if (!state.shouldBeTransformed) return;
         state.transformedFrames--;
         OnTransformationChargeUpdated?.Invoke(CumulUltimate);
-        
+
         //TODO decrease cumul ultimate
     }
-    
+
     private void HandleAnimations()
     {
         NormalAnimator.SetBool(animCanInput, !CannotInput);
@@ -207,7 +238,7 @@ public partial class Character : MonoBehaviour
         NormalAnimator.SetFloat(animVelocityX, Velocity.x);
         NormalAnimator.SetFloat(animMagnitudeX, Mathf.Abs(Velocity.x));
         NormalAnimator.SetFloat(animVelocityY, Velocity.y);
-        
+
         TransformedAnimator.SetBool(animCanInput, !CannotInput);
         TransformedAnimator.SetBool(animCanInput, !CannotInput);
         TransformedAnimator.SetBool(animIsGrounded, state.grounded);
