@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Unity.Collections;
 using UnityEngine;
 
-public partial class Character : MonoBehaviour
+public partial class Character : MonoBehaviour, ICameraFollow
 {
     [Header("Components")] [SerializeField]
     private Rigidbody rb;
@@ -21,9 +21,11 @@ public partial class Character : MonoBehaviour
     [SerializeField, ReadOnly] private float gravityMultiplier = 1f;
 
     [Header("Settings")] [SerializeField] private float runSpeed = 5f;
+    [Space] 
     [SerializeField] private float ledgeGravity = 0.3f;
-    [Space] [SerializeField] private int ledgeJumpFrames = 30;
+    [SerializeField] private int ledgeJumpFrames = 30;
     [SerializeField] private int ledgeFrames = 10;
+    [Space] 
     [SerializeField] private int groundFrames = 10;
     [SerializeField] private int dropFrames = 10;
     [SerializeField] private int ShieldFrames = 10;
@@ -51,6 +53,7 @@ public partial class Character : MonoBehaviour
 
     public static event Action<Character> OnCreated;
     public static event Action<Character> OnDeath;
+    public static event Action<float> OnTakeDamage;
     public event Action<int, int> OnPercentChanged;
     public event Action<float> OnTransformationChargeUpdated;
     public event Action<Character, float> OnGainUltimate;
@@ -151,6 +154,8 @@ public partial class Character : MonoBehaviour
     
     private void Update()
     {
+        if(state.dead) return;
+        
         DecreaseTransformedFrames();
         DecreaseStunDuration();
         DecreaseActionFrames();
@@ -241,6 +246,8 @@ public partial class Character : MonoBehaviour
 
     private void FixedUpdate()
     {
+        if(state.dead) return;
+        
         UpdateMove();
         ApplyGravity();
         HandleAnimations();
@@ -256,6 +263,8 @@ public partial class Character : MonoBehaviour
 
     private void UpdateMove()
     {
+        CameraPosition = transform.position;
+        
         if (useVelocityFrames > 0) useVelocityFrames--;
 
         if (CannotInput) return;
@@ -290,6 +299,12 @@ public partial class Character : MonoBehaviour
         OnDeath?.Invoke(this);
     }
 
+    public void UpdateColor(Color color)
+    {
+        normalModel.ChangeColor(color);
+        transformedModel.ChangeColor(color);
+    }
+
     private void OnLedgeTouch()
     {
         airJumpsLeft = maxAirJumps;
@@ -322,4 +337,7 @@ public partial class Character : MonoBehaviour
                 break;
         }
     }
+
+    public bool ShouldFollow { get; set; } = false;
+    public Vector3 CameraPosition { get; private set; }
 }

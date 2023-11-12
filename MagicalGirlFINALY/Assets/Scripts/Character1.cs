@@ -46,11 +46,22 @@ public partial class Character : MonoBehaviour
         }
     }
 
-    public void Respawn()
+    public void Respawn(float wait,Vector3 position)
     {
-        InitStats();
-        state.dead = false;
-        state.invulFrames = (int)(respawnInvulSeconds * 60);
+        ShouldFollow = true;
+        
+        StartCoroutine(RespawnRoutine());
+        return;
+        
+        IEnumerator RespawnRoutine()
+        {
+            yield return new WaitForSeconds(wait);
+            InitStats();
+            state.dead = false;
+            state.invulFrames = (int)(respawnInvulSeconds * 60);
+            
+            transform.position = position;
+        }
     }
 
     public void Shield()
@@ -81,15 +92,27 @@ public partial class Character : MonoBehaviour
     public void Dash()
     {
         if (CannotInput || state.totalActiveFrames > 0) return;
-        frameDataDict.TryGetValue("Dash", out var frameData);
-        Vector2 dir = controller.StickInput;
+        
+        
+        var dir = controller.StickInput;
+        
+        
+        gravityMultiplier = 0f;
+        var force = dir.normalized * dashForce;
         rb.velocity = Vector3.zero;
+
+        rb.AddForce(force, ForceMode.VelocityChange);
+        
+        frameDataDict.TryGetValue("Dash", out var frameData);
+        
         endedPositionDashRatio = new Vector3(dir.x, dir.y, 0) * dashForce;
         endedPositionDashRatio /= frameData.Active;
-
+        
         PlayAnimation(frameData, 0.05f);
 
-        OnActive += DashOnDirection;
+        
+        //OnActive += DashOnDirection;
+        OnRecovering += (framesLeft) => gravityMultiplier = framesLeft > 1 ? 0f : 1f;
     }
 
     public void DashOnDirection(int i)
@@ -225,10 +248,7 @@ public partial class Character : MonoBehaviour
         if (!state.shouldBeTransformed) return;
         state.transformedFrames--;
 
-        //TODO decrease cumul ultimate
         CumulUltimate = state.transformedFrames / (float)transformationFrames;
-        
-        Debug.Log($"DecreaseTransformedFrames : {state.transformedFrames} / {transformationFrames} = {CumulUltimate}");
         
         OnTransformationChargeUpdated?.Invoke(CumulUltimate);
     }

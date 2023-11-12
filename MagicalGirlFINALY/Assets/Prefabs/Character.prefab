@@ -131,7 +131,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   rb: {fileID: 786009414538781988}
   <ModelParent>k__BackingField: {fileID: 8916816710060281217}
-  hitboxes: []
   gravityMultiplier: 1
   runSpeed: 5
   ledgeGravity: 0.15
@@ -140,9 +139,6 @@ MonoBehaviour:
   groundFrames: 0
   dropFrames: 10
   ShieldFrames: 10
-  DashFrames: 10
-  cooldownFrameReloadShield: 10
-  cooldownFrameReloadDash: 10
   transformationFrames: 600
   groundRange: 0.1
   groundCheckHeight: 0.1
@@ -153,7 +149,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 256
   jumpForce: 6
-  dashForce: 3
+  dashForce: 5
   maxAirJumps: 2
   ledgeJumpIsAirJump: 1
   airJumpsLeft: 0
@@ -172,8 +168,8 @@ MonoBehaviour:
     invulFrames: 0
     jumpFrames: 0
     ledgeFrames: 0
+    ledgeDirection: {x: 0, y: 0, z: 0}
     shieldFrames: 0
-    dashFrames: 0
     dead: 0
   controller: {fileID: 0}
   hasController: 0

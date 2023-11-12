@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using DG.Tweening;
 using UnityEngine;
 
@@ -12,12 +13,11 @@ public class CameraController : MonoBehaviour
     [SerializeField] private float maxPosCam = 12f;
     [SerializeField] private float minPosCam = -10f;
     [SerializeField] private float delayDezoom = 0.01f;
-    [SerializeField] private List<Transform> _targets;
-    [SerializeField] private Transform centerOfWorld;
+    [SerializeField] private CameraFollow centerOfWorld;
+    private List<ICameraFollow> _targets = new List<ICameraFollow>();
     [SerializeField] private float maxDistanceFromCenter = 10f;
     [SerializeField] private float speed = 0.1f;
-
-    private List<Renderer> _renderers = new List<Renderer>();
+    [SerializeField] private float shakePower = 0.1f;
     
     private Vector3 expectedPos;
 
@@ -27,17 +27,22 @@ public class CameraController : MonoBehaviour
         OnDezoomEvent?.Invoke(delayDezoom);
         transform.DOMoveZ(maxPosCam, delayDezoom);
     }
+    
+    private void ShakeShakeShakeSignora(float power)
+    {
+        _camera.DOShakePosition(0.5f, shakePower * power);
+    }
 
     private void Start()
     {
-        GameManager.newPlayerSpawned += AddTarget;
+        Character.OnCreated += AddTarget;
         GameManager.OnFirstUltiProc += OnDezoom;
+        Character.OnTakeDamage += ShakeShakeShakeSignora;
     }
 
-    private void AddTarget(Transform _target)
+    private void AddTarget(Character _target)
     {
         _targets.Add(_target);
-        _renderers.Add(_target.GetComponent<Renderer>());
     }
 
     void Update()
@@ -45,15 +50,17 @@ public class CameraController : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Space))
             OnDezoom();
         
-        Vector2 median = centerOfWorld.position;
+        Vector2 median = centerOfWorld.CameraPosition;
         var worldPos = median;
-        foreach (var target in _targets)
+        if (_targets.Any(target => target.ShouldFollow))
         {
-            median += (Vector2)target.position;
+            foreach (var target in _targets.Where(target => target.ShouldFollow))
+            {
+                median += (Vector2)target.CameraPosition;
+            }
+            median /= _targets.Count + 1;
         }
         
-        median /= _targets.Count + 1;
-
         var currentPos = _camera.transform.position;
         expectedPos = new Vector3(median.x, median.y, currentPos.z);
         
