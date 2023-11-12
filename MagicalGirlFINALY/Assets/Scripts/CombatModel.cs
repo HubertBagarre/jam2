@@ -100,4 +100,12 @@ public class CombatModel : MonoBehaviour
             modelChildGo.SetActive(value);
         }
     }
+
+    public void LinkHitboxes(Character character)
+    {
+        foreach (var attackHitbox in hitboxes)
+        {
+            attackHitbox.Link(character);
+        }
+    }
 }

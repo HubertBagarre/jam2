@@ -82,12 +82,12 @@ public partial class Character : MonoBehaviour
         
         normalModel = Instantiate(options.NormalModel, ModelParent);
         normalModel.Animator.runtimeAnimatorController = normalModel.FrameData.AnimatorController;
-        //normalModel.transform.localPosition = Vector3.zero;
+        normalModel.LinkHitboxes(this);
         normalModel.gameObject.name = "NormalModel";
         
         transformedModel = Instantiate(options.TransformedModel, ModelParent);
         transformedModel.Animator.runtimeAnimatorController = transformedModel.FrameData.AnimatorController;
-        //transformedModel.transform.localPosition = Vector3.zero;
+        normalModel.LinkHitboxes(this);
         transformedModel.gameObject.name = "TransformedModel";
 
         Transformation(false);

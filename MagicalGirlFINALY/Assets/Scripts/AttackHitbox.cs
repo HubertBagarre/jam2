@@ -1,18 +1,26 @@
 using System;
 using UnityEngine;
 
+[RequireComponent(typeof(Collider))]
 public class AttackHitbox : MonoBehaviour
 {
     public enum DirectionType { Up, Right, Forward, Custom}
 
-    public bool hit;
+    [HideInInspector] public bool hit;
     
-    [Header("Components")]
-    [SerializeField] private Character own;
+    private Character own;
     
     [Header("Settings")]
     [SerializeField] private HitData hitData;
-    
+
+    public void Link(Character character)
+    {
+        own = character;
+        GetComponent<Collider>().isTrigger = true;
+        gameObject.layer = 7;
+    }
+
+
     private void OnTriggerEnter(Collider other)
     {
         var character = other.GetComponent<Character>();
