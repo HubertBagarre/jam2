@@ -92,9 +92,9 @@ public partial class Character : MonoBehaviour
 
     private float lastAttackChargeUltimate = 0;
 
-    public event Action OnStartupEnd;
-    public event Action OnActiveEnd;
-    public event Action OnRecoveringEnd;
+    public event Action<int> OnStartup;
+    public event Action<int> OnActive;
+    public event Action<int> OnRecovering;
     public bool OnActionTerminated = false;
 
     [Serializable]
@@ -164,14 +164,14 @@ public partial class Character : MonoBehaviour
     {
         DecreaseTransformedFrames();
         DecreaseStunDuration();
-        DecreaseAttackFrames();
+        DecreaseActionFrames();
         DecreaseInvulFrames();
         DecreaseJumpFrames();
         DecreaseLedgeFrames();
         DecreaseGroundFrames();
         DecreaseDropFrames();
-        DecreaseActivationShieldFrames();
-        DecreaseCooldownShieldFrames();
+        //DecreaseActivationShieldFrames();
+        //DecreaseCooldownShieldFrames();
         DecreaseActivationDashFrames();
         DecreaseCooldownDashFrames();
         Drop();
@@ -235,10 +235,14 @@ public partial class Character : MonoBehaviour
         state.invulFrames--;
     }
 
-    private void DecreaseAttackFrames()
+    private void DecreaseActionFrames()
     {
         if (!state.IsActionPending) return;
 
+        OnStartup?.Invoke(state.startup);
+        OnActive?.Invoke(state.active);
+        OnRecovering?.Invoke(state.recovering);
+        
         if (state.startup > 0)
         {
             state.startup--;
@@ -247,12 +251,6 @@ public partial class Character : MonoBehaviour
         
         if (state.active > 0)
         {
-            if (!OnActionTerminated)
-            {
-                OnActionTerminated = true;
-                OnStartupEnd?.Invoke();
-                OnStartupEnd = null;
-            }
 
             state.active--;
             return;
@@ -263,27 +261,17 @@ public partial class Character : MonoBehaviour
             if (OnActionTerminated)
             {
                 OnActionTerminated = false;
-                
-                if (CurrentBattleModel.HitThisFrame()) GainUltimate(lastAttackChargeUltimate, true);
-                
-                OnActiveEnd?.Invoke();
                 normalModel.ResetHitboxes();
                 transformedModel.ResetHitboxes();
-                
-                OnActiveEnd = null;
             }
             
             state.recovering--;
-            
-            if(state.recovering > 0) return;
-            
-            if (!OnActionTerminated)
+            if (state.recovering == 0)
             {
                 OnActionTerminated = true;
-                OnRecoveringEnd?.Invoke();
-                OnRecoveringEnd = null;
             }
         }
+        
     }
 
     private void DecreaseStunDuration()
