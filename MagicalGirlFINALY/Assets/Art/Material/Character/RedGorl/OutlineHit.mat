@@ -7,7 +7,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Outline Shirt
+  m_Name: OutlineHit
   m_Shader: {fileID: 4800000, guid: e88aeddd2ef1f934d805981244872e27, type: 3}
   m_ValidKeywords:
   - _HALFTONESHAPE_DOT
@@ -197,7 +197,7 @@ Material:
     - _ZWrite: 1
     m_Colors:
     - Color_e33122dd1341407eb6ef24a34b660f09: {r: 0, g: 0, b: 0, a: 0}
-    - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
+    - _BaseColor: {r: 1, g: 0, b: 0, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 119.42823, g: 119.42823, b: 119.42823, a: 1}
     - _FaceFrontDirection: {r: 0, g: 0, b: 1, a: 0}

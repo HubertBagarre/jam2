@@ -82,8 +82,13 @@ MonoBehaviour:
   - {fileID: 3295171744678884227}
   - {fileID: 7060978519118058043}
   - {fileID: 6321933384064365618}
+  fx: []
   hitboxes:
   - {fileID: 374712135297452594}
+  renderer: {fileID: 6470201196962683239}
+  normalMaterial: {fileID: 2100000, guid: 6fb75892f372fd34c95cafb24be8cb3c, type: 2}
+  InvulnerabilityMaterial: {fileID: 2100000, guid: 920f3b46cb1681441932f61f4aa31be4,
+    type: 2}
 --- !u!1 &211703602486445545
 GameObject:
   m_ObjectHideFlags: 0

@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c88fd576846294c4aa1b4ee455a6d944, type: 3}
   m_Name: BequilleN
   m_EditorClassIdentifier: 
-  <AnimatorPrefab>k__BackingField: {fileID: 6770286958793494797, guid: ac2fc00aee4a27e40adaf3091c82214a,
-    type: 3}
+  <AnimatorController>k__BackingField: {fileID: 22100000, guid: 084ce04a320d57c48a95ec481d70ee93,
+    type: 2}
   frameData:
   - <AnimationName>k__BackingField: UpHeavy
     <Startup>k__BackingField: 20
