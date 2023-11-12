@@ -57,15 +57,11 @@ public partial class Character : MonoBehaviour
     {
         Debug.Log("Shield");
         if (CannotInput || state.totalActiveFrames > 0) return;
-        // state.shieldFrames = ShieldFrames;
         frameDataDict.TryGetValue("Shield", out var frameData);
-        //cooldownShield = cooldownFrameReloadShield + ShieldFrames;
 
         PlayAnimation(frameData, 0.05f);
         OnStartup += GainShield;
         OnActive += LostShield;
-
-        //cooldownShield += state.startup + state.active + state.recovering;
     }
 
     private void GainShield(int i)
