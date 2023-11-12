@@ -73,6 +73,7 @@ MonoBehaviour:
   <Animator>k__BackingField: {fileID: 6770286958793494797}
   <FrameData>k__BackingField: {fileID: 11400000, guid: b96639d5d7cbb44409c2713c8c31b838,
     type: 2}
+  <ColoredRenderers>k__BackingField: []
   <Foots>k__BackingField:
   - {fileID: 3172469324028211885}
   - {fileID: 355574213122886368}
