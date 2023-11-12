@@ -15,7 +15,7 @@ public partial class Character : MonoBehaviour
 
         foreach (var feet in CurrentBattleModel.Foots)
         {
-            Vector3 transformedFeetPos = transform.position - Vector3.right * 0.5f - Vector3.up * (1 - groundCheckHeight);
+            Vector3 transformedFeetPos = transform.position - Vector3.up * (1 - groundCheckHeight);
             transformedFeetPos.x = feet.position.x;
             groundHit = Physics.Raycast(
                 transformedFeetPos, Vector3.down, out hit,
@@ -66,11 +66,11 @@ public partial class Character : MonoBehaviour
     public void ApplyPlayerOptions(GameManager.PlayerOptions options)
     {
         normalModel = Instantiate(options.NormalModel, ModelParent);
-        normalModel.transform.position = Vector3.zero;
+        normalModel.transform.localPosition = Vector3.zero;
         normalModel.gameObject.name = "NormalModel";
 
         transformedModel = Instantiate(options.TransformedModel, ModelParent);
-        transformedModel.transform.position = Vector3.zero;
+        transformedModel.transform.localPosition = Vector3.zero;
         transformedModel.gameObject.name = "TransformedModel";
 
         Transformation(false);
