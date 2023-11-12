@@ -52,12 +52,19 @@ public class GameManager : MonoBehaviour
         public bool isReady;
         public int playerOptionIndex;
         public Color color;
+        public event Action<List<Color>,Color> OnColorChanged;
         
         public PlayerData(Action action,bool ready,int index)
         {
             unbindAction = action;
             isReady = ready;
             playerOptionIndex = index;
+        }
+
+        public void ChangeColor(List<Color> colors,Color col)
+        {
+            color = col;
+            OnColorChanged?.Invoke(colors,color);
         }
     }
     
@@ -113,18 +120,25 @@ public class GameManager : MonoBehaviour
     private void BindControlForMenu(MagicalGirlController controller)
     {
         var playerSelection = Instantiate(playerSelectionPrefab,playerSelectionLayout);
+        
         var currentDir = 0;
         
         controller.Input.actions["Move"].started += ChangeCharacter;
         controller.Input.actions["Move"].performed += ChangeCharacter;
         controller.Input.actions["Move"].canceled += ChangeCharacter;
         
+        controller.Input.actions["LightAttack"].started += PreviousColor;
+        controller.Input.actions["HeavyAttack"].started += NextColor;
+        
         controller.Input.actions["Jump"].started += ToggleReady;
 
         var data = new PlayerData(UnbindAction,false,0);
         
         controllerDict.Add(controller,data);
-        data.color = availableColors[controllerDict.Count - 1];
+        var col = availableColors[0];
+        
+        data.ChangeColor(availableColors,col);
+        playerSelection.SetupColors(colors,data);
         
         playerSelection.Text.text = controllerDict[controller].isReady ? "Ready" : "Not Ready";
         
@@ -135,6 +149,9 @@ public class GameManager : MonoBehaviour
             controller.Input.actions["Move"].started -= ChangeCharacter;
             controller.Input.actions["Move"].performed -= ChangeCharacter;
             controller.Input.actions["Move"].canceled -= ChangeCharacter;
+            
+            controller.Input.actions["LightAttack"].started -= PreviousColor;
+            controller.Input.actions["HeavyAttack"].started -= NextColor;
 
             controller.Input.actions["Jump"].started -= ToggleReady;
         }
@@ -181,6 +198,36 @@ public class GameManager : MonoBehaviour
 
             StartGame();
         }
+        
+        void NextColor(InputAction.CallbackContext context)
+        {
+            var infos = controllerDict[controller];
+            var index = availableColors.IndexOf(infos.color);
+            index++;
+            if(index >= availableColors.Count) index = 0;
+            
+            SelectColor(controller,index);
+        }
+        
+        void PreviousColor(InputAction.CallbackContext context)
+        {
+            var infos = controllerDict[controller];
+            var index = availableColors.IndexOf(infos.color);
+            index--;
+            if(index < 0) index = availableColors.Count - 1;
+            
+            SelectColor(controller,index);
+        }
+    }
+
+    private void SelectColor(MagicalGirlController controller, int index)
+    {
+        var infos = controllerDict[controller];
+        availableColors.Add(infos.color);
+        var color = availableColors[index];
+        availableColors.Remove(color);
+        
+        infos.ChangeColor(availableColors,color);
     }
 
     private void BindControlsForGame(MagicalGirlController controller)

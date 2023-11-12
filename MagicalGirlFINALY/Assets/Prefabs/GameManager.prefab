@@ -608,7 +608,14 @@ MonoBehaviour:
       type: 3}
     <TransformedModel>k__BackingField: {fileID: -6361588022190968414, guid: 64477c117d24a2640a18e0963abf120b,
       type: 3}
+  colors:
+  - {r: 1, g: 1, b: 1, a: 1}
+  - {r: 0, g: 0, b: 0, a: 1}
+  - {r: 1, g: 0, b: 0, a: 1}
+  - {r: 0.43667948, g: 1, b: 0, a: 1}
+  - {r: 0, g: 0.9524913, b: 1, a: 1}
   stocksPerCharacter: 3
+  respawnDuration: 3
   minPlayers: 2
   playerSelectionLayout: {fileID: 4080659678926837581}
   playerSelectionPrefab: {fileID: 8392346388830393443, guid: 739d91cd17214fc4eacdbdfa4e90ad6a,
@@ -619,6 +626,7 @@ MonoBehaviour:
   endGamePanel: {fileID: 7989216889859799498}
   endGameText: {fileID: 2669126204594554203}
   endGameButton: {fileID: 2290579850023485087}
+  knockFXPrefab: {fileID: 0}
 --- !u!114 &688923783799495815
 MonoBehaviour:
   m_ObjectHideFlags: 0
