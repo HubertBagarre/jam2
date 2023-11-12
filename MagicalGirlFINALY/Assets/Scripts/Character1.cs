@@ -203,7 +203,8 @@ public partial class Character : MonoBehaviour
         var str = frameData.AnimationName;
         Debug.Log($"Playing {str} data on {CurrentBattleModel}");
 
-        CurrentAnimator.CrossFade(frameData.AnimationName, transitionDuration);
+        CurrentAnimator.Play(frameData.AnimationName);
+        //CurrentAnimator.CrossFade(frameData.AnimationName, transitionDuration);
 
         OnStartup = null;
         OnActive = null;
