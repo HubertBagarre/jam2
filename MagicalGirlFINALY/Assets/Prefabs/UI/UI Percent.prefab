@@ -754,7 +754,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   <PercentText>k__BackingField: {fileID: 6057850166834739424}
   <Image>k__BackingField: {fileID: 1495548443185646958}
-  stockObj: {fileID: 6747303147272574475}
+  stockObj: {fileID: 1510654836307551119}
   stockLayout: {fileID: 4667984696763867933}
   stocksObjs: []
   transformationChargeImage: {fileID: 8505459794640780300}

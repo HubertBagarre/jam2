@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using DG.Tweening;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -24,8 +25,11 @@ public class UIPlayerPercent : MonoBehaviour
     }
     
     public void UpdatePercent(int previous,int percent)
-    {
-        PercentText.text = $"{percent}%"; //TODO anim stylé
+    {   
+        if(percent == 0) PercentText.text = $"{percent}%"; //TODO anim stylé
+
+        float tween = previous;
+        DOTween.To(() => tween, x => tween = x, percent, 0.5f).OnUpdate(() => PercentText.text = $"{(int)tween}%");
     }
 
     public void LoseStock()
