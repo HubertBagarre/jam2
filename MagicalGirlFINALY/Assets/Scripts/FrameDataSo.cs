@@ -5,7 +5,7 @@ using UnityEngine;
 [CreateAssetMenu(menuName = "Character Data")]
 public class FrameDataSo : ScriptableObject
 {
-    [field: SerializeField] public Animator AnimatorPrefab { get; private set; }
+    [field: SerializeField] public RuntimeAnimatorController AnimatorController { get; private set; }
     [field: SerializeField] public List<FrameData> frameData;
     
     public Dictionary<string,FrameData> MakeDictionary()

@@ -77,11 +77,16 @@ public partial class Character : MonoBehaviour
 
     public void ApplyPlayerOptions(GameManager.PlayerOptions options, GameManager.PlayerData data)
     {
+        data.option = options;
+        data.character = this;
+        
         normalModel = Instantiate(options.NormalModel, ModelParent);
+        normalModel.Animator.runtimeAnimatorController = normalModel.FrameData.AnimatorController;
         //normalModel.transform.localPosition = Vector3.zero;
         normalModel.gameObject.name = "NormalModel";
-
+        
         transformedModel = Instantiate(options.TransformedModel, ModelParent);
+        transformedModel.Animator.runtimeAnimatorController = transformedModel.FrameData.AnimatorController;
         //transformedModel.transform.localPosition = Vector3.zero;
         transformedModel.gameObject.name = "TransformedModel";
 

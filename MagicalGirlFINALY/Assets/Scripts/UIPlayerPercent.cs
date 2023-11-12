@@ -13,7 +13,7 @@ public class UIPlayerPercent : MonoBehaviour
     public List<GameObject> stocksObjs = new List<GameObject>();
     [SerializeField] private Image transformationChargeImage;
     
-    public void SetupStocks(int amount)
+    public void Setup(int amount)
     {
         for (int i = 0; i < amount; i++)
         {
