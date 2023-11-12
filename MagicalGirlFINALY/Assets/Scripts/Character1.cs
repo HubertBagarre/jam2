@@ -70,14 +70,14 @@ public partial class Character : MonoBehaviour
 
     private void GainShield(int i)
     {
-        if (i > 0 || state.shieldFrames > 0) return;
+        if (i != 1 || state.shieldFrames > 0) return;
         state.shieldFrames = ShieldFrames;
         Debug.Log("GainShield");
     }
 
     private void LostShield(int i)
     {
-        if (i > 0 || state.shieldFrames == 0) return;
+        if (i != 1 || state.shieldFrames == 0) return;
         state.shieldFrames = 0;
         Debug.Log("LostShield");
     }
