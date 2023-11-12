@@ -27537,7 +27537,7 @@ PrefabInstance:
     - target: {fileID: 4460291200769018199, guid: 35b4c455e382c914ab8148b8e4b610cb,
         type: 3}
       propertyPath: minPlayers
-      value: 1
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 4460291200769018199, guid: 35b4c455e382c914ab8148b8e4b610cb,
         type: 3}
