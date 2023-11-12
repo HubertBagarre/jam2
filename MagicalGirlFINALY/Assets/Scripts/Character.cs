@@ -27,9 +27,6 @@ public partial class Character : MonoBehaviour
     [SerializeField] private int groundFrames = 10;
     [SerializeField] private int dropFrames = 10;
     [SerializeField] private int ShieldFrames = 10;
-    [SerializeField] private int DashFrames = 10;
-    [SerializeField] private int cooldownFrameReloadShield = 10;
-    [SerializeField] private int cooldownFrameReloadDash = 10;
     [SerializeField] private int transformationFrames = 60;
 
     [Space] [SerializeField] private float groundRange = 0.1f;
@@ -64,11 +61,7 @@ public partial class Character : MonoBehaviour
     public bool hasController = false;
     private Dictionary<string, FrameDataSo.FrameData> frameDataDict;
     private bool OldTurnedLeft = true;
-
-    private int cooldownShield = 0;
-    private int cooldownDash = 0;
-    private bool OnCooldownShield => cooldownShield > 0;
-    private bool OnCooldownDash => cooldownDash > 0;
+    
     private float CumulDamage;
     [SerializeField] private float chargeUltimateLight = 0.1f;
     [SerializeField] private float chargeUltimateHeavy = 0.2f;
@@ -108,6 +101,7 @@ public partial class Character : MonoBehaviour
 
         public bool IsActionPending => totalFrames > 0;
         public int totalFrames => startup + active + recovering;
+        public int totalActiveFrames => startup + active;
         public int startup;
         public int active;
         public int recovering;
@@ -127,8 +121,6 @@ public partial class Character : MonoBehaviour
         public bool shielded => shieldFrames > 0;
         public int shieldFrames;
 
-        public bool dashed => dashFrames > 0;
-        public int dashFrames;
 
         public bool CanInput => !Stunned && !IsActionPending && !dead;
 
@@ -167,10 +159,6 @@ public partial class Character : MonoBehaviour
         DecreaseLedgeFrames();
         DecreaseGroundFrames();
         DecreaseDropFrames();
-        //DecreaseActivationShieldFrames();
-        //DecreaseCooldownShieldFrames();
-        DecreaseActivationDashFrames();
-        DecreaseCooldownDashFrames();
         Drop();
         CheckIsGrounded();
         CheckLedging();
@@ -198,32 +186,6 @@ public partial class Character : MonoBehaviour
     {
         if (!state.dropping) return;
         state.dropFrames--;
-    }
-    
-    private void DecreaseActivationShieldFrames()
-    {
-        if (!state.shielded) return;
-        state.shieldFrames--;
-    }
-
-    private void DecreaseCooldownShieldFrames()
-    {
-        if (!OnCooldownShield) return;
-        cooldownShield--;
-    }
-
-    private void DecreaseActivationDashFrames()
-    {
-        if (!state.dashed) return;
-        state.dashFrames--;
-        if (!Physics.Raycast(transform.position, endedPositionDashRatio, out var hit, 1f))
-            rb.MovePosition(transform.position + endedPositionDashRatio);
-    }
-
-    private void DecreaseCooldownDashFrames()
-    {
-        if (!OnCooldownDash) return;
-        cooldownDash--;
     }
 
     private void DecreaseInvulFrames()
