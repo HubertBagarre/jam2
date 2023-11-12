@@ -12,7 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c88fd576846294c4aa1b4ee455a6d944, type: 3}
   m_Name: TestDATA
   m_EditorClassIdentifier: 
-  <AnimatorPrefab>k__BackingField: {fileID: 0}
+  <AnimatorController>k__BackingField: {fileID: 9100000, guid: 9b747e774438c5d45aeea1d6135909e9,
+    type: 2}
   frameData:
   - <AnimationName>k__BackingField: UpHeavy
     <Startup>k__BackingField: 20

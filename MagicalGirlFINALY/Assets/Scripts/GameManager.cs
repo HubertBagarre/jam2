@@ -16,6 +16,7 @@ public class GameManager : MonoBehaviour
     public class PlayerOptions
     {
         [field: SerializeField] public string Name { get; private set; }
+        [field: SerializeField] public Sprite Image { get; private set; }
         [field: SerializeField] public CombatModel NormalModel{ get; private set; }
         [field: SerializeField] public CombatModel TransformedModel{ get; private set; }
     }
@@ -38,6 +39,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private UIPlayerPercent playerPercentPrefab;
     [SerializeField] private GameObject endGamePanel;
     [SerializeField] private TextMeshProUGUI endGameText;
+    [SerializeField] private Image endGameImage;
     [SerializeField] private Button endGameButton;
     [Space]
     [SerializeField] private GameObject knockFXPrefab;
@@ -52,6 +54,8 @@ public class GameManager : MonoBehaviour
         public bool isReady;
         public int playerOptionIndex;
         public Color color;
+        public PlayerOptions option;
+        public Character character;
         public event Action<List<Color>,Color> OnColorChanged;
         
         public PlayerData(Action action,bool ready,int index)
@@ -59,6 +63,7 @@ public class GameManager : MonoBehaviour
             unbindAction = action;
             isReady = ready;
             playerOptionIndex = index;
+            
         }
 
         public void ChangeColor(List<Color> colors,Color col)
@@ -69,8 +74,6 @@ public class GameManager : MonoBehaviour
     }
     
     private static Dictionary<Character, int> stocks;
-    
-    private List<Character> characters = new ();
     
     private void Start()
     {
@@ -321,7 +324,8 @@ public class GameManager : MonoBehaviour
         
         var playerPercent = Instantiate(playerPercentPrefab,playerPercentLayout);
 
-        playerPercent.SetupStocks(stocksPerCharacter);
+        playerPercent.Setup(stocksPerCharacter);
+        playerPercent.Image.sprite = data.option.Image;
         
         character.OnPercentChanged += playerPercent.UpdatePercent;
         character.OnTransformationChargeUpdated += playerPercent.UpdateTransformationCharge;
@@ -368,8 +372,12 @@ public class GameManager : MonoBehaviour
         if(stocks.Count(stock => stock.Value > 0) > 1 || stocks.Count <= 1) return;
         
         var winner = stocks.FirstOrDefault(stock => stock.Value > 0).Key;
+        var data = controllerDict.FirstOrDefault(tuple => tuple.Value.character == winner).Value;
+        
+        endGameText.text = $"Winner : {data.option.Name}";
 
-        endGameText.text = $"Winner : {winner}";
+        var image = data.option.Image;
+        endGameImage.sprite = image;
         
         endGamePanel.SetActive(true);
     }
