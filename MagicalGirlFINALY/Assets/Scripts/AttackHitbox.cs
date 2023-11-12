@@ -30,7 +30,7 @@ public class AttackHitbox : MonoBehaviour
         };
         
         Debug.DrawRay(tr.position,hitData.direction * hitData.force,Color.red, 1f);
-        hit = true;
+        if (!character.isInvulnerable())  hit = true;
         character.TakeHit(hitData);
     }
 }

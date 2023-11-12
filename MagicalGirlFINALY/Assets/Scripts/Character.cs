@@ -154,6 +154,11 @@ public partial class Character : MonoBehaviour, ICameraFollow
         OnCreated?.Invoke(this);
     }
     
+    public bool isInvulnerable()
+    {
+        return state.Invulnerable;
+    }
+    
     private void Update()
     {
         if(state.dead) return;
