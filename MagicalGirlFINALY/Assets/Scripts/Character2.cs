@@ -45,6 +45,8 @@ public partial class Character : MonoBehaviour
 
         normalModel.ResetHitboxes();
         transformedModel.ResetHitboxes();
+        normalModel.ResetFx();
+        transformedModel.ResetFx();
 
         state.grounded = false;
         airJumpsLeft = maxAirJumps;
@@ -157,6 +159,8 @@ public partial class Character : MonoBehaviour
         CurrentAnimator.Play("Hit");
         normalModel.ResetHitboxes();
         transformedModel.ResetHitboxes();
+        normalModel.ResetFx();
+        transformedModel.ResetFx();
 
         var force = data.force;
         if (!data.fixedForce) force *= CumulDamage * 0.01f;
