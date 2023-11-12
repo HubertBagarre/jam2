@@ -11,6 +11,8 @@ public class CombatModel : MonoBehaviour
     [field: SerializeField] public Transform Body { get; private set; }
 
     [SerializeField] private List<GameObject> objectsToShow;
+    
+    [SerializeField] private List<GameObject> fx = new ();
     [SerializeField] private List<AttackHitbox> hitboxes = new ();
 
     public void ChangeColor(Color color)

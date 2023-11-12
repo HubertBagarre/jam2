@@ -88,6 +88,8 @@ public partial class Character : MonoBehaviour, ICameraFollow
     public event Action<int> OnActive;
     public event Action<int> OnRecovering;
     public bool OnActionTerminated = false;
+    
+    private bool firstTransform = true;
 
     [Serializable]
     private class State
