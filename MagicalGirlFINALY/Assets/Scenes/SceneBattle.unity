@@ -27541,12 +27541,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4460291200769018199, guid: 35b4c455e382c914ab8148b8e4b610cb,
         type: 3}
-      propertyPath: knockFXPrefab
-      value: 
-      objectReference: {fileID: 2415732233395096630, guid: c55a2c1532689824fb55c0f7e8baec77,
-        type: 3}
-    - target: {fileID: 4460291200769018199, guid: 35b4c455e382c914ab8148b8e4b610cb,
-        type: 3}
       propertyPath: playerOptions.Array.data[0].<NormalModel>k__BackingField
       value: 
       objectReference: {fileID: 3879579689496312274, guid: 22471ac4830727b4a9983e797e989598,

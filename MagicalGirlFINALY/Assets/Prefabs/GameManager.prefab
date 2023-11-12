@@ -704,9 +704,10 @@ MonoBehaviour:
     type: 3}
   endGamePanel: {fileID: 7989216889859799498}
   endGameText: {fileID: 2669126204594554203}
-  endGameImage: {fileID: 0}
+  endGameImage: {fileID: 7398973705671051986}
   endGameButton: {fileID: 2290579850023485087}
-  knockFXPrefab: {fileID: 0}
+  knockFXPrefab: {fileID: 2415732233395096630, guid: c55a2c1532689824fb55c0f7e8baec77,
+    type: 3}
 --- !u!114 &688923783799495815
 MonoBehaviour:
   m_ObjectHideFlags: 0
