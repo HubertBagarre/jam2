@@ -53,6 +53,7 @@ public partial class Character : MonoBehaviour, ICameraFollow
 
     public static event Action<Character> OnCreated;
     public static event Action<Character> OnDeath;
+    public static event Action<float> OnTakeDamage;
     public event Action<int, int> OnPercentChanged;
     public event Action<float> OnTransformationChargeUpdated;
     public event Action<Character, float> OnGainUltimate;

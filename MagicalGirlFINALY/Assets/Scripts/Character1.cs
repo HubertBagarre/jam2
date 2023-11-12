@@ -226,7 +226,8 @@ public partial class Character : MonoBehaviour
         var str = frameData.AnimationName;
         Debug.Log($"Playing {str} data on {CurrentBattleModel}");
 
-        CurrentAnimator.CrossFade(frameData.AnimationName, transitionDuration);
+        CurrentAnimator.Play(frameData.AnimationName);
+        //CurrentAnimator.CrossFade(frameData.AnimationName, transitionDuration);
 
         OnStartup = null;
         OnActive = null;
@@ -247,10 +248,7 @@ public partial class Character : MonoBehaviour
         if (!state.shouldBeTransformed) return;
         state.transformedFrames--;
 
-        //TODO decrease cumul ultimate
         CumulUltimate = state.transformedFrames / (float)transformationFrames;
-        
-        Debug.Log($"DecreaseTransformedFrames : {state.transformedFrames} / {transformationFrames} = {CumulUltimate}");
         
         OnTransformationChargeUpdated?.Invoke(CumulUltimate);
     }

@@ -17,6 +17,7 @@ public class CameraController : MonoBehaviour
     private List<ICameraFollow> _targets = new List<ICameraFollow>();
     [SerializeField] private float maxDistanceFromCenter = 10f;
     [SerializeField] private float speed = 0.1f;
+    [SerializeField] private float shakePower = 0.1f;
     
     private Vector3 expectedPos;
 
@@ -26,11 +27,17 @@ public class CameraController : MonoBehaviour
         OnDezoomEvent?.Invoke(delayDezoom);
         transform.DOMoveZ(maxPosCam, delayDezoom);
     }
+    
+    private void ShakeShakeShakeSignora(float power)
+    {
+        _camera.DOShakePosition(0.5f, shakePower * power);
+    }
 
     private void Start()
     {
         Character.OnCreated += AddTarget;
         GameManager.OnFirstUltiProc += OnDezoom;
+        Character.OnTakeDamage += ShakeShakeShakeSignora;
     }
 
     private void AddTarget(Character _target)
