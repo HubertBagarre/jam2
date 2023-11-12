@@ -1,11 +1,7 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using Unity.Collections;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.Accessibility;
-using UnityEngine.Serialization;
 
 public partial class Character : MonoBehaviour
 {
@@ -21,7 +17,7 @@ public partial class Character : MonoBehaviour
     private Animator TransformedAnimator => transformedModel.Animator;
     private Animator CurrentAnimator => CurrentBattleModel.Animator;
     private FrameDataSo CurrentFrameData => CurrentBattleModel.FrameData;
-    [SerializeField] private List<GameObject> hitboxes;
+    
     [SerializeField, ReadOnly] private float gravityMultiplier = 1f;
 
     [Header("Settings")] [SerializeField] private float runSpeed = 5f;
@@ -289,6 +285,9 @@ public partial class Character : MonoBehaviour
 
     private void ApplyGravity()
     {
+        if (state.grounded) gravityMultiplier = 0f;
+        if (state.ledged) gravityMultiplier = ledgeGravity;
+        
         rb.AddForce(Physics.gravity * (gravityMultiplier * rb.mass));
     }
 
@@ -331,14 +330,12 @@ public partial class Character : MonoBehaviour
     private void OnLedgeTouch()
     {
         airJumpsLeft = maxAirJumps;
-        gravityMultiplier = ledgeGravity;
     }
 
     private void OnTouchGround()
     {
         state.grounded = true;
         airJumpsLeft = maxAirJumps;
-        gravityMultiplier = 0f;
 
         var inverseVel = Velocity;
         inverseVel.y *= -1;

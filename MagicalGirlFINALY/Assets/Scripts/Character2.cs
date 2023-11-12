@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public partial class Character : MonoBehaviour
@@ -93,13 +91,13 @@ public partial class Character : MonoBehaviour
 
         if (ledgeHit)
         {
-            state.ledgeFrames = ledgeFrames;
             if (!state.ledged)
             {
                 OnLedgeTouch();
             }
+            state.ledgeFrames = ledgeFrames;
         }
-        else if (state.grounded)
+        else if (!state.grounded)
         {
             OnAirborne();
         }
@@ -118,10 +116,6 @@ public partial class Character : MonoBehaviour
         var prev = (int)CumulDamage;
         CumulDamage += data.damage;
         OnPercentChanged?.Invoke(prev, (int)CumulDamage);
-        foreach (var go in hitboxes)
-        {
-            go.SetActive(false);
-        }
 
         state.maxStunDuration = data.maxStunDuration;
         state.stunDuration += data.stunDuration;
