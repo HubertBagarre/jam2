@@ -153,6 +153,7 @@ public partial class Character : MonoBehaviour
         if (!data.fixedForce) force *= CumulDamage * 0.01f;
 
         rb.AddForce(data.direction * force, ForceMode.VelocityChange); //multiply by percentDamage
+        OnTakeDamage?.Invoke(force);
 
         useVelocityFrames = data.useVelocityDuration;
         hasMoved = false;
