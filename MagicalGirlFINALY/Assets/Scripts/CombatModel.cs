@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class CombatModel : MonoBehaviour
 {
@@ -16,8 +17,10 @@ public class CombatModel : MonoBehaviour
     [SerializeField] private List<GameObject> fx = new();
     [SerializeField] private List<AttackHitbox> hitboxes = new();
 
-    [Header("Renderer")] [SerializeField] private Renderer renderer;
-    [SerializeField] private Material normalMaterial;
+    [FormerlySerializedAs("renderer")]
+    [Header("Renderer")]
+    [SerializeField] private List<Renderer> modifiedRenderers;
+    private Dictionary<Renderer,Material> normalMaterials = new ();
     [SerializeField] private Material InvulnerabilityMaterial;
     [SerializeField] private Material HitMaterial;
     public int ratioChangeColor { get; private set; }
@@ -44,12 +47,27 @@ public class CombatModel : MonoBehaviour
 
     public void ChangeMaterialInvulnerability(bool isInvulnerable)
     {
-        renderer.material = isInvulnerable ? InvulnerabilityMaterial : normalMaterial;
+        foreach (var rend in modifiedRenderers)
+        {
+            if (!isInvulnerable) SetNormalMaterial(rend);
+            rend.material = isInvulnerable ? InvulnerabilityMaterial : normalMaterials[rend];
+        }
+        
+    }
+
+    private void SetNormalMaterial(Renderer rend)
+    {
+        if(normalMaterials.ContainsKey(rend)) return;
+        normalMaterials.Add(rend,rend.material);
     }
     
     public void ChangeMaterialHit(bool isHit)
     {
-        renderer.material = isHit ? HitMaterial : normalMaterial;
+        foreach (var rend in modifiedRenderers)
+        {
+            if (!isHit) SetNormalMaterial(rend);
+            rend.material = isHit ? HitMaterial : normalMaterials[rend];
+        }
     }
 
     public void ResetHitboxes()
