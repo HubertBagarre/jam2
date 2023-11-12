@@ -173,6 +173,7 @@ public partial class Character : MonoBehaviour
         transformedModel.ResetHitboxes();
         normalModel.ResetFx();
         transformedModel.ResetFx();
+        AddHitMat();
 
         var force = data.force;
         if (!data.fixedForce) force *= CumulDamage * 0.01f;

@@ -347,6 +347,9 @@ MonoBehaviour:
   <Animator>k__BackingField: {fileID: 6057737273141968934}
   <FrameData>k__BackingField: {fileID: 11400000, guid: 8d5b167508a11e14480f65920966ce16,
     type: 2}
+  <ColoredRenderers>k__BackingField: []
+  <Foots>k__BackingField: []
+  <Body>k__BackingField: {fileID: 0}
   objectsToShow:
   - {fileID: 4864879906596748687}
   - {fileID: 6610377283177050160}
@@ -369,7 +372,13 @@ MonoBehaviour:
   - {fileID: 8914854022055198957}
   - {fileID: 6276186753776446420}
   - {fileID: 487208847185243066}
+  fx: []
   hitboxes: []
+  renderer: {fileID: 8179317121605302052}
+  normalMaterial: {fileID: 2100000, guid: cc5f14b4b36a14f4db9d1317aa5175a4, type: 2}
+  InvulnerabilityMaterial: {fileID: 2100000, guid: 920f3b46cb1681441932f61f4aa31be4,
+    type: 2}
+  HitMaterial: {fileID: 2100000, guid: dcfd7e5a5a5b6664584ac8e63d5d8671, type: 2}
 --- !u!1 &764745051704001961
 GameObject:
   m_ObjectHideFlags: 0

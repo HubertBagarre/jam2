@@ -19,6 +19,7 @@ public class CombatModel : MonoBehaviour
     [Header("Renderer")] [SerializeField] private Renderer renderer;
     [SerializeField] private Material normalMaterial;
     [SerializeField] private Material InvulnerabilityMaterial;
+    [SerializeField] private Material HitMaterial;
     public int ratioChangeColor { get; private set; }
 
     private void Start()
@@ -41,9 +42,14 @@ public class CombatModel : MonoBehaviour
         InvulnerabilityMaterial.SetFloat("_RimPower", isInvulnerable ? 1 : 0);
     }
 
-    public void ChangeMaterial(bool isInvulnerable)
+    public void ChangeMaterialInvulnerability(bool isInvulnerable)
     {
         renderer.material = isInvulnerable ? InvulnerabilityMaterial : normalMaterial;
+    }
+    
+    public void ChangeMaterialHit(bool isHit)
+    {
+        renderer.material = isHit ? HitMaterial : normalMaterial;
     }
 
     public void ResetHitboxes()

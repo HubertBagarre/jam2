@@ -47,22 +47,22 @@ public partial class Character : MonoBehaviour
         }
     }
 
-    public void Respawn(float wait,Vector3 position)
+    public void Respawn(float wait, Vector3 position)
     {
         ShouldFollow = true;
-        
+
         StartCoroutine(RespawnRoutine());
         return;
-        
+
         IEnumerator RespawnRoutine()
         {
             yield return new WaitForSeconds(wait);
             InitStats();
             state.dead = false;
             state.invulFrames = (int)(respawnInvulSeconds * 60);
-            transformedModel.ChangeMaterial(true);
-            normalModel.ChangeMaterial(true);
-            
+            transformedModel.ChangeMaterialInvulnerability(true);
+            normalModel.ChangeMaterialInvulnerability(true);
+
             transform.position = position;
         }
     }
@@ -95,25 +95,25 @@ public partial class Character : MonoBehaviour
     public void Dash()
     {
         if (CannotInput || state.totalActiveFrames > 0) return;
-        
-        
+
+
         var dir = controller.StickInput;
-        
-        
+
+
         gravityMultiplier = 0f;
         var force = dir.normalized * dashForce;
         rb.velocity = Vector3.zero;
 
         rb.AddForce(force, ForceMode.VelocityChange);
-        
+
         frameDataDict.TryGetValue("Dash", out var frameData);
-        
+
         endedPositionDashRatio = new Vector3(dir.x, dir.y, 0) * dashForce;
         endedPositionDashRatio /= frameData.Active;
-        
+
         PlayAnimation(frameData, 0.05f);
 
-        
+
         //OnActive += DashOnDirection;
         OnRecovering += (framesLeft) => gravityMultiplier = framesLeft > 1 ? 0f : 1f;
     }
@@ -153,7 +153,7 @@ public partial class Character : MonoBehaviour
     public void Attack(bool heavy = false)
     {
         if (CannotInput) return;
-        
+
         var frameData = AttackUp(heavy);
 
         if (controller.StickInput != Vector2.zero)
@@ -206,7 +206,6 @@ public partial class Character : MonoBehaviour
 
         OnActive += checkAttack;
 
-
         return;
 
         FrameDataSo.FrameData AttackUp(bool heavyAttack)
@@ -214,6 +213,18 @@ public partial class Character : MonoBehaviour
             return frameDataDict[
                 state.grounded ? (heavyAttack ? "UpHeavy" : "UpLight") : (heavyAttack ? "Recovery" : "UpAir")];
         }
+    }
+
+    private void AddHitMat()
+    {
+        normalModel.ChangeMaterialHit(true);
+        transformedModel.ChangeMaterialHit(true);
+    }
+
+    private void RemoveHitMat()
+    {
+        normalModel.ChangeMaterialHit(false);
+        transformedModel.ChangeMaterialHit(false);
     }
 
     private void checkAttack(int i)
@@ -252,7 +263,7 @@ public partial class Character : MonoBehaviour
         state.transformedFrames--;
 
         CumulUltimate = state.transformedFrames / (float)transformationFrames;
-        
+
         OnTransformationChargeUpdated?.Invoke(CumulUltimate);
     }
 

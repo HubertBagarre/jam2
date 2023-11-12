@@ -211,8 +211,8 @@ public partial class Character : MonoBehaviour, ICameraFollow
         
         if (state.invulFrames == 0)
         {
-            transformedModel.ChangeMaterial(false);
-            normalModel.ChangeMaterial(false);
+            transformedModel.ChangeMaterialInvulnerability(false);
+            normalModel.ChangeMaterialInvulnerability(false);
         }
     }
 
@@ -259,6 +259,10 @@ public partial class Character : MonoBehaviour, ICameraFollow
     {
         if (!state.Stunned) return;
         state.stunDuration--;
+        if (state.stunDuration == 0)
+        {
+           RemoveHitMat();
+        }
     }
 
     private void FixedUpdate()
