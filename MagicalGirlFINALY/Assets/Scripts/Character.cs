@@ -16,7 +16,9 @@ public class Character : MonoBehaviour
 
     private CombatModel normalModel;
     private CombatModel transformedModel;
-    private CombatModel CurrentBattleModel => state.transformed ? transformedModel : normalModel;
+    private CombatModel CurrentBattleModel => state.shouldBeTransformed ? transformedModel : normalModel;
+    private Animator NormalAnimator => normalModel.Animator;
+    private Animator TransformedAnimator => transformedModel.Animator;
     private Animator CurrentAnimator => CurrentBattleModel.Animator;
     private FrameDataSo CurrentFrameData => CurrentBattleModel.FrameData;
     [SerializeField] private List<GameObject> hitboxes;
@@ -59,7 +61,6 @@ public class Character : MonoBehaviour
     public event Action<int, int> OnPercentChanged;
     public event Action<float> OnTransformationChargeUpdated;
     public event Action<Character, float> OnGainUltimate;
-    private event Action OnTransformationCome;
 
     private Vector3 cachedVelocity;
 
@@ -99,7 +100,8 @@ public class Character : MonoBehaviour
     [Serializable]
     private class State
     {
-        public bool transformed => transformedFrames > 0;
+        public bool isTransformed;
+        public bool shouldBeTransformed => transformedFrames > 0;
         public int transformedFrames;
 
         public bool grounded;
@@ -137,6 +139,7 @@ public class Character : MonoBehaviour
 
         public void ResetStates()
         {
+            isTransformed = false;
             transformedFrames = 0;
 
             maxStunDuration = 0;
@@ -160,7 +163,6 @@ public class Character : MonoBehaviour
     public void InitStats()
     {
         if (CurrentFrameData) frameDataDict = CurrentFrameData.MakeDictionary();
-
         
         normalModel.ResetHitboxes();
         transformedModel.ResetHitboxes();
@@ -178,6 +180,9 @@ public class Character : MonoBehaviour
 
         useVelocityFrames = 0;
         hasMoved = false;
+        
+        normalModel.Show(true);
+        transformedModel.Show(false);
     }
 
     public void ApplyPlayerOptions(GameManager.PlayerOptions options)
@@ -191,20 +196,45 @@ public class Character : MonoBehaviour
         Transformation(false);
     }
 
+    [ContextMenu("Transform (true)")]
+    private void TransformT()
+    {
+        Transformation(true);
+    }
+
+    [ContextMenu("Transform (false)")]
+    private void TransformF()
+    {
+        Transformation(false);
+    }
+
     public void Transformation(bool transformed)
     {
         Debug.Log($"Transformation : {transformed}");
-
-        if (transformed)
-            state.transformedFrames = transformationFrames;
-        normalModel.Show(!transformed);
-        transformedModel.Show(transformed);
-
+        
+        
         if (CurrentFrameData) frameDataDict = CurrentFrameData.MakeDictionary();
         
         frameDataDict.TryGetValue("Transformation", out var frameData);
         
-        PlayAnimation(frameData);
+        OnActiveEnd += SwitchModel;
+        
+        TransformedAnimator.CrossFade(frameData.AnimationName, 0.1f);
+        NormalAnimator.CrossFade(frameData.AnimationName, 0.1f);
+        
+        state.startup = frameData.Startup;
+        state.active = frameData.Active;
+        state.recovering = frameData.Recovery;
+        if (transformed) state.transformedFrames = transformationFrames + state.totalFrames;
+        
+        return;
+        
+        void SwitchModel()
+        {
+            normalModel.Show(!transformed);
+            transformedModel.Show(transformed);
+            state.isTransformed = transformed;
+        }
     }
 
     public void Respawn()
@@ -337,7 +367,7 @@ public class Character : MonoBehaviour
         if (frameData == null) return;
         
         var str = frameData.AnimationName;
-        Debug.Log($"Playing {str} data : {frameData.Startup}, {frameData.Active}, {frameData.Recovery}");
+        Debug.Log($"Playing {str} data on {CurrentBattleModel}");
         
         CurrentAnimator.CrossFade(frameData.AnimationName, transitionDuration);
 
@@ -367,16 +397,15 @@ public class Character : MonoBehaviour
 
     private void DecreaseTransformedFrames()
     {
-        if (!state.transformed) return;
+        if (!state.shouldBeTransformed && state.isTransformed && !CannotInput)
+        {
+            Transformation(false);
+        }
+        if (!state.shouldBeTransformed) return;
         state.transformedFrames--;
         OnTransformationChargeUpdated?.Invoke(CumulUltimate);
-//calc percent of state.transformedFrames by transformationFrames
-
-        float percent = (float)state.transformedFrames / transformationFrames;
-        Debug.Log($"percent : {percent}");
-        if (transformationFrames > 0) return;
         
-        Transformation(false);
+        //TODO decrease cumul ultimate
     }
 
     private void CheckLedging()
@@ -682,19 +711,28 @@ public class Character : MonoBehaviour
 
     private void HandleAnimations()
     {
-        CurrentAnimator.SetBool(animCanInput, !CannotInput);
-        CurrentAnimator.SetBool(animCanInput, !CannotInput);
-        CurrentAnimator.SetBool(animIsGrounded, state.grounded);
-        CurrentAnimator.SetBool(animIsLedged, state.ledged);
-        CurrentAnimator.SetBool(animIsDropping, state.dropping);
-        CurrentAnimator.SetFloat(animVelocityX, Velocity.x);
-        CurrentAnimator.SetFloat(animMagnitudeX, Mathf.Abs(Velocity.x));
-        CurrentAnimator.SetFloat(animVelocityY, Velocity.y);
+        NormalAnimator.SetBool(animCanInput, !CannotInput);
+        NormalAnimator.SetBool(animCanInput, !CannotInput);
+        NormalAnimator.SetBool(animIsGrounded, state.grounded);
+        NormalAnimator.SetBool(animIsLedged, state.ledged);
+        NormalAnimator.SetBool(animIsDropping, state.dropping);
+        NormalAnimator.SetFloat(animVelocityX, Velocity.x);
+        NormalAnimator.SetFloat(animMagnitudeX, Mathf.Abs(Velocity.x));
+        NormalAnimator.SetFloat(animVelocityY, Velocity.y);
+        
+        TransformedAnimator.SetBool(animCanInput, !CannotInput);
+        TransformedAnimator.SetBool(animCanInput, !CannotInput);
+        TransformedAnimator.SetBool(animIsGrounded, state.grounded);
+        TransformedAnimator.SetBool(animIsLedged, state.ledged);
+        TransformedAnimator.SetBool(animIsDropping, state.dropping);
+        TransformedAnimator.SetFloat(animVelocityX, Velocity.x);
+        TransformedAnimator.SetFloat(animMagnitudeX, Mathf.Abs(Velocity.x));
+        TransformedAnimator.SetFloat(animVelocityY, Velocity.y);
     }
 
     public float GainUltimate(float percent, bool isMine = false)
     {
-        if (state.transformed) return CumulUltimate;
+        if (state.shouldBeTransformed) return CumulUltimate;
 
         CumulUltimate += percent;
         if (isMine) OnGainUltimate?.Invoke(this, percent);
