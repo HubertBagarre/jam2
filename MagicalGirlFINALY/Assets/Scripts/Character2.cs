@@ -53,12 +53,11 @@ public partial class Character : MonoBehaviour
         rb.velocity = Vector3.zero;
 
         state.ResetStates();
-        if (!firstTransform)
-            CumulDamage = 0;
-        OnPercentChanged?.Invoke(0, 0);
-        OnGainUltimate?.Invoke(this, CumulDamage);
 
-        CumulUltimate = 0;
+        CumulDamage = 0;
+        OnPercentChanged?.Invoke(0, 0);
+        if (!firstTransform)
+            CumulUltimate = 0;
 
         useVelocityFrames = 0;
         hasMoved = false;
@@ -67,12 +66,12 @@ public partial class Character : MonoBehaviour
         transformedModel.Show(false);
     }
 
-    public void ApplyPlayerOptions(GameManager.PlayerOptions options,GameManager.PlayerData data)
+    public void ApplyPlayerOptions(GameManager.PlayerOptions options, GameManager.PlayerData data)
     {
         normalModel = Instantiate(options.NormalModel, ModelParent);
         normalModel.transform.localPosition = Vector3.zero;
         normalModel.gameObject.name = "NormalModel";
-        
+
         transformedModel = Instantiate(options.TransformedModel, ModelParent);
         transformedModel.transform.localPosition = Vector3.zero;
         transformedModel.gameObject.name = "TransformedModel";
