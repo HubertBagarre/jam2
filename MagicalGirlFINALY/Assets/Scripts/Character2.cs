@@ -66,9 +66,11 @@ public partial class Character : MonoBehaviour
     public void ApplyPlayerOptions(GameManager.PlayerOptions options)
     {
         normalModel = Instantiate(options.NormalModel, ModelParent);
+        normalModel.transform.position = Vector3.zero;
         normalModel.gameObject.name = "NormalModel";
 
         transformedModel = Instantiate(options.TransformedModel, ModelParent);
+        transformedModel.transform.position = Vector3.zero;
         transformedModel.gameObject.name = "TransformedModel";
 
         Transformation(false);
