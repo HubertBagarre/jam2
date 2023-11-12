@@ -675,17 +675,12 @@ MonoBehaviour:
   - {fileID: 815013168}
   - {fileID: 203792348}
   playerOptions:
-  - <Name>k__BackingField: Bequille
-    <Image>k__BackingField: {fileID: 0}
+  - <Name>k__BackingField: Sakura
+    <Image>k__BackingField: {fileID: 21300000, guid: dc1b6d81c36b28743b65be9ba4039f3b,
+      type: 3}
     <NormalModel>k__BackingField: {fileID: 3879579689496312274, guid: 22471ac4830727b4a9983e797e989598,
       type: 3}
-    <TransformedModel>k__BackingField: {fileID: -6361588022190968414, guid: 64477c117d24a2640a18e0963abf120b,
-      type: 3}
-  - <Name>k__BackingField: Brawler
-    <Image>k__BackingField: {fileID: 0}
-    <NormalModel>k__BackingField: {fileID: 3879579689496312274, guid: 22471ac4830727b4a9983e797e989598,
-      type: 3}
-    <TransformedModel>k__BackingField: {fileID: -6361588022190968414, guid: 64477c117d24a2640a18e0963abf120b,
+    <TransformedModel>k__BackingField: {fileID: 75632649099428236, guid: a892e29b734e2f247a4b3cbc2c6b083a,
       type: 3}
   colors:
   - {r: 1, g: 1, b: 1, a: 1}
@@ -708,6 +703,8 @@ MonoBehaviour:
   endGameButton: {fileID: 2290579850023485087}
   knockFXPrefab: {fileID: 2415732233395096630, guid: c55a2c1532689824fb55c0f7e8baec77,
     type: 3}
+  image1: {fileID: 21300000, guid: dc1b6d81c36b28743b65be9ba4039f3b, type: 3}
+  image2: {fileID: 21300000, guid: 1d52ba0ba008f33448de402cb52b1ff7, type: 3}
 --- !u!114 &688923783799495815
 MonoBehaviour:
   m_ObjectHideFlags: 0

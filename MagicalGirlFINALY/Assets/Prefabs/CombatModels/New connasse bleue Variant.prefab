@@ -521,6 +521,18 @@ PrefabInstance:
       objectReference: {fileID: 2100000, guid: 7b4265e5a7d3d844b820ea01780d940a, type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 528edd7e812c3a74c81b1f345bcdff91, type: 3}
+--- !u!137 &150262775962883955 stripped
+SkinnedMeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 5727581456411618951, guid: 528edd7e812c3a74c81b1f345bcdff91,
+    type: 3}
+  m_PrefabInstance: {fileID: 5578169726346738164}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &574424732429955723 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5373189698150959999, guid: 528edd7e812c3a74c81b1f345bcdff91,
+    type: 3}
+  m_PrefabInstance: {fileID: 5578169726346738164}
+  m_PrefabAsset: {fileID: 0}
 --- !u!95 &2018516870520144997 stripped
 Animator:
   m_CorrespondingSourceObject: {fileID: 5866666021909216657, guid: 528edd7e812c3a74c81b1f345bcdff91,
@@ -548,14 +560,21 @@ MonoBehaviour:
   <Animator>k__BackingField: {fileID: 2018516870520144997}
   <FrameData>k__BackingField: {fileID: 11400000, guid: 8cf99db4b749e214e8b22ea8505f36c2,
     type: 2}
-  <ColoredRenderers>k__BackingField: []
+  <ColoredRenderers>k__BackingField:
+  - {fileID: 150262775962883955}
   <Foots>k__BackingField:
   - {fileID: 7922168688111937477}
   - {fileID: 4978890623518941064}
   <Body>k__BackingField: {fileID: 6757103523652491760}
-  objectsToShow: []
+  objectsToShow:
+  - {fileID: 574424732429955723}
   fx: []
-  hitboxes: []
+  hitboxes:
+  - {fileID: 8541032289326293408}
+  - {fileID: 5444227263873668030}
+  - {fileID: 3466341736424184881}
+  - {fileID: 7386980543095855738}
+  - {fileID: 2233907838593908773}
   modifiedRenderers: []
   InvulnerabilityMaterial: {fileID: 2100000, guid: 920f3b46cb1681441932f61f4aa31be4,
     type: 2}

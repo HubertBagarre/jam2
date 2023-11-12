@@ -43,6 +43,10 @@ public class GameManager : MonoBehaviour
     [SerializeField] private Button endGameButton;
     [Space]
     [SerializeField] private GameObject knockFXPrefab;
+
+    [SerializeField] private Sprite image1;
+    [SerializeField] private Sprite image2;
+    
     
     
     private List<MagicalGirlController> controllers = new ();
@@ -135,16 +139,17 @@ public class GameManager : MonoBehaviour
         
         controller.Input.actions["Jump"].started += ToggleReady;
 
-        var data = new PlayerData(UnbindAction,false,0);
+        var data = new PlayerData(UnbindAction,false,controllerDict.Count);
         
         controllerDict.Add(controller,data);
-        var col = availableColors[0];
+        data.ChangeColor(availableColors,availableColors[controllerDict.Count]);
         
         data.OnColorChanged += playerSelection.ChangeColor;
         
-        data.ChangeColor(availableColors,col);
         
         playerSelection.Text.text = controllerDict[controller].isReady ? "Ready" : "Not Ready";
+        playerSelection.NameText.text = playerOptions[controllerDict.Count-1].Name;
+        playerSelection.Image.sprite = controllerDict.Count % 2 == 0 ? image1 : image2;
         
         return;
         
@@ -164,9 +169,8 @@ public class GameManager : MonoBehaviour
         {
             var value = context.ReadValue<Vector2>();
             
-            var ready = controllerDict[controller].isReady;
             var playerOptionIndex = controllerDict[controller].playerOptionIndex;
-
+            
             switch (value.x)
             {
                 case > 0:
@@ -190,6 +194,7 @@ public class GameManager : MonoBehaviour
             controllerDict[controller].playerOptionIndex = playerOptionIndex;
             
             playerSelection.NameText.text = playerOptions[playerOptionIndex].Name;
+            playerSelection.Image.sprite = controllerDict.Count % 2 == 0 ? image1 : image2;
         }
 
         
