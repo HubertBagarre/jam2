@@ -601,12 +601,12 @@ MonoBehaviour:
   - <Name>k__BackingField: Bequille
     <NormalModel>k__BackingField: {fileID: -6361588022190968414, guid: ac2fc00aee4a27e40adaf3091c82214a,
       type: 3}
-    <TransformedModel>k__BackingField: {fileID: -6361588022190968414, guid: ac2fc00aee4a27e40adaf3091c82214a,
+    <TransformedModel>k__BackingField: {fileID: -6361588022190968414, guid: 64477c117d24a2640a18e0963abf120b,
       type: 3}
   - <Name>k__BackingField: Brawler
     <NormalModel>k__BackingField: {fileID: -6361588022190968414, guid: ac2fc00aee4a27e40adaf3091c82214a,
       type: 3}
-    <TransformedModel>k__BackingField: {fileID: -6361588022190968414, guid: ac2fc00aee4a27e40adaf3091c82214a,
+    <TransformedModel>k__BackingField: {fileID: -6361588022190968414, guid: 64477c117d24a2640a18e0963abf120b,
       type: 3}
   stocksPerCharacter: 3
   minPlayers: 2

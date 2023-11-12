@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 6770286958793494797}
   - component: {fileID: -6361588022190968414}
   m_Layer: 0
-  m_Name: Placeholder Model
+  m_Name: Placeholder Model (Transformed)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1920,7 +1920,7 @@ SkinnedMeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: -8474651742996372913, guid: 4f106d4c891571d4e9f31b31b26045ea, type: 3}
+  - {fileID: 2100000, guid: 3e264b5071572c1408dc051d0a3470da, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

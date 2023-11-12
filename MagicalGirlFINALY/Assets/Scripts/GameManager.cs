@@ -12,6 +12,7 @@ using Random = UnityEngine.Random;
 public class GameManager : MonoBehaviour
 {
     public static event Action<Transform> newPlayerSpawned;
+    public static event Action OnFirstUltiProc;
     [Serializable]
     public class PlayerOptions
     {
@@ -205,6 +206,7 @@ public class GameManager : MonoBehaviour
         
         if(curentTotalPercent >= 1)
         {
+            OnFirstUltiProc?.Invoke();
             foreach (var ch in otherCharacters)
             {
                 ch.OnGainUltimate -= DistribUltimate;

@@ -31,6 +31,7 @@ public class CameraController : MonoBehaviour
     private void Start()
     {
         GameManager.newPlayerSpawned += AddTarget;
+        GameManager.OnFirstUltiProc += OnDezoom;
     }
 
     private void AddTarget(Transform _target)
