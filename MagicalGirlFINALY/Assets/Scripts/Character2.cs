@@ -67,17 +67,18 @@ public partial class Character : MonoBehaviour
         transformedModel.Show(false);
     }
 
-    public void ApplyPlayerOptions(GameManager.PlayerOptions options)
+    public void ApplyPlayerOptions(GameManager.PlayerOptions options,GameManager.PlayerData data)
     {
         normalModel = Instantiate(options.NormalModel, ModelParent);
-        normalModel.transform.position = Vector3.zero;
+        normalModel.transform.localPosition = Vector3.zero;
         normalModel.gameObject.name = "NormalModel";
-
+        
         transformedModel = Instantiate(options.TransformedModel, ModelParent);
-        transformedModel.transform.position = Vector3.zero;
+        transformedModel.transform.localPosition = Vector3.zero;
         transformedModel.gameObject.name = "TransformedModel";
 
         Transformation(false);
+        normalModel.ChangeColor(data.color);
         firstTransform = true;
     }
 

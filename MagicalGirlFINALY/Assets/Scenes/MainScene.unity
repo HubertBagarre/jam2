@@ -489,6 +489,18 @@ PrefabInstance:
       propertyPath: minPlayers
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 4460291200769018199, guid: 35b4c455e382c914ab8148b8e4b610cb,
+        type: 3}
+      propertyPath: playerOptions.Array.data[0].<NormalModel>k__BackingField
+      value: 
+      objectReference: {fileID: 3879579689496312274, guid: 22471ac4830727b4a9983e797e989598,
+        type: 3}
+    - target: {fileID: 4460291200769018199, guid: 35b4c455e382c914ab8148b8e4b610cb,
+        type: 3}
+      propertyPath: playerOptions.Array.data[1].<NormalModel>k__BackingField
+      value: 
+      objectReference: {fileID: 3879579689496312274, guid: 22471ac4830727b4a9983e797e989598,
+        type: 3}
     - target: {fileID: 5461991820127786423, guid: 35b4c455e382c914ab8148b8e4b610cb,
         type: 3}
       propertyPath: m_Type
