@@ -6,12 +6,23 @@ public class CombatModel : MonoBehaviour
 {
     [field: SerializeField] public Animator Animator { get; private set; }
     [field: SerializeField] public FrameDataSo FrameData { get; private set; }
+    [field: SerializeField] public List<Renderer> ColoredRenderers { get; private set; } 
     [field: SerializeField] public List<Transform> Foots { get; private set; }
     [field: SerializeField] public Transform Body { get; private set; }
 
     [SerializeField] private List<GameObject> objectsToShow;
     [SerializeField] private List<AttackHitbox> hitboxes = new ();
 
+    public void ChangeColor(Color color)
+    {
+        foreach (var rend in ColoredRenderers)
+        {
+            var mat = rend.material;
+            mat.color = color;
+            rend.material = mat;
+        }
+    }
+    
     public void ResetHitboxes()
     {
         foreach (var go in hitboxes)

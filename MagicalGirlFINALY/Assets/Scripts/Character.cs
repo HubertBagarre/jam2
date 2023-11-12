@@ -299,6 +299,12 @@ public partial class Character : MonoBehaviour, ICameraFollow
         OnDeath?.Invoke(this);
     }
 
+    public void UpdateColor(Color color)
+    {
+        normalModel.ChangeColor(color);
+        transformedModel.ChangeColor(color);
+    }
+
     private void OnLedgeTouch()
     {
         airJumpsLeft = maxAirJumps;
