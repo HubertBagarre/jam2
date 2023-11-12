@@ -56,7 +56,7 @@ public partial class Character : MonoBehaviour
     public void Shield()
     {
         Debug.Log("Shield");
-        if (CannotInput || OnCooldownShield) return;
+        if (CannotInput || state.totalActiveFrames > 0) return;
         // state.shieldFrames = ShieldFrames;
         frameDataDict.TryGetValue("Shield", out var frameData);
         //cooldownShield = cooldownFrameReloadShield + ShieldFrames;
@@ -84,19 +84,25 @@ public partial class Character : MonoBehaviour
 
     public void Dash()
     {
-        if (CannotInput || OnCooldownDash) return;
-        state.dashFrames = DashFrames;
+        if (CannotInput || state.totalActiveFrames > 0) return;
         frameDataDict.TryGetValue("Dash", out var frameData);
-        cooldownDash = cooldownFrameReloadDash + DashFrames;
         Vector2 dir = controller.StickInput;
+        rb.velocity = Vector3.zero;
         endedPositionDashRatio = new Vector3(dir.x, dir.y, 0) * dashForce;
-
-        endedPositionDashRatio /= DashFrames;
+        endedPositionDashRatio /= frameData.Active;
 
         PlayAnimation(frameData, 0.05f);
 
-        cooldownDash += state.startup + state.active + state.recovering;
+        OnActive += DashOnDirection;
     }
+
+    public void DashOnDirection(int i)
+    {
+        if (i <= 0) return;
+        if (!Physics.Raycast(transform.position, endedPositionDashRatio, out var hit, 1f))
+            rb.MovePosition(transform.position + endedPositionDashRatio);
+    }
+
 
     public void Jump()
     {
@@ -125,9 +131,7 @@ public partial class Character : MonoBehaviour
     public void Attack(bool heavy = false)
     {
         if (CannotInput) return;
-
-        //rb.velocity = Vector3.zero; //TODO do better
-
+        
         var frameData = AttackUp(heavy);
 
         if (controller.StickInput != Vector2.zero)
