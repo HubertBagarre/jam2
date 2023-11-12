@@ -11961,10 +11961,7 @@ PrefabInstance:
     - target: {fileID: 370038575165383989, guid: 22471ac4830727b4a9983e797e989598,
         type: 3}
       propertyPath: m_WarningMessage
-      value: "\nBinding warning: Some generic clip(s) animate transforms that are
-        already bound by a Humanoid avatar. These transforms can only be changed
-        by Humanoid clips.\n\tTransform 'Armature'\n\tTransform 'Armature'\n\tFrom
-        animation clip 'Flying Kick'"
+      value: 
       objectReference: {fileID: 0}
     - target: {fileID: 409465736014986211, guid: 22471ac4830727b4a9983e797e989598,
         type: 3}
@@ -51786,7 +51783,7 @@ PrefabInstance:
     - target: {fileID: 5396186133363252767, guid: a892e29b734e2f247a4b3cbc2c6b083a,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: 0.0144146485
       objectReference: {fileID: 0}
     - target: {fileID: 5396186133363252767, guid: a892e29b734e2f247a4b3cbc2c6b083a,
         type: 3}
@@ -51796,27 +51793,27 @@ PrefabInstance:
     - target: {fileID: 5396186133363252767, guid: a892e29b734e2f247a4b3cbc2c6b083a,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0
+      value: -0.022009159
       objectReference: {fileID: 0}
     - target: {fileID: 5396186133363252767, guid: a892e29b734e2f247a4b3cbc2c6b083a,
         type: 3}
       propertyPath: m_LocalRotation.w
-      value: 1
+      value: 0.09301747
       objectReference: {fileID: 0}
     - target: {fileID: 5396186133363252767, guid: a892e29b734e2f247a4b3cbc2c6b083a,
         type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 5396186133363252767, guid: a892e29b734e2f247a4b3cbc2c6b083a,
         type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0
+      value: -0.99566454
       objectReference: {fileID: 0}
     - target: {fileID: 5396186133363252767, guid: a892e29b734e2f247a4b3cbc2c6b083a,
         type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 5396186133363252767, guid: a892e29b734e2f247a4b3cbc2c6b083a,
         type: 3}
@@ -51826,7 +51823,7 @@ PrefabInstance:
     - target: {fileID: 5396186133363252767, guid: a892e29b734e2f247a4b3cbc2c6b083a,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
+      value: -169.326
       objectReference: {fileID: 0}
     - target: {fileID: 5396186133363252767, guid: a892e29b734e2f247a4b3cbc2c6b083a,
         type: 3}
