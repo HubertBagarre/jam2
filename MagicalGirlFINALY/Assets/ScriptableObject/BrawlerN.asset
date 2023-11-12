@@ -22,9 +22,9 @@ MonoBehaviour:
     <StopVelocityX>k__BackingField: 0
     <StopVelocityY>k__BackingField: 0
   - <AnimationName>k__BackingField: UpLight
-    <Startup>k__BackingField: 28
-    <Active>k__BackingField: 20
-    <Recovery>k__BackingField: 28
+    <Startup>k__BackingField: 14
+    <Active>k__BackingField: 5
+    <Recovery>k__BackingField: 14
     <StopVelocityX>k__BackingField: 1
     <StopVelocityY>k__BackingField: 0
   - <AnimationName>k__BackingField: Recovery

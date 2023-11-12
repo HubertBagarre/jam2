@@ -23,6 +23,8 @@ public class AttackHitbox : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
+        Debug.Log(other);
+        
         var character = other.GetComponent<Character>();
         if(character == null) return;
         if(character == own) return;
