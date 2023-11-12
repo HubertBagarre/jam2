@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Unity.Collections;
 using UnityEngine;
 
-public partial class Character : MonoBehaviour
+public partial class Character : MonoBehaviour, ICameraFollow
 {
     [Header("Components")] [SerializeField]
     private Rigidbody rb;
@@ -153,6 +153,8 @@ public partial class Character : MonoBehaviour
     
     private void Update()
     {
+        if(state.dead) return;
+        
         DecreaseTransformedFrames();
         DecreaseStunDuration();
         DecreaseActionFrames();
@@ -243,6 +245,8 @@ public partial class Character : MonoBehaviour
 
     private void FixedUpdate()
     {
+        if(state.dead) return;
+        
         UpdateMove();
         ApplyGravity();
         HandleAnimations();
@@ -258,6 +262,8 @@ public partial class Character : MonoBehaviour
 
     private void UpdateMove()
     {
+        CameraPosition = transform.position;
+        
         if (useVelocityFrames > 0) useVelocityFrames--;
 
         if (CannotInput) return;
@@ -324,4 +330,7 @@ public partial class Character : MonoBehaviour
                 break;
         }
     }
+
+    public bool ShouldFollow { get; set; } = false;
+    public Vector3 CameraPosition { get; private set; }
 }

@@ -11,7 +11,6 @@ using Random = UnityEngine.Random;
 
 public class GameManager : MonoBehaviour
 {
-    public static event Action<Transform> newPlayerSpawned;
     public static event Action OnFirstUltiProc;
     [Serializable]
     public class PlayerOptions
@@ -27,6 +26,7 @@ public class GameManager : MonoBehaviour
     private List<Transform> availableSpawnPoints = new ();
     [SerializeField] private PlayerOptions[] playerOptions;
     [SerializeField] private int stocksPerCharacter = 3;
+    [SerializeField] private float respawnDuration = 3;
     [SerializeField] private int minPlayers = 2;
 
     [Header("Components")]
@@ -37,6 +37,8 @@ public class GameManager : MonoBehaviour
     [SerializeField] private GameObject endGamePanel;
     [SerializeField] private TextMeshProUGUI endGameText;
     [SerializeField] private Button endGameButton;
+    [Space]
+    [SerializeField] private GameObject knockFXPrefab;
     
     
     private List<MagicalGirlController> controllers = new ();
@@ -255,7 +257,6 @@ public class GameManager : MonoBehaviour
         var character = controller.SpawnCharacter();
 
         character.ApplyPlayerOptions(playerOptions[controllerDict[controller].playerOptionIndex]);
-        newPlayerSpawned?.Invoke(character.transform);
         character.OnGainUltimate += DistribUltimate;
         
         var playerPercent = Instantiate(playerPercentPrefab,playerPercentLayout);
@@ -286,17 +287,22 @@ public class GameManager : MonoBehaviour
         availableSpawnPoints.Remove(pos);
         
         character.transform.position = pos.position;
+        character.ShouldFollow = true;
     }
 
     private void RespawnCharacter(Character character)
     {
+        var characterPos = character.transform.position;
+        var knockFX = Instantiate(knockFXPrefab,characterPos,knockFXPrefab.transform.rotation);
+        knockFX.transform.forward = (Vector3.zero - characterPos).normalized;
+        
         if(!stocks.ContainsKey(character)) SpawnCharacter(character);
         stocks[character]--;
         
+        character.ShouldFollow = false;
         if (stocks[character] > 0 || stocks.Count <= 1)
         {
-            character.transform.position = respawnPoint.position;
-            character.Respawn();
+            character.Respawn(respawnDuration,respawnPoint.position);
         }
         
         if(stocks.Count(stock => stock.Value > 0) > 1 || stocks.Count <= 1) return;

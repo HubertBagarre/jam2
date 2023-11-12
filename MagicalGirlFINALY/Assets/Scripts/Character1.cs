@@ -46,11 +46,22 @@ public partial class Character : MonoBehaviour
         }
     }
 
-    public void Respawn()
+    public void Respawn(float wait,Vector3 position)
     {
-        InitStats();
-        state.dead = false;
-        state.invulFrames = (int)(respawnInvulSeconds * 60);
+        ShouldFollow = true;
+        
+        StartCoroutine(RespawnRoutine());
+        return;
+        
+        IEnumerator RespawnRoutine()
+        {
+            yield return new WaitForSeconds(wait);
+            InitStats();
+            state.dead = false;
+            state.invulFrames = (int)(respawnInvulSeconds * 60);
+            
+            transform.position = position;
+        }
     }
 
     public void Shield()
