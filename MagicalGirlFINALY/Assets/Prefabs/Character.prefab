@@ -143,7 +143,7 @@ MonoBehaviour:
   DashFrames: 10
   cooldownFrameReloadShield: 10
   cooldownFrameReloadDash: 10
-  transformationFrames: 60
+  transformationFrames: 600
   groundRange: 0.1
   groundCheckHeight: 0.1
   platformLayer:
@@ -159,6 +159,7 @@ MonoBehaviour:
   airJumpsLeft: 0
   respawnInvulSeconds: 3
   state:
+    isTransformed: 0
     transformedFrames: 0
     grounded: 0
     groundFrames: 0
@@ -176,6 +177,12 @@ MonoBehaviour:
     dead: 0
   controller: {fileID: 0}
   hasController: 0
+  chargeUltimateLight: 0.1
+  chargeUltimateHeavy: 0.2
+  useVelocityFrames: 0
+  hasMoved: 0
+  CumulUltimate: 0
+  OnActionTerminated: 0
 --- !u!1 &7537521638968687182
 GameObject:
   m_ObjectHideFlags: 0

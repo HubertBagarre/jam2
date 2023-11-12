@@ -309,6 +309,16 @@ PrefabInstance:
       propertyPath: hitData.useVelocityDuration
       value: 10
       objectReference: {fileID: 0}
+    - target: {fileID: 5129930503056047802, guid: 3a182e63e8e93754ab243771feb4e4c2,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7537521638968687182, guid: 3a182e63e8e93754ab243771feb4e4c2,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8958062694798543565, guid: 3a182e63e8e93754ab243771feb4e4c2,
         type: 3}
       propertyPath: m_IsActive

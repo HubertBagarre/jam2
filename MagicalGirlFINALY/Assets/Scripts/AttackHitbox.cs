@@ -30,8 +30,8 @@ public class AttackHitbox : MonoBehaviour
         };
         
         Debug.DrawRay(tr.position,hitData.direction * hitData.force,Color.red, 1f);
-        character.TakeHit(hitData);
         hit = true;
+        character.TakeHit(hitData);
     }
 }
 
