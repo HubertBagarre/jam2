@@ -152,7 +152,7 @@ MonoBehaviour:
   platformLayerDrop:
     serializedVersion: 2
     m_Bits: 256
-  jumpForce: 9
+  jumpForce: 6
   dashForce: 5
   maxAirJumps: 2
   ledgeJumpIsAirJump: 1

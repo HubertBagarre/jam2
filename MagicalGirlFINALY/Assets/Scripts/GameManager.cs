@@ -67,6 +67,10 @@ public class GameManager : MonoBehaviour
         
         void ReturnToMenu()
         {
+            UnbindAll();
+            
+            Character.OnCreated -= SpawnCharacter;
+            Character.OnDeath -= RespawnCharacter;
             SceneManager.LoadScene(0);
         }
     }
@@ -76,6 +80,14 @@ public class GameManager : MonoBehaviour
         if(controllers.Contains(controller)) return;
         controllers.Add(controller);
         BindControlForMenu(controller);
+    }
+
+    private void UnbindAll()
+    {
+        foreach (var v in controllerDict.Values)
+        {
+            v.unbindAction?.Invoke();
+        }
     }
 
     private void BindControlForMenu(MagicalGirlController controller)
@@ -96,8 +108,6 @@ public class GameManager : MonoBehaviour
         
         void UnbindAction()
         {
-            Debug.Log("Unbinding");
-            
             controller.Input.actions["Move"].started -= ChangeCharacter;
             controller.Input.actions["Move"].performed -= ChangeCharacter;
             controller.Input.actions["Move"].canceled -= ChangeCharacter;
@@ -170,6 +180,31 @@ public class GameManager : MonoBehaviour
         
         controller.Input.actions["Shield"].started += controller.ShieldOrDash;
         controller.Input.actions["Shield"].canceled += controller.ShieldOrDash;
+        
+        controllerDict[controller] = (UnbindAction,controllerDict[controller].isReady,controllerDict[controller].playerOptionIndex);
+        
+        return;
+        void UnbindAction()
+        {
+            controller.Input.actions["Move"].started -= controller.Move;
+            controller.Input.actions["Move"].performed -= controller.Move;
+            controller.Input.actions["Move"].canceled -= controller.Move;
+        
+            controller.Input.actions["Jump"].started -= controller.Jump;
+            controller.Input.actions["Jump"].canceled -= controller.Jump;
+        
+            controller.Input.actions["LightAttack"].started -= controller.LightAttack;
+            controller.Input.actions["LightAttack"].canceled -= controller.LightAttack;
+        
+            controller.Input.actions["HeavyAttack"].started -= controller.HeavyAttack;
+            controller.Input.actions["HeavyAttack"].canceled -= controller.HeavyAttack;
+        
+            controller.Input.actions["Dodge"].started -= controller.Dodge;
+            controller.Input.actions["Dodge"].canceled -= controller.Dodge;
+        
+            controller.Input.actions["Shield"].started -= controller.ShieldOrDash;
+            controller.Input.actions["Shield"].canceled -= controller.ShieldOrDash;
+        }
     }
 
     private void StartGame()
