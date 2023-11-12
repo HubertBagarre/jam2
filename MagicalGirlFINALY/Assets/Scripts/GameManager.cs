@@ -127,7 +127,7 @@ public class GameManager : MonoBehaviour
         controller.Input.actions["Move"].performed += ChangeCharacter;
         controller.Input.actions["Move"].canceled += ChangeCharacter;
         
-        controller.Input.actions["LightAttack"].started += PreviousColor;
+        controller.Input.actions["LightAttack"].started += NextColor;
         controller.Input.actions["HeavyAttack"].started += NextColor;
         
         controller.Input.actions["Jump"].started += ToggleReady;
@@ -137,8 +137,9 @@ public class GameManager : MonoBehaviour
         controllerDict.Add(controller,data);
         var col = availableColors[0];
         
+        data.OnColorChanged += playerSelection.ChangeColor;
+        
         data.ChangeColor(availableColors,col);
-        playerSelection.SetupColors(colors,data);
         
         playerSelection.Text.text = controllerDict[controller].isReady ? "Ready" : "Not Ready";
         
@@ -150,7 +151,7 @@ public class GameManager : MonoBehaviour
             controller.Input.actions["Move"].performed -= ChangeCharacter;
             controller.Input.actions["Move"].canceled -= ChangeCharacter;
             
-            controller.Input.actions["LightAttack"].started -= PreviousColor;
+            controller.Input.actions["LightAttack"].started -= NextColor;
             controller.Input.actions["HeavyAttack"].started -= NextColor;
 
             controller.Input.actions["Jump"].started -= ToggleReady;
@@ -205,16 +206,6 @@ public class GameManager : MonoBehaviour
             var index = availableColors.IndexOf(infos.color);
             index++;
             if(index >= availableColors.Count) index = 0;
-            
-            SelectColor(controller,index);
-        }
-        
-        void PreviousColor(InputAction.CallbackContext context)
-        {
-            var infos = controllerDict[controller];
-            var index = availableColors.IndexOf(infos.color);
-            index--;
-            if(index < 0) index = availableColors.Count - 1;
             
             SelectColor(controller,index);
         }

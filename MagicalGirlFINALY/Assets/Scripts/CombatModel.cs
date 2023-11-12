@@ -33,6 +33,14 @@ public class CombatModel : MonoBehaviour
             go.hit = false;
         }
     }
+    
+    public void ResetFx()
+    {
+        foreach (var go in fx)
+        {
+            go.SetActive(false);
+        }
+    }
 
     public bool HitThisFrame()
     {
