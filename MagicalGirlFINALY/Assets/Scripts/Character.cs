@@ -318,6 +318,7 @@ public partial class Character : MonoBehaviour, ICameraFollow
         InitStats();
 
         OnDeath?.Invoke(this);
+        CurrentBattleModel.Show(false);
     }
 
     public void UpdateColor(Color color)
