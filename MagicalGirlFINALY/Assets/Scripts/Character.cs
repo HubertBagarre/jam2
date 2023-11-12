@@ -7,7 +7,7 @@ using UnityEngine;
 using UnityEngine.Accessibility;
 using UnityEngine.Serialization;
 
-public class Character : MonoBehaviour
+public partial class Character : MonoBehaviour
 {
     [Header("Components")] [SerializeField]
     private Rigidbody rb;
@@ -159,223 +159,7 @@ public class Character : MonoBehaviour
 
         OnCreated?.Invoke(this);
     }
-
-    public void InitStats()
-    {
-        if (CurrentFrameData) frameDataDict = CurrentFrameData.MakeDictionary();
-        
-        normalModel.ResetHitboxes();
-        transformedModel.ResetHitboxes();
-
-        state.grounded = false;
-        airJumpsLeft = maxAirJumps;
-
-        gravityMultiplier = 1f;
-        rb.velocity = Vector3.zero;
-
-        state.ResetStates();
-        CumulDamage = 0;
-        OnPercentChanged?.Invoke(0, 0);
-        OnGainUltimate?.Invoke(this, 0f);
-
-        useVelocityFrames = 0;
-        hasMoved = false;
-        
-        normalModel.Show(true);
-        transformedModel.Show(false);
-    }
-
-    public void ApplyPlayerOptions(GameManager.PlayerOptions options)
-    {
-        normalModel = Instantiate(options.NormalModel, ModelParent);
-        normalModel.gameObject.name = "NormalModel";
-
-        transformedModel = Instantiate(options.TransformedModel, ModelParent);
-        transformedModel.gameObject.name = "TransformedModel";
-
-        Transformation(false);
-    }
-
-    [ContextMenu("Transform (true)")]
-    private void TransformT()
-    {
-        Transformation(true);
-    }
-
-    [ContextMenu("Transform (false)")]
-    private void TransformF()
-    {
-        Transformation(false);
-    }
-
-    public void Transformation(bool transformed)
-    {
-        Debug.Log($"Transformation : {transformed}");
-        
-        
-        if (CurrentFrameData) frameDataDict = CurrentFrameData.MakeDictionary();
-        
-        frameDataDict.TryGetValue("Transformation", out var frameData);
-        
-        OnActiveEnd += SwitchModel;
-        
-        TransformedAnimator.CrossFade(frameData.AnimationName, 0.1f);
-        NormalAnimator.CrossFade(frameData.AnimationName, 0.1f);
-        
-        state.startup = frameData.Startup;
-        state.active = frameData.Active;
-        state.recovering = frameData.Recovery;
-        if (transformed) state.transformedFrames = transformationFrames + state.totalFrames;
-        
-        return;
-        
-        void SwitchModel()
-        {
-            normalModel.Show(!transformed);
-            transformedModel.Show(transformed);
-            state.isTransformed = transformed;
-        }
-    }
-
-    public void Respawn()
-    {
-        InitStats();
-        state.dead = false;
-        state.invulFrames = (int)(respawnInvulSeconds * 60);
-    }
-
-    public void Shield()
-    {
-        Debug.Log("Shield");
-        if (CannotInput || OnCooldownShield) return;
-        state.shieldFrames = ShieldFrames;
-        frameDataDict.TryGetValue("Shield", out var frameData);
-        cooldownShield = cooldownFrameReloadShield + ShieldFrames;
-        
-        PlayAnimation(frameData,0.05f);
-
-        cooldownShield += state.startup + state.active + state.recovering;
-    }
-
-    public void Dash()
-    {
-        if (CannotInput || OnCooldownDash) return;
-        state.dashFrames = DashFrames;
-        frameDataDict.TryGetValue("Dash", out var frameData);
-        cooldownDash = cooldownFrameReloadDash + DashFrames;
-        Vector2 dir = controller.StickInput;
-        endedPositionDashRatio = new Vector3(dir.x, dir.y, 0) * dashForce;
-
-        endedPositionDashRatio /= DashFrames;
-
-        PlayAnimation(frameData,0.05f);
-
-        cooldownDash += state.startup + state.active + state.recovering;
-    }
-
-    public void Jump()
-    {
-        if (CannotInput) return;
-
-        var grounded = state.grounded || (state.ledged && !ledgeJumpIsAirJump);
-
-        if (!grounded && airJumpsLeft <= 0) return;
-
-        if (!grounded) airJumpsLeft--;
-
-        cachedVelocity = rb.velocity;
-        cachedVelocity.y = 0;
-        rb.velocity = cachedVelocity;
-
-        var dir = Vector3.up;
-        if (state.ledged)
-        {
-            state.jumpFrames = ledgeJumpFrames;
-            dir = Vector3.up + (Vector3.right * -controller.StickInput.x).normalized;
-        }
-
-        rb.AddForce(dir.normalized * jumpForce, ForceMode.Impulse);
-    }
-
-    public void Attack(bool heavy = false)
-    {
-        if (CannotInput) return;
-
-        //rb.velocity = Vector3.zero; //TODO do better
-
-        var frameData = AttackUp(heavy);
-
-        if (controller.StickInput != Vector2.zero)
-        {
-            var dot = Vector2.Dot(controller.StickInput, Vector2.up);
-            var up = Mathf.Abs(1f - dot);
-            var down = Mathf.Abs(-1f - dot);
-            var side = Mathf.Abs(0 - dot);
-
-            if (up < down && up < side) frameData = AttackUp(heavy);
-            else if (down < up && down < side) frameData = AttackDown(heavy);
-            else
-            {
-                frameData = AttackSide(heavy);
-            }
-
-            FrameDataSo.FrameData AttackDown(bool heavyAttack)
-            {
-                return frameDataDict[
-                    state.grounded
-                        ? (heavyAttack ? "DownHeavy" : "DownLight")
-                        : (heavyAttack ? "GroundPound" : "DownAir")];
-            }
-
-            FrameDataSo.FrameData AttackSide(bool heavyAttack)
-            {
-                if (state.grounded)
-                {
-                    return frameDataDict[(heavyAttack ? "SideHeavy" : "SideLight")];
-                }
-
-                if (heavy)
-                {
-                    if (up < down) return AttackUp(true);
-                    return AttackDown(true);
-                }
-
-                return frameDataDict["SideAir"];
-            }
-        }
-        
-        rb.velocity = new Vector3(
-            (frameData.StopVelocityX) ? 0 : rb.velocity.x,
-            (frameData.StopVelocityY) ? 0 : rb.velocity.y,
-            rb.velocity.z);
-
-        PlayAnimation(frameData);
-        
-        lastAttackChargeUltimate = (heavy ? chargeUltimateHeavy : chargeUltimateLight);
-        
-        return;
-
-        FrameDataSo.FrameData AttackUp(bool heavyAttack)
-        {
-            return frameDataDict[
-                state.grounded ? (heavyAttack ? "UpHeavy" : "UpLight") : (heavyAttack ? "Recovery" : "UpAir")];
-        }
-    }
-
-    private void PlayAnimation(FrameDataSo.FrameData frameData,float transitionDuration = 0.1f)
-    {
-        if (frameData == null) return;
-        
-        var str = frameData.AnimationName;
-        Debug.Log($"Playing {str} data on {CurrentBattleModel}");
-        
-        CurrentAnimator.CrossFade(frameData.AnimationName, transitionDuration);
-
-        state.startup = frameData.Startup;
-        state.active = frameData.Active;
-        state.recovering = frameData.Recovery;
-    }
-
+    
     private void Update()
     {
         DecreaseTransformedFrames();
@@ -394,92 +178,7 @@ public class Character : MonoBehaviour
         CheckIsGrounded();
         CheckLedging();
     }
-
-    private void DecreaseTransformedFrames()
-    {
-        if (!state.shouldBeTransformed && state.isTransformed && !CannotInput)
-        {
-            Transformation(false);
-        }
-        if (!state.shouldBeTransformed) return;
-        state.transformedFrames--;
-        OnTransformationChargeUpdated?.Invoke(CumulUltimate);
-        
-        //TODO decrease cumul ultimate
-    }
-
-    private void CheckLedging()
-    {
-        if (CannotInput || state.grounded) return;
-
-        if (controller.StickInput.x == 0) return;
-
-        if (state.ledged && controller.StickInput.y == 0) return;
-
-        var dir = (Vector3.right * controller.StickInput.x).normalized;
-
-        var rayDist = groundRange + groundCheckHeight;
-
-        var ledgeHit = Physics.Raycast(transform.position - Vector3.up * 0.5f + dir * ((1 - groundCheckHeight) * 0.5f),
-            dir, out var hit,
-            rayDist, platformLayer);
-        if (!ledgeHit)
-            ledgeHit = Physics.Raycast(transform.position + Vector3.up * 0.5f + dir * ((1 - groundCheckHeight) * 0.5f),
-                dir, out hit,
-                rayDist, platformLayer);
-
-        if (ledgeHit)
-        {
-            state.ledgeFrames = ledgeFrames;
-            if (!state.ledged)
-            {
-                OnLedgeTouch();
-            }
-        }
-        else if (state.grounded)
-        {
-            OnAirborne();
-        }
-    }
-
-    private void Drop()
-    {
-        if (CannotInput) return;
-
-        if (controller.StickInput.y < -0.5f) state.dropFrames = dropFrames;
-    }
-
-    private void CheckIsGrounded()
-    {
-        if (state.dead || state.Stunned) return;
-
-        var mask = state.dropping ? platformLayerDrop : platformLayer;
-
-        var rayDist = groundRange + groundCheckHeight;
-
-        var groundHit = Physics.Raycast(
-            transform.position - Vector3.right * 0.5f - Vector3.up * (1 - groundCheckHeight), Vector3.down, out var hit,
-            rayDist, mask);
-        if (!groundHit)
-            groundHit = Physics.Raycast(
-                transform.position + Vector3.right * 0.5f - Vector3.up * (1 - groundCheckHeight), Vector3.down, out hit,
-                rayDist, mask);
-
-        if (Velocity.y > 0) groundHit = false;
-        if (groundHit)
-        {
-            state.groundFrames = groundFrames;
-            if (!state.grounded)
-            {
-                OnTouchGround();
-            }
-        }
-        else if (state.grounded || state.ledged)
-        {
-            OnAirborne();
-        }
-    }
-
+    
     private void DecreaseJumpFrames()
     {
         if (!state.ledgeJumped) return;
@@ -503,8 +202,7 @@ public class Character : MonoBehaviour
         if (!state.dropping) return;
         state.dropFrames--;
     }
-
-
+    
     private void DecreaseActivationShieldFrames()
     {
         if (!state.shielded) return;
@@ -664,38 +362,7 @@ public class Character : MonoBehaviour
         state.grounded = false;
         gravityMultiplier = 1f;
     }
-
-    public void TakeHit(HitData data)
-    {
-        if (state.Invulnerable || state.dead || state.shielded) return;
-        var prev = (int)CumulDamage;
-        CumulDamage += data.damage;
-        OnPercentChanged?.Invoke(prev, (int)CumulDamage);
-        foreach (var go in hitboxes)
-        {
-            go.SetActive(false);
-        }
-
-        state.maxStunDuration = data.maxStunDuration;
-        state.stunDuration += data.stunDuration;
-        if (state.stunDuration > state.maxStunDuration) state.stunDuration = state.maxStunDuration;
-
-        rb.velocity = Vector3.zero;
-
-        CurrentAnimator.Play("Hit");
-        normalModel.ResetHitboxes();
-        transformedModel.ResetHitboxes();
-
-        var force = data.force;
-        if (!data.fixedForce) force *= CumulDamage * 0.01f;
-
-        rb.AddForce(data.direction * force, ForceMode.VelocityChange); //multiply by percentDamage
-
-        useVelocityFrames = data.useVelocityDuration;
-        hasMoved = false;
-    }
-
-
+    
     private void OnTriggerEnter(Collider other)
     {
         //Debug.Log($"{other.gameObject.name} entered trigger (layer {other.gameObject.layer})");
@@ -707,42 +374,5 @@ public class Character : MonoBehaviour
             default:
                 break;
         }
-    }
-
-    private void HandleAnimations()
-    {
-        NormalAnimator.SetBool(animCanInput, !CannotInput);
-        NormalAnimator.SetBool(animCanInput, !CannotInput);
-        NormalAnimator.SetBool(animIsGrounded, state.grounded);
-        NormalAnimator.SetBool(animIsLedged, state.ledged);
-        NormalAnimator.SetBool(animIsDropping, state.dropping);
-        NormalAnimator.SetFloat(animVelocityX, Velocity.x);
-        NormalAnimator.SetFloat(animMagnitudeX, Mathf.Abs(Velocity.x));
-        NormalAnimator.SetFloat(animVelocityY, Velocity.y);
-        
-        TransformedAnimator.SetBool(animCanInput, !CannotInput);
-        TransformedAnimator.SetBool(animCanInput, !CannotInput);
-        TransformedAnimator.SetBool(animIsGrounded, state.grounded);
-        TransformedAnimator.SetBool(animIsLedged, state.ledged);
-        TransformedAnimator.SetBool(animIsDropping, state.dropping);
-        TransformedAnimator.SetFloat(animVelocityX, Velocity.x);
-        TransformedAnimator.SetFloat(animMagnitudeX, Mathf.Abs(Velocity.x));
-        TransformedAnimator.SetFloat(animVelocityY, Velocity.y);
-    }
-
-    public float GainUltimate(float percent, bool isMine = false)
-    {
-        if (state.shouldBeTransformed) return CumulUltimate;
-
-        CumulUltimate += percent;
-        if (isMine) OnGainUltimate?.Invoke(this, percent);
-        OnTransformationChargeUpdated?.Invoke(CumulUltimate);
-
-        if (CumulUltimate >= 1)
-        {
-            Transformation(true);
-        }
-
-        return CumulUltimate;
     }
 }
