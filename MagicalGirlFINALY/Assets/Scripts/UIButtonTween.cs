@@ -24,6 +24,6 @@ public class UIButtonTween : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
 
     public void OnPointerExit(PointerEventData eventData)
     {
-        transform.DOScale(scale, speed);
+        transform.DOScale(originalScale, speed);
     }
 }
